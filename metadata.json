@@ -7,6 +7,12 @@
   "source": "https://github.com/fraenki/puppet-acme",
   "project_page": "https://github.com/fraenki/puppet-acme",
   "issues_url": "https://github.com/fraenki/puppet-acme/issues",
+  "tags": [
+    "acme",
+    "letsencrypt",
+    "ssl",
+    "certificate"
+  ],
   "dependencies": [
     {"name":"puppetlabs-stdlib","version_requirement":">= 2.2.0"},
     {"name":"puppetlabs-concat","version_requirement":">= 2.1.0"},
