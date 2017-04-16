@@ -34,9 +34,9 @@
 #   }
 #
 define acme::certificate (
-  $domain         = $name,
   $use_account,
   $use_profile,
+  $domain         = $name,
   $renew_days     = $::acme::params::renew_days,
   $letsencrypt_ca = undef,
   $acme_host      = $::acme::acme_host,

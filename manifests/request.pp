@@ -291,13 +291,13 @@ define acme::request (
   }
 
   file { $result_crt_file:
-    source  => $le_crt_file,
-    mode    => '0644',
+    source => $le_crt_file,
+    mode   => '0644',
   }
 
   file { $result_chain_file:
-    source  => $le_chain_file,
-    mode    => '0644',
+    source => $le_chain_file,
+    mode   => '0644',
   }
 
   ::acme::request::ocsp { $domain:

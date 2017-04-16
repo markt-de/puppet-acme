@@ -74,12 +74,12 @@ class acme (
     # Validate configuration of $acme_host.
     if !($profiles) {
       # Cannot continue if no profile has been defined.
-      notify { "Module ${module_name}: \$profiles must be defined on \"${acme_host}\"!" :
+      notify { "Module ${module_name}: \$profiles must be defined on \"${acme_host}\"!":
         loglevel => err,
       }
     } elsif !($accounts) {
       # Cannot continue if no account has been defined.
-      notify { "Module ${module_name}: \$accounts must be defined on \"${acme_host}\"!" :
+      notify { "Module ${module_name}: \$accounts must be defined on \"${acme_host}\"!":
         loglevel => err,
       }
     } else {
