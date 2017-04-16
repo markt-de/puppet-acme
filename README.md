@@ -54,7 +54,7 @@ Server. All DNS-01 hooks that are [supported by acme.sh](https://github.com/Neil
 ### Configure your Puppet Server
 
 The whole idea is centralized certificate management, thus you have to
-add some configure on your Puppet Server.
+add some configuration on your Puppet Server.
 
 First configure the Let's Encrypt accounts that are available to issue
 certificates:
