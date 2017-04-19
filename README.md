@@ -287,6 +287,7 @@ Basic directory layout:
 * `/etc/acme.sh/csrs`: Certificate signing requests (CSR)
 * `/etc/acme.sh/home`: (Puppet Server) Working directory for acme.sh
 * `/etc/acme.sh/keys`: Private keys for each certificate
+* `/etc/acme.sh/results`: (Puppet Server) Working directory, used to export certificates
 * `/opt/acme.sh`: (Puppet Server) Local copy of acme.sh (GIT repository)
 * `/var/log/acme.sh/acme.log`: (Puppet Server) acme.sh log file
 
