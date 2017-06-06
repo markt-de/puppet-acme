@@ -20,10 +20,12 @@ class acme::setup::common (
     shell      => $shell,
     managehome => false,
     password   => '!!',
+    system     => true,
   }
 
   group { $group:
     ensure => present,
+    system => true,
   }
 
   File {
