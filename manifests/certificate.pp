@@ -29,6 +29,9 @@
 # [*dh_param_size*]
 #   dh parameter size, defaults to $::acme::dh_param_size
 #
+# [*ocsp_must_staple*]
+#   request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_must_staple
+#
 # === Examples
 #   ::acme::certificate( 'foo.example.com' :
 #   }
@@ -36,11 +39,12 @@
 define acme::certificate (
   $use_account,
   $use_profile,
-  $domain         = $name,
-  $renew_days     = $::acme::params::renew_days,
-  $letsencrypt_ca = undef,
-  $acme_host      = $::acme::acme_host,
-  $dh_param_size  = $::acme::dh_param_size,
+  $domain           = $name,
+  $renew_days       = $::acme::params::renew_days,
+  $letsencrypt_ca   = undef,
+  $acme_host        = $::acme::acme_host,
+  $dh_param_size    = $::acme::dh_param_size,
+  $ocsp_must_staple = $::acme::ocsp_must_staple
 ){
   validate_integer($dh_param_size)
   validate_string($acme_host)
@@ -58,12 +62,13 @@ define acme::certificate (
 
   # Generate CSRs.
   ::acme::csr { $domain:
-    use_account    => $use_account,
-    use_profile    => $use_profile,
-    acme_host      => $acme_host,
-    dh_param_size  => $dh_param_size,
-    renew_days     => $renew_days,
-    letsencrypt_ca => $letsencrypt_ca,
+    use_account      => $use_account,
+    use_profile      => $use_profile,
+    acme_host        => $acme_host,
+    dh_param_size    => $dh_param_size,
+    ocsp_must_staple => $ocsp_must_staple,
+    renew_days       => $renew_days,
+    letsencrypt_ca   => $letsencrypt_ca,
   }
 
 }

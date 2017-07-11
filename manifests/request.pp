@@ -24,10 +24,11 @@ define acme::request (
   $csr,
   $use_account,
   $use_profile,
-  $renew_days     = $::acme::params::renew_days,
-  $letsencrypt_ca = undef,
-  $domain         = $name,
-  $altnames       = undef,
+  $renew_days       = $::acme::params::renew_days,
+  $letsencrypt_ca   = undef,
+  $domain           = $name,
+  $altnames         = undef,
+  $ocsp_must_staple = true,
 ) {
   require ::acme::params
 
@@ -90,6 +91,13 @@ define acme::request (
   }
 
   $account_conf_file = "${acct_dir}/${account_email}/account_${_letsencrypt_ca}.conf"
+
+  # Add ocsp if must-staple is requested
+  if ($ocsp_must_staple) {
+    $_ocsp = '--ocsp'
+  } else {
+    $_ocsp = ''
+  }
 
   # Collect options for "supported" hooks.
   if ($challengetype == 'dns-01') {
@@ -203,7 +211,7 @@ define acme::request (
     "--home ${$acme_dir}",
     '--keylength 4096',
     "--accountconf ${account_conf_file}",
-    '--ocsp',
+    $_ocsp,
     "--csr ${csr_file}",
     "--certpath ${crt_file}",
     "--capath ${chain_file}",
@@ -226,7 +234,7 @@ define acme::request (
     "--home ${$acme_dir}",
     '--keylength 4096',
     "--accountconf ${account_conf_file}",
-    '--ocsp',
+    $_ocsp,
     "--csr ${csr_file}",
     "--certpath ${crt_file}",
     "--capath ${chain_file}",

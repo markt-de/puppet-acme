@@ -40,6 +40,9 @@
 # [*dh_param_size*]
 #   dh parameter size, defaults to 2048
 #
+# [*ocsp_must_staple*]
+#   Request certificats with OCSP Must-Staple extension, defaults to true
+#
 # [*manage_packages*]
 #   install necessary packages, mainly git
 #
@@ -60,6 +63,7 @@ class acme (
   $letsencrypt_ca    = $::acme::params::letsencrypt_ca,
   $letsencrypt_proxy = undef,
   $dh_param_size     = $::acme::params::dh_param_size,
+  $ocsp_must_staple  = $::acme::params::ocsp_must_staple,
   $manage_packages   = $::acme::params::manage_packages,
 ) inherits ::acme::params {
 
@@ -103,9 +107,10 @@ class acme (
   $certificates.each |$domain, $config| {
     # Merge domain params with module params.
     $options = deep_merge({
-      domain        => $domain,
-      acme_host     => $acme_host,
-      dh_param_size => $dh_param_size,
+      domain           => $domain,
+      acme_host        => $acme_host,
+      dh_param_size    => $dh_param_size,
+      ocsp_must_staple => $ocsp_must_staple,
     },$config)
     # Create the certificate resource.
     ::acme::certificate { $domain: * => $options }
