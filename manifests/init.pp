@@ -102,11 +102,11 @@ class acme (
   # Generate CSRs.
   $certificates.each |$domain, $config| {
     # Merge domain params with module params.
-    $options = deep_merge($config,{
+    $options = deep_merge({
       domain        => $domain,
       acme_host     => $acme_host,
       dh_param_size => $dh_param_size,
-    })
+    },$config)
     # Create the certificate resource.
     ::acme::certificate { $domain: * => $options }
   }
