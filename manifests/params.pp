@@ -26,6 +26,7 @@ class acme::params {
 
   # Cert defaults
   $dh_param_size = 2048
+  $ocsp_must_staple = true
 
   # Module defaults
   $manage_packages = true

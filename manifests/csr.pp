@@ -21,19 +21,20 @@ define acme::csr(
   $acme_host,
   $use_account,
   $use_profile,
-  $renew_days     = $::acme::params::renew_days,
-  $letsencrypt_ca = undef,
-  $domain_list    = $name,
-  $country        = undef,
-  $state          = undef,
-  $locality       = undef,
-  $organization   = undef,
-  $unit           = undef,
-  $email          = undef,
-  $password       = undef,
-  $ensure         = 'present',
-  $force          = true,
-  $dh_param_size  = 2048,
+  $renew_days       = $::acme::params::renew_days,
+  $letsencrypt_ca   = undef,
+  $domain_list      = $name,
+  $country          = undef,
+  $state            = undef,
+  $locality         = undef,
+  $organization     = undef,
+  $unit             = undef,
+  $email            = undef,
+  $password         = undef,
+  $ensure           = 'present',
+  $force            = true,
+  $dh_param_size    = 2048,
+  $ocsp_must_staple = true,
 ) {
   require ::acme::params
 
@@ -62,12 +63,11 @@ define acme::csr(
   # Handle certificates with multiple domain names (SAN).
   $domains = split($domain_list, ' ')
   $domain = $domains[0]
-  if (size(domains) > 1) {
-    $req_ext = true
+  $has_san = size(domains) > 1
+  if ($has_san) {
     $altnames = delete_at($domains, 0)
     $subject_alt_names = $domains
   } else {
-    $req_ext = false
     $altnames = []
     $subject_alt_names = []
   }
@@ -189,13 +189,14 @@ define acme::csr(
   $csr_content = pick_default(getvar("::acme_csr_${domain}"), '')
   if ($csr_content =~ /CERTIFICATE REQUEST/) {
     @@acme::request { $domain:
-      csr            => $csr_content,
-      tag            => $acme_host,
-      altnames       => $altnames,
-      use_account    => $use_account,
-      use_profile    => $use_profile,
-      renew_days     => $renew_days,
-      letsencrypt_ca => $letsencrypt_ca,
+      csr              => $csr_content,
+      tag              => $acme_host,
+      altnames         => $altnames,
+      use_account      => $use_account,
+      use_profile      => $use_profile,
+      renew_days       => $renew_days,
+      letsencrypt_ca   => $letsencrypt_ca,
+      ocsp_must_staple => $ocsp_must_staple,
     }
   } else {
     notify { "no CSR from facter for domain ${domain} (normal on first run)" : }
