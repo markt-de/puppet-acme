@@ -184,6 +184,9 @@ class acme::request::handler(
     }
   }
 
+  # needed for the openssl ocsp -header flag
+  $openssl_before_110 = versioncmp($::openssl_version, '1.1.0') < 0
+
   file { $ocsp_request:
     ensure  => file,
     owner   => 'root',
