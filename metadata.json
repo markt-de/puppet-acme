@@ -1,6 +1,6 @@
 {
   "name": "fraenki-acme",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Frank Wall",
   "summary": "Centralized SSL certificate management using Let's Encrypt™ and the lightweight acme.sh",
   "license": "Apache-2.0",
