@@ -277,6 +277,7 @@ define acme::request (
     path        => $path,
     environment => $hook_params,
     command     => $le_command_renew,
+    returns     => [ 0, 2, ],
     # Run this exec only if an old cert can be found.
     onlyif      => "/usr/bin/test -f ${le_crt_file}",
     require     => [
