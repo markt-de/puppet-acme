@@ -122,12 +122,17 @@ define acme::request (
 
   # Collect additional options for acme.sh.
   if ($profile['options']['dnssleep']) {
-    $_dnssleep = $profile['options']['dnssleep']
+    $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
   } else {
-    $_dnssleep = $::acme::params::dnssleep
+    $_dnssleep = "--dnssleep ${::acme::params::dnssleep}"
   }
-  $_acme_options = [ "--dnssleep ${_dnssleep}" ]
-  $acme_options = join($_acme_options, ' ')
+
+  if ($profile['options']['challenge_alias']) {
+    $_challenge_alias = "--challenge-alias ${profile['options']['challenge_alias']}"
+    $acme_options = join([$_dnssleep, $_challenge_alias], ' ')
+  } else {
+    $acme_options = $_dnssleep
+  }
 
   File {
     owner   => $user,
