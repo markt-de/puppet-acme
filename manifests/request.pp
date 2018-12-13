@@ -157,6 +157,13 @@ define acme::request (
     mode    => '0640',
   }
 
+  # Create directory to place the crt_file for each domain
+  $crt_dir_domain = "${crt_dir}/${domain}"
+  file { $crt_dir_domain :
+    ensure => directory,
+    mode   => '0755',
+  }
+
   # Places where acme.sh stores the resulting certificate.
   $le_crt_file = "${acme_dir}/${domain}/${domain}.cer"
   $le_chain_file = "${acme_dir}/${domain}/ca.cer"
@@ -263,6 +270,7 @@ define acme::request (
       User[$user],
       Group[$group],
       File[$csr_file],
+      File[$crt_dir_domain],
       File[$account_conf_file],
       Vcsrepo[$acme_install_dir],
     ],
@@ -289,6 +297,7 @@ define acme::request (
       User[$user],
       Group[$group],
       File[$csr_file],
+      File[$crt_dir_domain],
       File[$account_conf_file],
       Vcsrepo[$acme_install_dir],
     ],
