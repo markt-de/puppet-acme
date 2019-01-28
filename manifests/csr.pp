@@ -186,7 +186,8 @@ define acme::csr(
     require => X509_request[$csr_file],
   }
 
-  $csr_content = pick_default(getvar("::acme_csr_${domain}"), '')
+  $domain_rep = regsubst(regsubst($domain, '\.', '_', 'G'),'-', '_', 'G')
+  $csr_content = pick_default(getvar("::acme_csr_${domain_rep}"), '')
   if ($csr_content =~ /CERTIFICATE REQUEST/) {
     @@acme::request { $domain:
       csr              => $csr_content,
