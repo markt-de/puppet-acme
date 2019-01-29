@@ -46,9 +46,11 @@ define acme::certificate (
   $dh_param_size    = $::acme::dh_param_size,
   $ocsp_must_staple = $::acme::ocsp_must_staple
 ){
+  validate_string($domain)
+  $domain_dc = downcase($domain)
   validate_integer($dh_param_size)
   validate_string($acme_host)
-  validate_string($domain)
+  validate_string($domain_dc)
   validate_string($use_account)
   validate_string($use_profile)
 
@@ -56,12 +58,12 @@ define acme::certificate (
   require ::acme::setup::common
 
   # Collect and install signed certificates.
-  ::acme::deploy { $domain:
+  ::acme::deploy { $domain_dc:
     acme_host => $acme_host,
   }
 
   # Generate CSRs.
-  ::acme::csr { $domain:
+  ::acme::csr { $domain_dc:
     use_account      => $use_account,
     use_profile      => $use_profile,
     acme_host        => $acme_host,
