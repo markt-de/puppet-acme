@@ -13,5 +13,5 @@ define acme::deploy(
   $domains = split($name, ' ')
   $domain = $domains[0]
 
-  Acme::Deploy::Crt <<| domain == $domain and tag == $acme_host |>>
+  Acme::Deploy::Crt <<| tag == $domain and tag == $acme_host |>>
 }
