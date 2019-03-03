@@ -122,12 +122,17 @@ define acme::request (
 
   # Collect additional options for acme.sh.
   if ($profile['options']['dnssleep']) {
-    $_dnssleep = $profile['options']['dnssleep']
+    $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
   } else {
-    $_dnssleep = $::acme::params::dnssleep
+    $_dnssleep = "--dnssleep ${::acme::params::dnssleep}"
   }
-  $_acme_options = [ "--dnssleep ${_dnssleep}" ]
-  $acme_options = join($_acme_options, ' ')
+
+  if ($profile['options']['challenge_alias']) {
+    $_challenge_alias = "--challenge-alias ${profile['options']['challenge_alias']}"
+    $acme_options = join([$_dnssleep, $_challenge_alias], ' ')
+  } else {
+    $acme_options = $_dnssleep
+  }
 
   File {
     owner   => $user,
@@ -150,6 +155,13 @@ define acme::request (
     ensure  => file,
     content => $csr,
     mode    => '0640',
+  }
+
+  # Create directory to place the crt_file for each domain
+  $crt_dir_domain = "${crt_dir}/${domain}"
+  file { $crt_dir_domain :
+    ensure => directory,
+    mode   => '0755',
   }
 
   # Places where acme.sh stores the resulting certificate.
@@ -258,6 +270,7 @@ define acme::request (
       User[$user],
       Group[$group],
       File[$csr_file],
+      File[$crt_dir_domain],
       File[$account_conf_file],
       Vcsrepo[$acme_install_dir],
     ],
@@ -284,6 +297,7 @@ define acme::request (
       User[$user],
       Group[$group],
       File[$csr_file],
+      File[$crt_dir_domain],
       File[$account_conf_file],
       Vcsrepo[$acme_install_dir],
     ],
