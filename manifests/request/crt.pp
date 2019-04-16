@@ -21,13 +21,13 @@ define acme::request::crt(
 
   $domain_rep = regsubst(regsubst($domain, '\.', '_', 'G'),'-', '_', 'G')
 
-  $crt = pick_default($facts.get("::acme_crt_${domain}"), '')
+  $crt = pick_default($facts.get("acme_crt_${domain_rep}"), '')
   notify { "cert for ${domain} from ${result_crt_file} contents: ${crt}": loglevel => debug }
 
   # special handling for ocsp stuff (binary data)
   $ocsp = base64('encode', file_or_empty_string($ocsp_file))
 
-  $chain = pick_default($facts.get("::acme_ca_${domain}"), '')
+  $chain = pick_default($facts.get("acme_ca_${domain_rep}"), '')
   notify { "chain for ${domain} from ${le_chain_file} contents: ${chain}": loglevel => debug }
 
   if ($crt =~ /BEGIN CERTIFICATE/) {
