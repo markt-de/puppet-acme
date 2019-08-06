@@ -45,6 +45,7 @@ define acme::certificate (
   $acme_host        = $::acme::acme_host,
   $dh_param_size    = $::acme::dh_param_size,
   $ocsp_must_staple = $::acme::ocsp_must_staple
+  $posthook_cmd     = $::acme::params::posthook_cmd,
 ){
   validate_string($domain)
   $domain_dc = downcase($domain)
@@ -57,10 +58,16 @@ define acme::certificate (
   require ::acme::params
   require ::acme::setup::common
 
+  # Post-Hook CMD
+  exec { 'posthook':
+    command     => $posthook_cmd,
+    refreshonly => true,
+  }
+
   # Collect and install signed certificates.
   ::acme::deploy { $domain_dc:
     acme_host => $acme_host,
-  }
+  } ~> Exec['posthook']
 
   # Generate CSRs.
   ::acme::csr { $domain_dc:
