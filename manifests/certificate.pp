@@ -44,8 +44,8 @@ define acme::certificate (
   $letsencrypt_ca   = undef,
   $acme_host        = $::acme::acme_host,
   $dh_param_size    = $::acme::dh_param_size,
-  $ocsp_must_staple = $::acme::ocsp_must_staple
-  $posthook_cmd     = $::acme::params::posthook_cmd,
+  $ocsp_must_staple = $::acme::ocsp_must_staple,
+  $posthook_cmd     = $::acme::params::posthook_cmd
 ){
   validate_string($domain)
   $domain_dc = downcase($domain)
