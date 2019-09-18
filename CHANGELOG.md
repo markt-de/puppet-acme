@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.0.3
-* Allow certificate renewal reqeusts to defer without failing (#8)
+* Allow certificate renewal requests to defer without failing (#8)
 * Adding possibility to provide challenge alias for signing certificates (#11)
 * Fixes for Puppet 5 (#12)
 * Use only lowercase for domains (#14)
