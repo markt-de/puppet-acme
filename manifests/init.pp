@@ -28,6 +28,9 @@
 #   For now it needs to be a puppetmaster, as it needs direct access
 #   to the certificates using functions in puppet.
 #
+# [*posthook_cmd*]
+#   command to run after a certificats hase been changed
+#
 # [*letsencrypt_ca*]
 #   The letsencrypt CA you want to use. For testing and debugging you may want
 #   to set it to 'staging', otherwise 'production' is used and the usual
@@ -60,6 +63,7 @@ class acme (
   $acme_git_url      = $::acme::params::acme_git_url,
   $profiles          = undef,
   $acme_host         = $::acme::params::acme_host,
+  $posthook_cmd      = $::acme::params::posthook_cmd,
   $letsencrypt_ca    = $::acme::params::letsencrypt_ca,
   $letsencrypt_proxy = undef,
   $dh_param_size     = $::acme::params::dh_param_size,
