@@ -29,7 +29,7 @@
 #   to the certificates using functions in puppet.
 #
 # [*posthook_cmd*]
-#   command to run after a certificats hase been changed
+#   command to run after a certificate has been changed
 #
 # [*letsencrypt_ca*]
 #   The letsencrypt CA you want to use. For testing and debugging you may want
