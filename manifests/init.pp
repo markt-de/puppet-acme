@@ -76,6 +76,7 @@ class acme (
   # Is this the host to sign CSRs?
   if ($::fqdn == $acme_host) {
     class { '::acme::setup::puppetmaster' :
+      acme_git_url    => $acme_git_url,
       manage_packages => $manage_packages,
     }
 
