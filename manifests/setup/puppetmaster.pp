@@ -3,6 +3,7 @@
 # setup all necessary directories and groups
 #
 class acme::setup::puppetmaster (
+  $acme_git_url,
   $manage_packages  = $::acme::params::manage_packages,
   $acme_install_dir = $::acme::params::acme_install_dir,
   $csr_dir          = $::acme::params::csr_dir,
