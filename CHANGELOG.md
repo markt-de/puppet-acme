@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## UNRELEASED
+## 1.0.4
 
 ### Fixed
 * Make sure `$acme_git_url` is passed to `acme::setup::puppetmaster` (#18)
+* Fix create dhparam command (#19)
+* Fix facts lookup on Puppet 5 (#22)
 
 ## 1.0.3
 
