@@ -1,6 +1,6 @@
 require 'facter'
 
-crt_domains = Dir['/etc/acme.sh/results/*.pem'].map { |a| a.gsub(%r{\.pem$}, '').gsub(%r{^.*/}, '') }
+crt_domains = Dir['/etc/acme.sh/results/*.pem'].map { |a| File.basename(a, '.pem') }
 
 crt_domains.each do |crt_domain|
   Facter.add('acme_crt_' + crt_domain.gsub(/[.-]/, '_')) do

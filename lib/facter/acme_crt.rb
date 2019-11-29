@@ -1,5 +1,5 @@
 require 'facter'
-crt_domains = Dir['/etc/acme.sh/results/*.pem'].map { |a| a.gsub(%r{\.pem$}, '').gsub(%r{^.*/}, '') }
+crt_domains = Dir['/etc/acme.sh/results/*.pem'].map { |a| File.basename(a, '.pem') }
 
 Facter.add(:acme_crts) do
   setcode do
