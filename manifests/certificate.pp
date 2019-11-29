@@ -59,7 +59,7 @@ define acme::certificate (
   require ::acme::setup::common
 
   # Post-Hook CMD
-  exec { "posthook_$name":
+  exec { "posthook_${name}":
     command     => $posthook_cmd,
     refreshonly => true,
   }
@@ -67,7 +67,7 @@ define acme::certificate (
   # Collect and install signed certificates.
   ::acme::deploy { $domain_dc:
     acme_host => $acme_host,
-  } ~> Exec["posthook_$name"]
+  } ~> Exec["posthook_${name}"]
 
   # Generate CSRs.
   ::acme::csr { $domain_dc:

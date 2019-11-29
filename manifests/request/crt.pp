@@ -30,7 +30,7 @@ define acme::request::crt(
 
   if ($crt =~ /BEGIN CERTIFICATE/) {
     @@acme::deploy::crt { $domain:
-      crt_content       => "$crt\n",
+      crt_content       => "${crt}\n",
       crt_chain_content => $chain,
       ocsp_content      => $ocsp,
       tag               => $::fqdn,
