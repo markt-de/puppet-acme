@@ -19,7 +19,7 @@ define acme::request::crt(
   $le_chain_file = "${acme_dir}/${domain}/ca.cer"
   $le_fullchain_file = "${acme_dir}/${domain}/fullchain.cer"
 
-  $domain_rep = regsubst(regsubst($domain, '\.', '_', 'G'),'-', '_', 'G')
+  $domain_rep = regsubst($domain, /[.-]/, '_', 'G')
 
   $crt = pick_default($facts["acme_crt_${domain_rep}"], '')
   notify { "cert for ${domain} from ${result_crt_file} contents: ${crt}": loglevel => debug }
