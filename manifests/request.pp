@@ -159,10 +159,16 @@ define acme::request (
 
   # Create directory to place the crt_file for each domain
   $crt_dir_domain = "${crt_dir}/${domain}"
-  file { $crt_dir_domain :
-    ensure => directory,
-    mode   => '0755',
-  }
+  ensure_resource('file', $crt_dir_domain, {
+    ensure  => directory,
+    mode    => '0755',
+    owner   => $user,
+    group   => $group,
+    require => [
+      User[$user],
+      Group[$group]
+    ],
+  })
 
   # Places where acme.sh stores the resulting certificate.
   $le_crt_file = "${acme_dir}/${domain}/${domain}.cer"

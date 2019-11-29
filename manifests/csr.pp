@@ -88,13 +88,16 @@ define acme::csr(
     require => Group[$group],
   }
 
-  file { "${crt_dir}/${domain}":
+  ensure_resource('file', "${crt_dir}/${domain}", {
     ensure  => directory,
+    mode    => '0755',
     owner   => $user,
     group   => $group,
-    mode    => '0755',
-    require => Group[$group],
-  }
+    require => [
+      User[$user],
+      Group[$group]
+    ],
+  })
 
   $cnf_file = "${cfg_dir}/${domain}/ssl.cnf"
   $dh_file  = "${cfg_dir}/${domain}/params.dh"
