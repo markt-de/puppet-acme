@@ -124,7 +124,7 @@ define acme::csr(
     user    => 'root',
     group   => $group,
     path    => $path,
-    command => "openssl dhparam -check ${dh_param_size} -out ${dh_file}",
+    command => "openssl dhparam -check -out ${dh_file} ${dh_param_size}",
     unless  => $create_dh_unless,
     timeout => 30*60,
   }
