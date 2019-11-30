@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Make sure `$acme_git_url` is passed to `acme::setup::puppetmaster` (#18)
 * Fix create dhparam command (#19)
 * Fix facts lookup on Puppet 5 (#22)
+* Fix duplicate resource error (#20)
 
 ## 1.0.3
 
