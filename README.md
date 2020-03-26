@@ -70,29 +70,29 @@ each configuration a "profile":
 
 ~~~puppet
     Class { 'acme':
-      accounts => ['certmaster@example.com', 'ssl@example.com']
+      accounts => ['certmaster@example.com', 'ssl@example.com'],
       profiles => {
         nsupdate_example => {
           challengetype => 'dns-01',
-          hook => 'nsupdate',
-          env => {
-            NSUPDATE_SERVER => 'bind.example.com'
+          hook          => 'nsupdate',
+          env           => {
+            'NSUPDATE_SERVER' => 'bind.example.com'
           },
-          options => {
-            dnssleep => 15,
-            nsupdate_id => 'example-key',
+          options       => {
+            dnssleep      => 15,
+            nsupdate_id   => 'example-key',
             nsupdate_type => 'hmac-md5',
-            nsupdate_key => 'abcdefg1234567890',
+            nsupdate_key  => 'abcdefg1234567890',
           }
         }
-        route53_example => {
+        route53_example  => {
           challengetype => 'dns-01',
-          hook => 'aws',
-          env => {
-            AWS_ACCESS_KEY_ID => 'foobar',
+          hook          => 'aws',
+          env           => {
+            AWS_ACCESS_KEY_ID     => 'foobar',
             AWS_SECRET_ACCESS_KEY => 'secret',
           },
-          options => {
+          options       => {
             dnssleep => 15,
           }
         }
