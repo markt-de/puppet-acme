@@ -8,6 +8,7 @@
 1. [Usage](#usage)
     * [Request a certificate](#request-a-certificate)
     * [SAN certificates](#san-certificates)
+    * [DNS alias mode](#dns-alias-mode)
     * [Testing and debugging](#testing-and-debugging)
 1. [Examples](#examples)
     * [Apache](#apache)
@@ -183,6 +184,30 @@ Or use the define directly:
 ~~~
 
 In both examples "test.example.com" will be used as base domain for the CSR.
+
+#### DNS alias mode
+
+In order to use DNS alias mode, specify the domain name either in the `challenge_alias` or `domain_alias` parameter of your profile:
+
+~~~puppet
+    Class { 'acme':
+      accounts => ['certmaster@example.com', 'ssl@example.com'],
+      profiles => {
+        route53_example  => {
+          challengetype   => 'dns-01',
+          challenge_alias => 'alias-example.com',
+          hook            => 'aws',
+          env             => {
+            AWS_ACCESS_KEY_ID     => 'foobar',
+            AWS_SECRET_ACCESS_KEY => 'secret',
+          },
+          options         => {
+            dnssleep => 15,
+          }
+        }
+      }
+    }
+~~~
 
 #### Testing and Debugging
 

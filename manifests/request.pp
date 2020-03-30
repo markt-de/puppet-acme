@@ -127,9 +127,13 @@ define acme::request (
     $_dnssleep = "--dnssleep ${::acme::params::dnssleep}"
   }
 
+  # Use the challenge or domain alias that is specified in the profile
   if ($profile['options']['challenge_alias']) {
-    $_challenge_alias = "--challenge-alias ${profile['options']['challenge_alias']}"
-    $acme_options = join([$_dnssleep, $_challenge_alias], ' ')
+    $_alias_mode = "--challenge-alias ${profile['options']['challenge_alias']}"
+    $acme_options = join([$_dnssleep, $_alias_mode], ' ')
+  } elsif ($profile['options']['domain_alias']) {
+    $_alias_mode = "--domain-alias ${profile['options']['domain_alias']}"
+    $acme_options = join([$_dnssleep, $_alias_mode], ' ')
   } else {
     $acme_options = $_dnssleep
   }
