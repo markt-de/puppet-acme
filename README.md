@@ -202,7 +202,8 @@ In order to use DNS alias mode, specify the domain name either in the `challenge
             AWS_SECRET_ACCESS_KEY => 'secret',
           },
           options         => {
-            dnssleep => 15,
+            challenge_alias => 'alias-example.com',
+            dnssleep        => 15,
           }
         }
       }
