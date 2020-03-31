@@ -33,7 +33,9 @@ define acme::request::crt(
       crt_content       => "${crt}\n",
       crt_chain_content => $chain,
       ocsp_content      => $ocsp,
-      tag               => $::fqdn,
+      # Use the certificate name to tag this resource. This ensures that
+      # the certificate is only installed on the host where it is configured.
+      tag               => $domain,
     }
   }
 }

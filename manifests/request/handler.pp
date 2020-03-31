@@ -195,5 +195,7 @@ class acme::request::handler(
     content => template('acme/get_certificate_ocsp.sh.erb'),
   }
 
+  # Get all certificate signing requests that were tagged to be processed on
+  # this host. Usually you want them all to run on the Puppetserver.
   Acme::Request<<| tag == $::fqdn |>>
 }
