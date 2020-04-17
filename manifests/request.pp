@@ -100,6 +100,7 @@ define acme::request (
   }
 
   # Collect options for "supported" hooks.
+  $_hook_params_pre = {}
   if ($challengetype == 'dns-01') {
     # DNS-01 / nsupdate hook
     if ($hook == 'nsupdate') {
