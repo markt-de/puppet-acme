@@ -200,17 +200,17 @@ define acme::request (
   notify { "acme renew set to ${renew_days} days (or ${renew_seconds} seconds) for domain ${domain}": loglevel => debug }
 
   $le_check_command = join([
-    "/usr/bin/test -f ${le_crt_file}",
+    "test -f ${le_crt_file}",
     '&&',
-    "/usr/bin/openssl x509 -checkend ${renew_seconds} -noout -in ${le_crt_file}",
+    "openssl x509 -checkend ${renew_seconds} -noout -in ${le_crt_file}",
     '&&',
-    '/usr/bin/test',
+    'test',
     '$(',
-    "/usr/bin/stat -c '%Y' ${le_crt_file}",
+    "stat -c '%Y' ${le_crt_file}",
     ')',
     '-gt',
     '$(',
-    "/usr/bin/stat -c '%Y' ${csr_file}",
+    "stat -c '%Y' ${csr_file}",
     ')',
   ], ' ')
 
@@ -282,7 +282,7 @@ define acme::request (
     environment => $hook_params,
     command     => $le_command_signcsr,
     # Run this exec only if no old cert can be found.
-    onlyif      => "/usr/bin/test ! -f ${le_crt_file}",
+    onlyif      => "test ! -f ${le_crt_file}",
     require     => [
       User[$user],
       Group[$group],
@@ -309,7 +309,7 @@ define acme::request (
     command     => $le_command_renew,
     returns     => [ 0, 2, ],
     # Run this exec only if an old cert can be found.
-    onlyif      => "/usr/bin/test -f ${le_crt_file}",
+    onlyif      => "test -f ${le_crt_file}",
     require     => [
       User[$user],
       Group[$group],

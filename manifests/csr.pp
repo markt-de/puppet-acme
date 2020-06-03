@@ -106,17 +106,17 @@ define acme::csr(
   $crt_file = "${crt_dir}/${domain}/cert.pem"
 
   $create_dh_unless = join([
-    '/usr/bin/test',
+    'test',
     '-f',
     "'${dh_file}'",
     '&&',
-    '/usr/bin/test',
+    'test',
     '$(',
-    "/usr/bin/stat -c '%Y' ${dh_file}",
+    "stat -c '%Y' ${dh_file}",
     ')',
     '-gt',
     '$(',
-    "/bin/date --date='1 month ago' '+%s'",
+    "date --date='1 month ago' '+%s'",
     ')',
   ], ' ')
 

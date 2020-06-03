@@ -87,7 +87,7 @@ class acme::request::handler(
         "--accountconf ${account_conf_file}",
         '>/dev/null',
         '&&',
-        "/usr/bin/touch ${account_created_file}",
+        "touch ${account_created_file}",
       ], ' ')
 
       # Run acme.sh to create the account key.
@@ -115,7 +115,7 @@ class acme::request::handler(
         "--accountconf ${account_conf_file}",
         '>/dev/null',
         '&&',
-        "/usr/bin/touch ${account_registered_file}",
+        "touch ${account_registered_file}",
       ], ' ')
 
       # Run acme.sh to register the account.

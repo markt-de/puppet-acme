@@ -58,9 +58,12 @@ define acme::certificate (
   require ::acme::params
   require ::acme::setup::common
 
+  $path = $::acme::params::path
+
   # Post-Hook CMD
   exec { "posthook_${name}":
     command     => $posthook_cmd,
+    path        => $path,
     refreshonly => true,
   }
 

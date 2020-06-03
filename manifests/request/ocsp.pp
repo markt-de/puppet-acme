@@ -33,19 +33,19 @@ define acme::request::ocsp(
   ], ' ')
 
   $ocsp_onlyif = join([
-    '/usr/bin/test',
+    'test',
     '-f',
     "'${crt_file}'",
   ], ' ')
 
   $ocsp_unless = join([
-    '/usr/bin/test',
+    'test',
     '-f',
     "'${ocsp_file}'",
     '&&',
-    '/usr/bin/test',
+    'test',
     '$(',
-    "/usr/bin/stat -c '%Y' ${ocsp_file}",
+    "stat -c '%Y' ${ocsp_file}",
     ')',
     '-gt',
     '$(',
