@@ -35,7 +35,7 @@ class acme::params {
   $root_group = 'root'
   $shell = '/bin/bash'
   $path = '/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin'
-  $posthook_cmd = '/bin/true'
+  $posthook_cmd = 'true'
 
   if defined('$puppetmaster') {
     $acme_host = $::puppetmaster

@@ -49,7 +49,7 @@ define acme::request::ocsp(
     ')',
     '-gt',
     '$(',
-    "/bin/date --date='1 day ago' '+%s'",
+    "date --date='1 day ago' '+%s'",
     ')',
   ], ' ')
 
