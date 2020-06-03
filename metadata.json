@@ -37,6 +37,9 @@
     },
     {
       "operatingsystem": "CentOS"
+    },
+    {
+      "operatingsystem": "FreeBSD"
     }
   ],
   "requirements": [
