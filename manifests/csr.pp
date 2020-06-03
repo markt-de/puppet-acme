@@ -59,6 +59,7 @@ define acme::csr(
   $key_dir = $::acme::params::key_dir
   $crt_dir = $::acme::params::crt_dir
   $path = $::acme::params::path
+  $date_expression = $::acme::params::date_expression
 
   # Handle certificates with multiple domain names (SAN).
   $domains = split($domain_list, ' ')
@@ -116,7 +117,7 @@ define acme::csr(
     ')',
     '-gt',
     '$(',
-    "date --date='1 month ago' '+%s'",
+    $date_expression,
     ')',
   ], ' ')
 

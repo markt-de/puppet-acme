@@ -37,6 +37,12 @@ class acme::params {
   $path = '/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin'
   $posthook_cmd = 'true'
 
+  if ( $::kernel == 'FreeBSD' ) {
+    $date_expression = "date -v-1d '+%s'"
+  } else {
+    $date_expression = "date --date='1 day ago' '+%s'"
+  }
+
   if defined('$puppetmaster') {
     $acme_host = $::puppetmaster
   } elsif defined('$servername') {

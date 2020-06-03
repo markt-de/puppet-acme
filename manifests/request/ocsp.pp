@@ -15,6 +15,7 @@ define acme::request::ocsp(
   $log_dir = $::acme::params::log_dir
   $results_dir = $::acme::params::results_dir
   $path = $::acme::params::path
+  $date_expression = $::acme::params::date_expression
 
   # acme.sh configuration
   $acmecmd = $::acme::params::acmecmd
@@ -49,7 +50,7 @@ define acme::request::ocsp(
     ')',
     '-gt',
     '$(',
-    "date --date='1 day ago' '+%s'",
+    $date_expression,
     ')',
   ], ' ')
 
