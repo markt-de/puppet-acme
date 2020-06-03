@@ -115,7 +115,14 @@ define acme::request (
   }
   # Merge those pre-defined hook options with user-defined hook options.
   # NOTE: We intentionally use Hashes so that *values* can be overriden.
-  $_hook_params = deep_merge($_hook_params_pre, $profile['env'])
+  if ($_hook_params_pre =~ Hash) {
+    $_hook_params = deep_merge($_hook_params_pre, $profile['env'])
+  } elsif ($profile and $profile['env'] =~ Hash) {
+    $_hook_params = $profile['env']
+  } else {
+    $_hook_params = {}
+  }
+
   # Convert the Hash to an Array, required for Exec's "environment" attribute.
   $hook_params = $_hook_params.map |$key,$value| { "${key}=${value}" }
   notify { "hook params for domain ${domain}: ${hook_params}": loglevel => debug }
