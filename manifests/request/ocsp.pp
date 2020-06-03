@@ -16,6 +16,7 @@ define acme::request::ocsp(
   $results_dir = $::acme::params::results_dir
   $path = $::acme::params::path
   $date_expression = $::acme::params::date_expression
+  $stat_expression = $::acme::params::stat_expression
 
   # acme.sh configuration
   $acmecmd = $::acme::params::acmecmd
@@ -46,7 +47,7 @@ define acme::request::ocsp(
     '&&',
     'test',
     '$(',
-    "stat -c '%Y' ${ocsp_file}",
+    "${stat_expression} ${ocsp_file}",
     ')',
     '-gt',
     '$(',

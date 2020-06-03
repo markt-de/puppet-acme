@@ -44,6 +44,7 @@ define acme::request (
   $results_dir = $::acme::params::results_dir
   $acme_install_dir = $::acme::params::acme_install_dir
   $path = $::acme::params::path
+  $stat_expression = $::acme::params::stat_expression
 
   # acme.sh configuration
   $acmecmd = $::acme::params::acmecmd
@@ -206,11 +207,11 @@ define acme::request (
     '&&',
     'test',
     '$(',
-    "stat -c '%Y' ${le_crt_file}",
+    "${stat_expression} ${le_crt_file}",
     ')',
     '-gt',
     '$(',
-    "stat -c '%Y' ${csr_file}",
+    "${stat_expression} ${csr_file}",
     ')',
   ], ' ')
 

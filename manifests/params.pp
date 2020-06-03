@@ -39,8 +39,10 @@ class acme::params {
 
   if ( $::kernel == 'FreeBSD' ) {
     $date_expression = "date -v-1d '+%s'"
+    $stat_expression = "stat -f '%m'"
   } else {
     $date_expression = "date --date='1 day ago' '+%s'"
+    $stat_expression = "stat -c '%Y'"
   }
 
   if defined('$puppetmaster') {

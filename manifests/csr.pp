@@ -60,6 +60,7 @@ define acme::csr(
   $crt_dir = $::acme::params::crt_dir
   $path = $::acme::params::path
   $date_expression = $::acme::params::date_expression
+  $stat_expression = $::acme::params::stat_expression
 
   # Handle certificates with multiple domain names (SAN).
   $domains = split($domain_list, ' ')
@@ -113,7 +114,7 @@ define acme::csr(
     '&&',
     'test',
     '$(',
-    "stat -c '%Y' ${dh_file}",
+    "${stat_expression} ${dh_file}",
     ')',
     '-gt',
     '$(',
