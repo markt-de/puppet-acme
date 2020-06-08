@@ -40,7 +40,7 @@ define acme::certificate (
   $use_account,
   $use_profile,
   $domain           = $name,
-  $renew_days       = $::acme::params::renew_days,
+  $renew_days       = $::acme::renew_days,
   $letsencrypt_ca   = undef,
   $acme_host        = $::acme::acme_host,
   $dh_param_size    = $::acme::dh_param_size,
@@ -55,10 +55,9 @@ define acme::certificate (
   validate_string($use_account)
   validate_string($use_profile)
 
-  require ::acme::params
   require ::acme::setup::common
 
-  $path = $::acme::params::path
+  $path = $::acme::path
 
   # Post-Hook CMD
   exec { "posthook_${name}":

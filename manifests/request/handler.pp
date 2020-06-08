@@ -10,29 +10,28 @@
 #   Defaults to the upstream github url.
 #
 class acme::request::handler(
-  $letsencrypt_proxy,
-  $accounts,
-  $profiles,
-  $letsencrypt_ca   = $::acme::params::letsencrypt_ca,
+  $letsencrypt_proxy = $::acme::letsencrypt_proxy,
+  $accounts         = $::acme::accounts,
+  $profiles         = $::acme::profiles,
+  $letsencrypt_ca   = $::acme::letsencrypt_ca,
   # acme.sh
-  $user             = $::acme::params::user,
-  $group            = $::acme::params::group,
-  $root_group       = $::acme::params::root_group,
-  $acme_git_url,
-  $acmecmd          = $::acme::params::acmecmd,
-  $acmelog          = $::acme::params::acmelog,
-  $acme_install_dir = $::acme::params::acme_install_dir,
-  $base_dir         = $::acme::params::base_dir,
-  $acme_dir         = $::acme::params::acme_dir,
-  $acct_dir         = $::acme::params::acct_dir,
-  $cfg_dir          = $::acme::params::cfg_dir,
-  $path             = $::acme::params::path,
-  $ocsp_request     = $::acme::params::ocsp_request
-) inherits ::acme::params {
+  $user             = $::acme::user,
+  $group            = $::acme::group,
+  $acme_git_url     = $::acme::acme_git_url,
+  $acmecmd          = $::acme::acmecmd,
+  $acmelog          = $::acme::acmelog,
+  $acme_install_dir = $::acme::acme_install_dir,
+  $base_dir         = $::acme::base_dir,
+  $acme_dir         = $::acme::acme_dir,
+  $acct_dir         = $::acme::acct_dir,
+  $cfg_dir          = $::acme::cfg_dir,
+  $path             = $::acme::path,
+  $ocsp_request     = $::acme::ocsp_request
+) {
 
   File {
     owner => 'root',
-    group => $root_group,
+    group => 0,
   }
 
   # Setup and register Let's Encrypt accounts.

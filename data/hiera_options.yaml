@@ -1,0 +1,5 @@
+---
+lookup_options:
+  "^acme::.*":
+    merge:
+      strategy: deep

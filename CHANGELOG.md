@@ -10,8 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Add support for FreeBSD ([#25], this time for real)
 
 ### Changed
-* Use Posix Shell instead of Bash
+* Migrate default values from `params.pp` to module data
 * Convert templates to EPP
+* Use Posix Shell instead of Bash
+
+### Fixed
+* Add missing default value for `acme::dnssleep`
 
 ## [1.0.5] - 2020-06-03
 

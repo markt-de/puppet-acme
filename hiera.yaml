@@ -1,21 +1,28 @@
 ---
 version: 5
 
-defaults:  # Used for any hierarchy level that omits these keys.
-  datadir: data         # This path is relative to hiera.yaml's directory.
-  data_hash: yaml_data  # Use the built-in YAML backend.
+defaults:
+  datadir: 'data'
+  data_hash: 'yaml_data'
 
 hierarchy:
-  - name: "osfamily/major release"
-    paths:
-      - "os/%{facts.os.family}/%{facts.os.release.major}.yaml"
-        # Used for Solaris
-      - "os/%{facts.os.family}/%{facts.kernelrelease}.yaml"
-        # Used to distinguish between Debian and Ubuntu
-      - "os/%{facts.os.name}/%{facts.os.release.major}.yaml"
-  - name: "osfamily"
-    paths:
-      - "os/%{facts.os.family}.yaml"
-      - "os/%{facts.os.name}.yaml"
+  - name: 'Set important hiera options'
+    path: "hiera_options.yaml"
+
+  - name: 'Distribution Full Version'
+    path: '%{facts.os.name}-%{facts.os.release.full}.yaml'
+
+  - name: 'Distribution Major Version'
+    path: '%{facts.os.name}-%{facts.os.release.major}.yaml'
+
+  - name: 'Distribution Name'
+    path: '%{facts.os.name}.yaml'
+
+  - name: 'OS Family'
+    path: '%{facts.os.family}-family.yaml'
+
+  - name: 'OS Kernel'
+    path: '%{facts.kernel}.yaml'
+
   - name: 'common'
     path: 'common.yaml'

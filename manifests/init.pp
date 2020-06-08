@@ -58,18 +58,19 @@
 #   }
 #
 class acme (
-  $accounts          = [],
-  $certificates      = {},
-  $acme_git_url      = $::acme::params::acme_git_url,
-  $profiles          = undef,
-  $acme_host         = $::acme::params::acme_host,
-  $posthook_cmd      = $::acme::params::posthook_cmd,
-  $letsencrypt_ca    = $::acme::params::letsencrypt_ca,
-  $letsencrypt_proxy = undef,
-  $dh_param_size     = $::acme::params::dh_param_size,
-  $ocsp_must_staple  = $::acme::params::ocsp_must_staple,
-  $manage_packages   = $::acme::params::manage_packages,
-) inherits ::acme::params {
+  Array $accounts,
+  String $acme_git_url,
+  String $acme_host,
+  Hash $certificates,
+  Integer $dh_param_size,
+  Enum['production','staging'] $letsencrypt_ca,
+  Boolean $manage_packages,
+  Boolean $ocsp_must_staple,
+  String $posthook_cmd,
+  # optional parameters
+  Optional[String] $letsencrypt_proxy = undef,
+  Optional[Hash] $profiles = undef
+) {
 
   require ::acme::setup::common
 

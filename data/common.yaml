@@ -1,1 +1,43 @@
 ---
+# acme.sh config
+acme::acme_git_url: 'https://github.com/Neilpang/acme.sh.git'
+acme::acme_install_dir: '/opt/acme.sh'
+acme::acmecmd: "%{lookup('acme::acme_install_dir')}/acme.sh"
+# NOTE: $base_dir must NOT be changed, it's required by our custom fact.
+acme::base_dir: '/etc/acme.sh'
+acme::acme_dir: "%{lookup('acme::base_dir')}/home" # working directory for acme.sh
+acme::acct_dir: "%{lookup('acme::base_dir')}/accounts"
+acme::cfg_dir: "%{lookup('acme::base_dir')}/configs"
+acme::key_dir: "%{lookup('acme::base_dir')}/keys"
+acme::crt_dir: "%{lookup('acme::base_dir')}/certs"
+acme::csr_dir: "%{lookup('acme::base_dir')}/csrs" # only used on $acme_host
+acme::results_dir: "%{lookup('acme::base_dir')}/results" # only used on $acme_host
+acme::log_dir: '/var/log/acme.sh'
+acme::acmelog: "%{lookup('acme::log_dir')}/acme.log"
+acme::dnssleep: 60
+
+# Let's Encrypt defaults
+acme::letsencrypt_ca: 'production'
+acme::letsencrypt_proxy: ~
+acme::renew_days: 30
+acme::ocsp_request: "%{lookup('acme::base_dir')}/get_certificate_ocsp.sh"
+
+# Cert defaults
+acme::dh_param_size: 2048
+acme::ocsp_must_staple: true
+
+# Module defaults
+acme::acme_host: "%{::servername}"
+acme::date_expression: "date --date='1 day ago' '+%s'"
+acme::group: 'acme'
+acme::manage_packages: true
+acme::path: '/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin'
+acme::posthook_cmd: 'true'
+acme::shell: '/bin/sh'
+acme::stat_expression: "stat -c '%Y'"
+acme::user: 'acme'
+
+# User data
+acme::accounts: []
+acme::certificates: {}
+acme::profiles: ~

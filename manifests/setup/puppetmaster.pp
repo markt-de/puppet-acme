@@ -4,14 +4,14 @@
 #
 class acme::setup::puppetmaster (
   $acme_git_url,
-  $manage_packages  = $::acme::params::manage_packages,
-  $acme_install_dir = $::acme::params::acme_install_dir,
-  $csr_dir          = $::acme::params::csr_dir,
-  $log_dir          = $::acme::params::log_dir,
-  $results_dir      = $::acme::params::results_dir,
-  $user             = $::acme::params::user,
-  $group            = $::acme::params::group,
-) inherits ::acme::params{
+  $manage_packages  = $::acme::manage_packages,
+  $acme_install_dir = $::acme::acme_install_dir,
+  $csr_dir          = $::acme::csr_dir,
+  $log_dir          = $::acme::log_dir,
+  $results_dir      = $::acme::results_dir,
+  $user             = $::acme::user,
+  $group            = $::acme::group,
+) {
   File { $acme_install_dir:
     ensure => directory,
     mode   => '0755',

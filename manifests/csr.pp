@@ -21,7 +21,7 @@ define acme::csr(
   $acme_host,
   $use_account,
   $use_profile,
-  $renew_days       = $::acme::params::renew_days,
+  $renew_days       = $::acme::renew_days,
   $letsencrypt_ca   = undef,
   $domain_list      = $name,
   $country          = undef,
@@ -36,8 +36,6 @@ define acme::csr(
   $dh_param_size    = 2048,
   $ocsp_must_staple = true,
 ) {
-  require ::acme::params
-
   validate_string($acme_host)
   validate_string($use_account)
   validate_string($use_profile)
@@ -51,16 +49,16 @@ define acme::csr(
   validate_string($email)
   validate_integer($dh_param_size)
 
-  $user = $::acme::params::user
-  $group = $::acme::params::group
+  $user = $::acme::user
+  $group = $::acme::group
 
-  $base_dir = $::acme::params::base_dir
-  $cfg_dir = $::acme::params::cfg_dir
-  $key_dir = $::acme::params::key_dir
-  $crt_dir = $::acme::params::crt_dir
-  $path = $::acme::params::path
-  $date_expression = $::acme::params::date_expression
-  $stat_expression = $::acme::params::stat_expression
+  $base_dir = $::acme::base_dir
+  $cfg_dir = $::acme::cfg_dir
+  $key_dir = $::acme::key_dir
+  $crt_dir = $::acme::crt_dir
+  $path = $::acme::path
+  $date_expression = $::acme::date_expression
+  $stat_expression = $::acme::stat_expression
 
   # Handle certificates with multiple domain names (SAN).
   $domains = split($domain_list, ' ')

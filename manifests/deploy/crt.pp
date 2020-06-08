@@ -19,14 +19,12 @@ define acme::deploy::crt(
   $ocsp_content,
   $domain = $name
 ) {
-  require ::acme::params
+  $cfg_dir = $::acme::cfg_dir
+  $crt_dir = $::acme::crt_dir
+  $key_dir = $::acme::key_dir
 
-  $cfg_dir = $::acme::params::cfg_dir
-  $crt_dir = $::acme::params::crt_dir
-  $key_dir = $::acme::params::key_dir
-
-  $user = $::acme::params::user
-  $group = $::acme::params::group
+  $user = $::acme::user
+  $group = $::acme::group
 
   $crt = "${crt_dir}/${domain}/cert.pem"
   $ocsp = "${crt_dir}/${domain}/cert.ocsp"

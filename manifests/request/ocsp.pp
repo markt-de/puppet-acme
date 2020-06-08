@@ -5,27 +5,25 @@
 define acme::request::ocsp(
   $domain = $name
 ) {
-  require ::acme::params
-
-  $user = $::acme::params::user
-  $group = $::acme::params::group
-  $base_dir = $::acme::params::base_dir
-  $acme_dir = $::acme::params::acme_dir
-  $acct_dir = $::acme::params::acct_dir
-  $log_dir = $::acme::params::log_dir
-  $results_dir = $::acme::params::results_dir
-  $path = $::acme::params::path
-  $date_expression = $::acme::params::date_expression
-  $stat_expression = $::acme::params::stat_expression
+  $user = $::acme::user
+  $group = $::acme::group
+  $base_dir = $::acme::base_dir
+  $acme_dir = $::acme::acme_dir
+  $acct_dir = $::acme::acct_dir
+  $log_dir = $::acme::log_dir
+  $results_dir = $::acme::results_dir
+  $path = $::acme::path
+  $date_expression = $::acme::date_expression
+  $stat_expression = $::acme::stat_expression
 
   # acme.sh configuration
-  $acmecmd = $::acme::params::acmecmd
-  $acmelog = $::acme::params::acmelog
+  $acmecmd = $::acme::acmecmd
+  $acmelog = $::acme::acmelog
   $crt_file = "${results_dir}/${domain}.pem"
   $chain_file = "${results_dir}/${domain}.ca"
   $ocsp_file = "${results_dir}/${domain}.ocsp"
 
-  $ocsp_request = $::acme::params::ocsp_request
+  $ocsp_request = $::acme::ocsp_request
 
   $ocsp_command = join([
     $ocsp_request,

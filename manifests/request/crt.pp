@@ -6,12 +6,10 @@
 define acme::request::crt(
   $domain = $name
 ) {
-  require ::acme::params
-
   # acme.sh configuration
-  $acme_dir = $::acme::params::acme_dir
-  $crt_dir = $::acme::params::crt_dir
-  $results_dir = $::acme::params::results_dir
+  $acme_dir = $::acme::acme_dir
+  $crt_dir = $::acme::crt_dir
+  $results_dir = $::acme::results_dir
   $ocsp_file = "${results_dir}/${domain}.ocsp"
 
   # Places where acme.sh stores the resulting certificate.

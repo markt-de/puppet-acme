@@ -3,16 +3,16 @@
 # setup all necessary directories and groups
 #
 class acme::setup::common (
-  $base_dir = $::acme::params::base_dir,
-  $acme_dir = $::acme::params::acme_dir,
-  $crt_dir  = $::acme::params::crt_dir,
-  $cfg_dir  = $::acme::params::cfg_dir,
-  $key_dir  = $::acme::params::key_dir,
-  $acct_dir = $::acme::params::acct_dir,
-  $user     = $::acme::params::user,
-  $group    = $::acme::params::group,
-  $shell    = $::acme::params::shell,
-) inherits ::acme::params {
+  $base_dir = $::acme::base_dir,
+  $acme_dir = $::acme::acme_dir,
+  $crt_dir  = $::acme::crt_dir,
+  $cfg_dir  = $::acme::cfg_dir,
+  $key_dir  = $::acme::key_dir,
+  $acct_dir = $::acme::acct_dir,
+  $user     = $::acme::user,
+  $group    = $::acme::group,
+  $shell    = $::acme::shell,
+) {
 
   User { $user:
     gid        => $group,

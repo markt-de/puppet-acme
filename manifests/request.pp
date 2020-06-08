@@ -24,31 +24,29 @@ define acme::request (
   $csr,
   $use_account,
   $use_profile,
-  $renew_days       = $::acme::params::renew_days,
+  $renew_days       = $::acme::renew_days,
   $letsencrypt_ca   = undef,
   $domain           = $name,
   $altnames         = undef,
   $ocsp_must_staple = true,
 ) {
-  require ::acme::params
-
-  $user = $::acme::params::user
-  $group = $::acme::params::group
-  $base_dir = $::acme::params::base_dir
-  $acme_dir = $::acme::params::acme_dir
-  $cfg_dir = $::acme::params::cfg_dir
-  $crt_dir = $::acme::params::crt_dir
-  $csr_dir = $::acme::params::csr_dir
-  $acct_dir = $::acme::params::acct_dir
-  $log_dir = $::acme::params::log_dir
-  $results_dir = $::acme::params::results_dir
-  $acme_install_dir = $::acme::params::acme_install_dir
-  $path = $::acme::params::path
-  $stat_expression = $::acme::params::stat_expression
+  $user = $::acme::user
+  $group = $::acme::group
+  $base_dir = $::acme::base_dir
+  $acme_dir = $::acme::acme_dir
+  $cfg_dir = $::acme::cfg_dir
+  $crt_dir = $::acme::crt_dir
+  $csr_dir = $::acme::csr_dir
+  $acct_dir = $::acme::acct_dir
+  $log_dir = $::acme::log_dir
+  $results_dir = $::acme::results_dir
+  $acme_install_dir = $::acme::acme_install_dir
+  $path = $::acme::path
+  $stat_expression = $::acme::stat_expression
 
   # acme.sh configuration
-  $acmecmd = $::acme::params::acmecmd
-  $acmelog = $::acme::params::acmelog
+  $acmecmd = $::acme::acmecmd
+  $acmelog = $::acme::acmelog
   $csr_file = "${csr_dir}/${domain}/cert.csr"
   $crt_file = "${crt_dir}/${domain}/cert.pem"
   $chain_file = "${crt_dir}/${domain}/chain.pem"
@@ -132,7 +130,7 @@ define acme::request (
   if ($profile['options']['dnssleep']) {
     $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
   } else {
-    $_dnssleep = "--dnssleep ${::acme::params::dnssleep}"
+    $_dnssleep = "--dnssleep ${::acme::dnssleep}"
   }
 
   # Use the challenge or domain alias that is specified in the profile
