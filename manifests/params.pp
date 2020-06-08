@@ -33,7 +33,7 @@ class acme::params {
   $user = 'acme'
   $group = 'acme'
   $root_group = 'root'
-  $shell = '/bin/bash'
+  $shell = '/bin/sh'
   $path = '/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin'
   $posthook_cmd = 'true'
 
