@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+* Add support for FreeBSD ([#25], this time for real)
+
 ### Changed
+* Use Posix Shell instead of Bash
 * Convert templates to EPP
 
 ## [1.0.5] - 2020-06-03
@@ -65,6 +69,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#25]: https://github.com/fraenki/puppet-acme/pull/25
 [#24]: https://github.com/fraenki/puppet-acme/pull/24
 [#22]: https://github.com/fraenki/puppet-acme/pull/22
 [#20]: https://github.com/fraenki/puppet-acme/pull/20
