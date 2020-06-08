@@ -1,34 +1,33 @@
 #!/bin/sh
 # File managed with puppet
 
-export PATH="<%= @acme::params::path -%>"
+export PATH="<%= $acme::params::path -%>"
 
-<% if @letsencrypt_proxy -%>
-export http_proxy="<%= @letsencrypt_proxy -%>"
-export https_proxy="<%= @letsencrypt_proxy -%>"
-<% end -%>
+<% if $letsencrypt_proxy { -%>
+export http_proxy="<%= $letsencrypt_proxy -%>"
+export https_proxy="<%= $letsencrypt_proxy -%>"
+<% } -%>
 
 if [ $# -lt 3 ]; then exit 255; fi
 
 OCSPURL=$(openssl x509 -in "${1}" -noout -text | grep "OCSP - URI:" | cut -d: -f2,3 )
 OCSPHOST=$(echo $OCSPURL | sed 's,^.*://\([^/]*\).*,\1,')
 
-<% if @letsencrypt_proxy -%>
+<% if $letsencrypt_proxy { -%>
 openssl ocsp -noverify -issuer "${2}" \
     -cert "${1}" \
-    -host "<%= @letsencrypt_proxy -%>" \
+    -host "<%= $letsencrypt_proxy -%>" \
     -path "${OCSPURL}" -respout "${3}.new"
-<% else -%>
+<% } else { -%>
 openssl ocsp -noverify -issuer "${2}" \
     -cert "${1}" \
-<% if @openssl_before_110 -%>
+<% if $openssl_before_110 { -%>
     -header Host "${OCSPHOST}" \
-<% else -%>
+<% } else { -%>
     -header Host="${OCSPHOST}" \
-<% end -%>
+<% } -%>
     -url "${OCSPURL}" -respout "${3}.new"
-
-<% end -%>
+<% } -%>
 
 mv "${3}.new" "${3}"
 

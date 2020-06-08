@@ -147,7 +147,7 @@ define acme::csr(
     owner   => 'root',
     group   => $group,
     mode    => '0644',
-    content => template('acme/cert.cnf.erb'),
+    content => epp('acme/cert.cnf.epp'),
   }
 
   ssl_pkey { $key_file:

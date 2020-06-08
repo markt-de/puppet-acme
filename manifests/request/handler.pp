@@ -61,7 +61,7 @@ class acme::request::handler(
         owner   => $user,
         group   => $group,
         mode    => '0640',
-        content => template('acme/account.conf.erb'),
+        content => epp("${module_name}/account.conf.epp"),
         require => File[$account_dir],
       }
 
@@ -177,7 +177,7 @@ class acme::request::handler(
           owner   => $user,
           group   => $group,
           mode    => '0600',
-          content => template("acme/hooks/${hook}.erb"),
+          content => epp("acme/hooks/${hook}.epp"),
           require => File[$hook_dir],
         }
       }
