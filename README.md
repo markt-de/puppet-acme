@@ -85,7 +85,7 @@ each configuration a "profile":
             nsupdate_type => 'hmac-md5',
             nsupdate_key  => 'abcdefg1234567890',
           }
-        }
+        },
         route53_example  => {
           challengetype => 'dns-01',
           hook          => 'aws',
@@ -145,10 +145,10 @@ to your Puppet Server for signing.
 The certificate is put on your node after some time.
 
 Instead of specifying the domains as parameter to the `acme` class, it is
-possible to call the `acme::certificate` define directly:
+possible to use the `acme::certificate` defined type directly:
 
 ~~~puppet
-    ::acme::certificate { 'test.example.com':
+    acme::certificate { 'test.example.com':
       use_profile    => 'route53_example',
       use_account    => 'ssl@example.com',
       letsencrypt_ca => 'staging',
@@ -176,7 +176,7 @@ For example:
 Or use the define directly:
 
 ~~~puppet
-    ::acme::certificate { 'test.example.com foo.example.com bar.example.com':
+    acme::certificate { 'test.example.com foo.example.com bar.example.com':
       use_profile    => 'route53_example',
       use_account    => 'ssl@example.com',
       letsencrypt_ca => 'staging',
@@ -232,19 +232,19 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
 
 ~~~puppet
     # request a certificate from acme
-    ::acme::certificate { $::fqdn:
+    acme::certificate { $::fqdn:
       use_profile    => 'nsupdate_example',
       use_account    => 'certmaster@example.com',
       letsencrypt_ca => 'production',
       # restart apache when the certificate is signed (or renewed)
-      notify         => Class['::apache::service'],
+      notify         => Class['apache::service'],
     }
 
     # get configuration from acme::params
-    include ::acme::params
-    $base_dir = $::acme::params::base_dir
-    $crt_dir  = $::acme::params::crt_dir
-    $key_dir  = $::acme::params::key_dir
+    include acme::params
+    $base_dir = $acme::params::base_dir
+    $crt_dir  = $acme::params::crt_dir
+    $key_dir  = $acme::params::key_dir
 
     # where acme stores our certificate and key files
     $my_key = "${key_dir}/${::fqdn}/private.key"
@@ -270,7 +270,7 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
       mode      => '0644',
       source    => $my_cert,
       subscribe => Acme::Certificate[$::fqdn],
-      notify    => Class['::apache::service'],
+      notify    => Class['apache::service'],
     }
     file { "/etc/ssl/${::fqdn}.key":
       ensure    => file,
@@ -279,7 +279,7 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
       mode      => '0640',
       source    => $my_key,
       subscribe => Acme::Certificate[$::fqdn],
-      notify    => Class['::apache::service'],
+      notify    => Class['apache::service'],
     }
     file { "/etc/ssl/${::fqdn}.ca":
       ensure    => file,
@@ -288,7 +288,7 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
       mode      => '0644',
       source    => $my_chain,
       subscribe => Acme::Certificate[$::fqdn],
-      notify    => Class['::apache::service'],
+      notify    => Class['apache::service'],
     }
 ~~~
 
