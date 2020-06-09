@@ -7,8 +7,8 @@
 # [*acme_host*]
 #   Host the certificates were signed on
 #
-define acme::deploy(
-    $acme_host,
+define acme::deploy (
+  String $acme_host,
 ) {
   $domains = split($name, ' ')
   $domain = $domains[0]

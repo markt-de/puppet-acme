@@ -3,13 +3,13 @@
 # Take certificates from facter and export a ressource
 # with the certificate content.
 #
-define acme::request::crt(
-  $domain = $name
+define acme::request::crt (
+  String $domain = $name
 ) {
   # acme.sh configuration
-  $acme_dir = $::acme::acme_dir
-  $crt_dir = $::acme::crt_dir
-  $results_dir = $::acme::results_dir
+  $acme_dir = $acme::acme_dir
+  $crt_dir = $acme::crt_dir
+  $results_dir = $acme::results_dir
   $ocsp_file = "${results_dir}/${domain}.ocsp"
 
   # Places where acme.sh stores the resulting certificate.

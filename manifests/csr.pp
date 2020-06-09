@@ -17,48 +17,35 @@
 #   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
 #   Encrypt CA that is configured on $acme_host.
 #
-define acme::csr(
-  $acme_host,
-  $use_account,
-  $use_profile,
-  $renew_days       = $::acme::renew_days,
-  $letsencrypt_ca   = undef,
-  $domain_list      = $name,
-  $country          = undef,
-  $state            = undef,
-  $locality         = undef,
-  $organization     = undef,
-  $unit             = undef,
-  $email            = undef,
-  $password         = undef,
-  $ensure           = 'present',
-  $force            = true,
-  $dh_param_size    = 2048,
-  $ocsp_must_staple = true,
+define acme::csr (
+  String $acme_host,
+  String $use_account,
+  String $use_profile,
+  Integer $dh_param_size = 2048,
+  String $domain_list = $name,
+  Enum['present','absent'] $ensure = 'present',
+  Boolean $force = true,
+  Boolean $ocsp_must_staple = true,
+  Integer $renew_days = $acme::renew_days,
+  Optional[String] $letsencrypt_ca = undef,
+  Optional[String] $country = undef,
+  Optional[String] $state = undef,
+  Optional[String] $locality = undef,
+  Optional[String] $organization = undef,
+  Optional[String] $unit = undef,
+  Optional[String] $email = undef,
+  Optional[String] $password = undef,
 ) {
-  validate_string($acme_host)
-  validate_string($use_account)
-  validate_string($use_profile)
-  validate_string($country)
-  validate_string($organization)
-  validate_string($domain_list)
-  validate_string($ensure)
-  validate_string($state)
-  validate_string($locality)
-  validate_string($unit)
-  validate_string($email)
-  validate_integer($dh_param_size)
+  $user = $acme::user
+  $group = $acme::group
 
-  $user = $::acme::user
-  $group = $::acme::group
-
-  $base_dir = $::acme::base_dir
-  $cfg_dir = $::acme::cfg_dir
-  $key_dir = $::acme::key_dir
-  $crt_dir = $::acme::crt_dir
-  $path = $::acme::path
-  $date_expression = $::acme::date_expression
-  $stat_expression = $::acme::stat_expression
+  $base_dir = $acme::base_dir
+  $cfg_dir = $acme::cfg_dir
+  $key_dir = $acme::key_dir
+  $crt_dir = $acme::crt_dir
+  $path = $acme::path
+  $date_expression = $acme::date_expression
+  $stat_expression = $acme::stat_expression
 
   # Handle certificates with multiple domain names (SAN).
   $domains = split($domain_list, ' ')

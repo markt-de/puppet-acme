@@ -2,28 +2,28 @@
 #
 # Retrieve ocsp stapling information
 #
-define acme::request::ocsp(
-  $domain = $name
+define acme::request::ocsp (
+  String $domain = $name
 ) {
-  $user = $::acme::user
-  $group = $::acme::group
-  $base_dir = $::acme::base_dir
-  $acme_dir = $::acme::acme_dir
-  $acct_dir = $::acme::acct_dir
-  $log_dir = $::acme::log_dir
-  $results_dir = $::acme::results_dir
-  $path = $::acme::path
-  $date_expression = $::acme::date_expression
-  $stat_expression = $::acme::stat_expression
+  $user = $acme::user
+  $group = $acme::group
+  $base_dir = $acme::base_dir
+  $acme_dir = $acme::acme_dir
+  $acct_dir = $acme::acct_dir
+  $log_dir = $acme::log_dir
+  $results_dir = $acme::results_dir
+  $path = $acme::path
+  $date_expression = $acme::date_expression
+  $stat_expression = $acme::stat_expression
 
   # acme.sh configuration
-  $acmecmd = $::acme::acmecmd
-  $acmelog = $::acme::acmelog
+  $acmecmd = $acme::acmecmd
+  $acmelog = $acme::acmelog
   $crt_file = "${results_dir}/${domain}.pem"
   $chain_file = "${results_dir}/${domain}.ca"
   $ocsp_file = "${results_dir}/${domain}.ocsp"
 
-  $ocsp_request = $::acme::ocsp_request
+  $ocsp_request = $acme::ocsp_request
 
   $ocsp_command = join([
     $ocsp_request,

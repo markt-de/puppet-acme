@@ -3,14 +3,14 @@
 # setup all necessary directories and groups
 #
 class acme::setup::puppetmaster (
-  $acme_git_url,
-  $manage_packages  = $::acme::manage_packages,
-  $acme_install_dir = $::acme::acme_install_dir,
-  $csr_dir          = $::acme::csr_dir,
-  $log_dir          = $::acme::log_dir,
-  $results_dir      = $::acme::results_dir,
-  $user             = $::acme::user,
-  $group            = $::acme::group,
+  String $acme_git_url,
+  Boolean $manage_packages = $acme::manage_packages,
+  String $acme_install_dir = $acme::acme_install_dir,
+  String $csr_dir = $acme::csr_dir,
+  String $log_dir = $acme::log_dir,
+  String $results_dir = $acme::results_dir,
+  String $user = $acme::user,
+  String $group = $acme::group,
 ) {
   File { $acme_install_dir:
     ensure => directory,

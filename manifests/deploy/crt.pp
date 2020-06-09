@@ -14,17 +14,17 @@
 #   Certificate commonname / domainname.
 #
 define acme::deploy::crt(
-  $crt_content,
-  $crt_chain_content,
-  $ocsp_content,
-  $domain = $name
+  String $crt_content,
+  String $crt_chain_content,
+  String $ocsp_content,
+  String $domain = $name
 ) {
-  $cfg_dir = $::acme::cfg_dir
-  $crt_dir = $::acme::crt_dir
-  $key_dir = $::acme::key_dir
+  $cfg_dir = $acme::cfg_dir
+  $crt_dir = $acme::crt_dir
+  $key_dir = $acme::key_dir
 
-  $user = $::acme::user
-  $group = $::acme::group
+  $user = $acme::user
+  $group = $acme::group
 
   $crt = "${crt_dir}/${domain}/cert.pem"
   $ocsp = "${crt_dir}/${domain}/cert.ocsp"

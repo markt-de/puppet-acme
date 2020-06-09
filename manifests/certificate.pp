@@ -37,27 +37,20 @@
 #   }
 #
 define acme::certificate (
-  $use_account,
-  $use_profile,
-  $domain           = $name,
-  $renew_days       = $::acme::renew_days,
-  $letsencrypt_ca   = undef,
-  $acme_host        = $::acme::acme_host,
-  $dh_param_size    = $::acme::dh_param_size,
-  $ocsp_must_staple = $::acme::ocsp_must_staple,
-  $posthook_cmd     = $::acme::posthook_cmd
-){
-  validate_string($domain)
-  $domain_dc = downcase($domain)
-  validate_integer($dh_param_size)
-  validate_string($acme_host)
-  validate_string($domain_dc)
-  validate_string($use_account)
-  validate_string($use_profile)
-
+  Enum['production','staging'] $letsencrypt_ca,
+  String $use_account,
+  String $use_profile,
+  String $domain = $name,
+  String $acme_host = $acme::acme_host,
+  Integer $dh_param_size = $acme::dh_param_size,
+  Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
+  String $posthook_cmd = $acme::posthook_cmd,
+  Integer $renew_days = $acme::renew_days,
+) {
   require ::acme::setup::common
 
-  $path = $::acme::path
+  $domain_dc = downcase($domain)
+  $path = $acme::path
 
   # Post-Hook CMD
   exec { "posthook_${name}":

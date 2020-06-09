@@ -21,39 +21,39 @@
 #   Encrypt CA that is configured on $acme_host.
 #
 define acme::request (
-  $csr,
-  $use_account,
-  $use_profile,
-  $renew_days       = $::acme::renew_days,
-  $letsencrypt_ca   = undef,
-  $domain           = $name,
-  $altnames         = undef,
-  $ocsp_must_staple = true,
+  String $csr,
+  String $use_account,
+  String $use_profile,
+  String $domain = $name,
+  Integer $renew_days = $acme::renew_days,
+  Boolean $ocsp_must_staple = true,
+  Optional[String] $altnames = undef,
+  Optional[Enum['production','staging']] $letsencrypt_ca = undef,
 ) {
-  $user = $::acme::user
-  $group = $::acme::group
-  $base_dir = $::acme::base_dir
-  $acme_dir = $::acme::acme_dir
-  $cfg_dir = $::acme::cfg_dir
-  $crt_dir = $::acme::crt_dir
-  $csr_dir = $::acme::csr_dir
-  $acct_dir = $::acme::acct_dir
-  $log_dir = $::acme::log_dir
-  $results_dir = $::acme::results_dir
-  $acme_install_dir = $::acme::acme_install_dir
-  $path = $::acme::path
-  $stat_expression = $::acme::stat_expression
+  $user = $acme::user
+  $group = $acme::group
+  $base_dir = $acme::base_dir
+  $acme_dir = $acme::acme_dir
+  $cfg_dir = $acme::cfg_dir
+  $crt_dir = $acme::crt_dir
+  $csr_dir = $acme::csr_dir
+  $acct_dir = $acme::acct_dir
+  $log_dir = $acme::log_dir
+  $results_dir = $acme::results_dir
+  $acme_install_dir = $acme::acme_install_dir
+  $path = $acme::path
+  $stat_expression = $acme::stat_expression
 
   # acme.sh configuration
-  $acmecmd = $::acme::acmecmd
-  $acmelog = $::acme::acmelog
+  $acmecmd = $acme::acmecmd
+  $acmelog = $acme::acmelog
   $csr_file = "${csr_dir}/${domain}/cert.csr"
   $crt_file = "${crt_dir}/${domain}/cert.pem"
   $chain_file = "${crt_dir}/${domain}/chain.pem"
   $fullchain_file = "${crt_dir}/${domain}/fullchain.pem"
 
   # Check if the account is actually defined.
-  $accounts = $::acme::accounts
+  $accounts = $acme::accounts
   if ! ($use_account in $accounts) {
     fail("Module ${module_name}: account \"${use_account}\" for cert ${domain}",
       "is not defined on \$acme_host")
@@ -61,7 +61,7 @@ define acme::request (
   $account_email = $use_account
 
   # Check if the profile is actually defined.
-  $profiles = $::acme::profiles
+  $profiles = $acme::profiles
   #if ($profiles == Hash) and $profiles[$use_profile] {
   if $profiles[$use_profile] {
     $profile = $profiles[$use_profile]
@@ -72,24 +72,14 @@ define acme::request (
   $challengetype = $profile['challengetype']
   $hook = $profile['hook']
 
-  # Validate Let's Encrypt CA.
-  if ( $letsencrypt_ca ) {
-    validate_re($letsencrypt_ca, '^(staging|production)$')
-    $_letsencrypt_ca = $letsencrypt_ca
-  } else {
-    # Fallback to default CA.
-    $_letsencrypt_ca = $::acme::letsencrypt_ca
-  }
-  notify { "using CA \"${_letsencrypt_ca}\" for domain ${domain}": loglevel => debug }
-
   # We need to tell acme.sh when to use LE staging servers.
-  if ( $_letsencrypt_ca == 'staging' ) {
+  if ( $letsencrypt_ca == 'staging' ) {
     $staging_or_not = '--staging'
   } else {
     $staging_or_not = ''
   }
 
-  $account_conf_file = "${acct_dir}/${account_email}/account_${_letsencrypt_ca}.conf"
+  $account_conf_file = "${acct_dir}/${account_email}/account_${letsencrypt_ca}.conf"
 
   # Add ocsp if must-staple is requested
   if ($ocsp_must_staple) {

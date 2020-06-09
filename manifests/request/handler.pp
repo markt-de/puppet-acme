@@ -9,26 +9,25 @@
 #   URL used to checkout the dehydrated using git.
 #   Defaults to the upstream github url.
 #
-class acme::request::handler(
-  $letsencrypt_proxy = $::acme::letsencrypt_proxy,
-  $accounts         = $::acme::accounts,
-  $profiles         = $::acme::profiles,
-  $letsencrypt_ca   = $::acme::letsencrypt_ca,
+class acme::request::handler (
+  String $letsencrypt_proxy = $acme::letsencrypt_proxy,
+  Array $accounts = $acme::accounts,
+  Hash $profiles = $acme::profiles,
+  String $letsencrypt_ca = $acme::letsencrypt_ca,
   # acme.sh
-  $user             = $::acme::user,
-  $group            = $::acme::group,
-  $acme_git_url     = $::acme::acme_git_url,
-  $acmecmd          = $::acme::acmecmd,
-  $acmelog          = $::acme::acmelog,
-  $acme_install_dir = $::acme::acme_install_dir,
-  $base_dir         = $::acme::base_dir,
-  $acme_dir         = $::acme::acme_dir,
-  $acct_dir         = $::acme::acct_dir,
-  $cfg_dir          = $::acme::cfg_dir,
-  $path             = $::acme::path,
-  $ocsp_request     = $::acme::ocsp_request
+  String $user = $acme::user,
+  String $group = $acme::group,
+  String $acme_git_url = $acme::acme_git_url,
+  String $acmecmd = $acme::acmecmd,
+  String $acmelog = $acme::acmelog,
+  String $acme_install_dir = $acme::acme_install_dir,
+  String $base_dir = $acme::base_dir,
+  String $acme_dir = $acme::acme_dir,
+  String $acct_dir = $acme::acct_dir,
+  String $cfg_dir = $acme::cfg_dir,
+  String $path = $acme::path,
+  String $ocsp_request = $acme::ocsp_request
 ) {
-
   File {
     owner => 'root',
     group => 0,
