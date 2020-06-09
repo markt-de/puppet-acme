@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Migrate default values from `params.pp` to module data
 * Convert templates to EPP
 * Use Posix Shell instead of Bash
+* Update list of supported operating systems
 
 ### Fixed
 * Add missing default value for `acme::dnssleep`
