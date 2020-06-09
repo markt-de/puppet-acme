@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Convert templates to EPP
 * Use Posix Shell instead of Bash
 * Update list of supported operating systems
+* Require Puppet 6
 
 ### Fixed
 * Add missing default value for `acme::dnssleep`
