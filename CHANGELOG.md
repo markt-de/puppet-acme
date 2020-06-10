@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 * Add support for FreeBSD ([#25], this time for real)
+* Add unit tests
 
 ### Changed
 * Migrate default values from `params.pp` to module data

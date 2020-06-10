@@ -15,35 +15,35 @@ req_extensions          = v3_req
 
 [ req_distinguished_name ]
 commonName                      = <%= $domain %>
-<% unless empty($country) { -%>
+<% unless (!defined('$country') or empty($country)) { -%>
 countryName                     = <%= $country %>
 <% } -%>
-<% unless empty($state) { -%>
+<% unless (!defined('$state') or empty($state)) { -%>
 stateOrProvinceName             = <%= $state %>
 <% } -%>
-<% unless empty($locality) { -%>
+<% unless (!defined('$locality') or empty($locality)) { -%>
 localityName                    = <%= $locality %>
 <% } -%>
-<% unless empty($organization) { -%>
+<% unless (!defined('$organization') or empty($organization)) { -%>
 organizationName                = <%= $organization %>
 <% } -%>
-<% unless empty($unit) { -%>
+<% unless (!defined('$unit') or empty($unit)) { -%>
 organizationalUnitName          = <%= $unit %>
 <% } -%>
-<% unless empty($email) { -%>
+<% unless (!defined('$email') or empty($email)) { -%>
 emailAddress                    = <%= $email %>
 <% } -%>
 
 [ v3_req ]
-<% if $has_san { -%>
+<% unless (!defined('$has_san') or !$has_san) { -%>
 subjectAltName = @alt_names
 <% } -%>
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-<% if $ocsp_must_staple { -%>
+<% unless (!defined('$ocsp_must_staple') or !$ocsp_must_staple) { -%>
 1.3.6.1.5.5.7.1.24 = DER:30:03:02:01:05
 <% } -%>
 
-<% if $has_san { -%>
+<% unless (!defined('$has_san') or !$has_san) { -%>
 [ alt_names ]
 <% $subject_alt_names.each |$index, $value| { -%>
 DNS.<%= $index -%> = <%= $value %>

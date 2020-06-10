@@ -132,7 +132,18 @@ define acme::csr (
     owner   => 'root',
     group   => $group,
     mode    => '0644',
-    content => epp('acme/cert.cnf.epp'),
+    content => epp("${module_name}/cert.cnf.epp", {
+      country           => $country,
+      domain            => $domain,
+      email             => $email,
+      has_san           => $has_san,
+      locality          => $locality,
+      ocsp_must_staple  => $ocsp_must_staple,
+      organization      => $organization,
+      state             => $state,
+      subject_alt_names => $subject_alt_names,
+      unit              => $unit,
+      }),
   }
 
   ssl_pkey { $key_file:
