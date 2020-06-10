@@ -1,19 +1,10 @@
-# == Class: acme::request::handler
+# @summary Gather all data and use acme.sh to create accounts and sign certificates.
 #
-# Include this class if you would like to create
-# Certificates or on your puppetmaster to have your CSRs signed.
-#
-# === Parameters
-#
-# [*acme_git_url*]
-#   URL used to checkout the dehydrated using git.
-#   Defaults to the upstream github url.
-#
+# @api private
 class acme::request::handler (
-  String $letsencrypt_proxy = $acme::letsencrypt_proxy,
   Array $accounts = $acme::accounts,
   Hash $profiles = $acme::profiles,
-  String $letsencrypt_ca = $acme::letsencrypt_ca,
+  Enum['production','staging'] $letsencrypt_ca = $acme::letsencrypt_ca,
   # acme.sh
   String $user = $acme::user,
   String $group = $acme::group,
@@ -26,7 +17,8 @@ class acme::request::handler (
   String $acct_dir = $acme::acct_dir,
   String $cfg_dir = $acme::cfg_dir,
   String $path = $acme::path,
-  String $ocsp_request = $acme::ocsp_request
+  String $ocsp_request = $acme::ocsp_request,
+  Optional[String] $letsencrypt_proxy = $acme::letsencrypt_proxy,
 ) {
   File {
     owner => 'root',

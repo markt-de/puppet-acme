@@ -1,12 +1,9 @@
-# = Define: acme::deploy
+# @summary Collects signed certificates and installs them.
 #
-# Collects signed certificates and installs them.
-#
-# == Parameters:
-#
-# [*acme_host*]
+# @param acme_host
 #   Host the certificates were signed on
 #
+# @api private
 define acme::deploy (
   String $acme_host,
 ) {

@@ -1,7 +1,5 @@
-# == Class: acme::setup::common
-#
-# setup all necessary directories and groups
-#
+# @summary Setup all necessary directories, users and groups.
+# @api private
 class acme::setup::common (
   String $base_dir = $acme::base_dir,
   String $acme_dir = $acme::acme_dir,

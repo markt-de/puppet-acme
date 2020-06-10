@@ -319,30 +319,7 @@ Basic directory layout:
 
 ### Classes and parameters
 
-Classes:
-* `acme`
-* `acme::params`
-* `acme::request::handler`
-
-Defines:
-* `acme::csr`
-* `acme::deploy`
-* `acme::deploy::crt`
-* `acme::request`
-* `acme::request::crt`
-
-Parameters:
-* `acme_git_url`: URL to the acme.sh GIT repository (feel free to use a local mirror)
-* `acme_host`: Defaults to your Puppet Server; override for testing purposes
-* `dh_param_size`: DH parameter size, defaults to 2048
-* `letsencrypt_ca`: The Let's Encrypt CA that should be used, choose either `staging` or `production`
-* `letsencrypt_proxy`: A proxy server that should be used when connecting to the Let's Encrypt CA
-* `manage_packages`: Set to `false` to disable package management. Defaults to `true`
-
-Facts:
-* `acme_csrs`
-* `acme_csr_*`
-* `acme_crts`
+Classes and parameters are documented in [REFERENCE.md](REFERENCE.md).
 
 ## Limitations
 

@@ -16,9 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Use Posix Shell instead of Bash
 * Update list of supported operating systems
 * Require Puppet 6
+* Convert documentation to Puppet Strings
 
 ### Fixed
 * Add missing default value for `acme::dnssleep`
+* Fix cert deployment when the OCSP Must-Staple extension was disabled
 
 ## [1.0.5] - 2020-06-03
 

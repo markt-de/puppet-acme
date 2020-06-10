@@ -1,61 +1,52 @@
-# == Class: acme
+# @summary Install and configure acme.sh to manage SSL certificates
 #
-# Include this class if you would like to create certificates or on your
-# puppetmaster to have your CSRs signed.
-#
-# === Parameters
-#
-# [*certificates*]
-#   Array of full qualified domain names (== commonname)
-#   you want to request a certificate for.
+# @param certificates
+#   Array of full qualified domain names you want to request a certificate for.
 #   For SAN certificates you need to pass space seperated strings,
 #   for example ['foo.example.com fuzz.example.com', 'blub.example.com']
 #
-# [*acme_git_url*]
-#   URL used to checkout the dehydrated using git.
-#   Defaults to the upstream github url.
-#
-# [*profiles*]
+# @param profiles
 #   A hash of profiles that contain information how acme.sh should sign
-#   certificates. Should only be defined on $acme_host.
+#   certificates. A profile defines not only the challenge type, but also all
+#   required parameters and credentials used by acme.sh to sign the certificate.
+#   Should only be defined on $acme_host.
 #
-# [*accounts*]
+# @param accounts
 #   An array of e-mail addresses that acme.sh may use during the Let's Encrypt
-#   account registration.
+#   account registration. Should only be defined on $acme_host.
 #
-# [*acme_host*]
+# @param acme_host
 #   The host you want to run acme.sh on.
 #   For now it needs to be a puppetmaster, as it needs direct access
-#   to the certificates using functions in puppet.
+#   to the certificates using functions in Puppet.
 #
-# [*posthook_cmd*]
-#   command to run after a certificate has been changed
+# @param acme_git_url
+#   URL to the acme.sh GIT repository. Defaults to the official GitHub project.
+#   Feel free to use a local mirror or fork.
 #
-# [*letsencrypt_ca*]
-#   The letsencrypt CA you want to use. For testing and debugging you may want
-#   to set it to 'staging', otherwise 'production' is used and the usual
+# @param letsencrypt_ca
+#   The Let's Encrypt CA you want to use. For testing and debugging you may want
+#   to set it to `staging`, otherwise `production` is used and the usual
 #   rate limits apply.
 #
-# [*letsencrypt_proxy*]
-#   Proxyserver to use to connect to the letsencrypt CA
-#   for example '127.0.0.1:3128'
+# @param renew_days
+#   Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
 #
-# [*dh_param_size*]
-#   dh parameter size, defaults to 2048
+# @param letsencrypt_proxy
+#   Proxyserver to use to connect to the Let's Encrypt CA, for example `proxy.example.com:3128`
 #
-# [*ocsp_must_staple*]
-#   Request certificats with OCSP Must-Staple extension, defaults to true
+# @param posthook_cmd
+#   Specified a optional command to run after a certificate has been changed.
 #
-# [*manage_packages*]
-#   install necessary packages, mainly git
+# @param dh_param_size
+#   Specifies the DH parameter size, defaults to `2048`.
 #
-# === Examples
+# @param ocsp_must_staple
+#   Whether to request certificates with OCSP Must-Staple extension, defaults to `true`.
 #
-#   class { 'acme' :
-#     domains       => [ 'foo.example.com', 'fuzz.example.com' ],
-#     challengetype => 'dns-01',
-#     hook          => 'nsupdate'
-#   }
+# @param manage_packages
+#   Whether the module should install necessary packages, mainly git.
+#   Set to `false` to disable package management.
 #
 class acme (
   Array $accounts,
@@ -92,7 +83,6 @@ class acme (
   Optional[String] $letsencrypt_proxy = undef,
   Optional[Hash] $profiles = undef
 ) {
-
   require ::acme::setup::common
 
   # Is this the host to sign CSRs?

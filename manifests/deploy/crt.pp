@@ -1,23 +1,24 @@
-# = Define: acme::crt
+# @summary Send a signed certificate via PuppetDB to the target host.
 #
-# Used as exported ressource to ship a signed CRT.
+# @param crt_content
+#   The actual certificate content.
 #
-# == Parameters:
+# @param crt_chain_content
+#   The actual certificate chain content.
 #
-# [*crt_content*]
-#   actual certificate content.
+# @param ocsp_content
+#   The OCSP data when the OCSP Must-Staple extension is enabled,
+#   otherwise empty.
 #
-# [*crt_chain_content*]
-#   actual certificate chain file content.
+# @param domain
+#   The certificate commonname / domainname.
 #
-# [*domain*]
-#   Certificate commonname / domainname.
-#
-define acme::deploy::crt(
+# @api private
+define acme::deploy::crt (
   String $crt_content,
   String $crt_chain_content,
-  String $ocsp_content,
-  String $domain = $name
+  String $domain = $name,
+  Optional[String] $ocsp_content = undef,
 ) {
   $cfg_dir = $acme::cfg_dir
   $crt_dir = $acme::crt_dir

@@ -1,7 +1,9 @@
-# Define: acme::request::ocsp
+# @summary Retrieve ocsp stapling information
 #
-# Retrieve ocsp stapling information
+# @param domain
+#   The certificate commonname / domainname.
 #
+# @api private
 define acme::request::ocsp (
   String $domain = $name
 ) {

@@ -1,25 +1,22 @@
-# = Define: acme::request
+# @summary A request to sign a CSR or renew a certificate.
 #
-# Request to sign a CSR.
+# @param csr
+#   The full CSR as a string.
 #
-# == Parameters:
-#
-# [*csr*]
-#   The full csr as string.
-#
-# [*domain*]
+# @param domain
 #   Certificate commonname / domainname.
 #
-# [*use_account*]
-#   The Let's Encrypt account that should be used (or registered).
+# @param use_account
+#   The Let's Encrypt account that should be used.
 #
-# [*use_profile*]
+# @param use_profile
 #   The profile that should be used to sign the certificate.
 #
-# [*letsencrypt_ca*]
+# @param letsencrypt_ca
 #   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
-#   Encrypt CA that is configured on $acme_host.
+#   Encrypt CA that is configured on `$acme_host`.
 #
+# @api private
 define acme::request (
   String $csr,
   String $use_account,
@@ -332,5 +329,4 @@ define acme::request (
   ::acme::request::ocsp { $domain:
     require => File[$result_crt_file],
   }
-
 }

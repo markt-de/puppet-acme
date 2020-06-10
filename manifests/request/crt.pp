@@ -1,8 +1,9 @@
-# Define: acme::request::crt
+# @summary Fetch the certificate from facter and export it via PuppetDB.
 #
-# Take certificates from facter and export a ressource
-# with the certificate content.
+# @param domain
+#   The certificate commonname / domainname.
 #
+# @api private
 define acme::request::crt (
   String $domain = $name
 ) {

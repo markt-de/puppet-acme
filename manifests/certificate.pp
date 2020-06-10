@@ -1,43 +1,33 @@
-# == Define: acme::certificate
+# @summary Request a certificate.
 #
-# Request a certificate for a single domain or a SAN certificate.
-#
-# === Parameters
-#
-# [*domain*]
-#   Full qualified domain names (== commonname)
-#   you want to request a certificate for.
+# @param domain
+#   Full qualified domain names you want to request a certificate for.
 #   For SAN certificates you need to pass space seperated strings,
 #   for example 'foo.example.com fuzz.example.com'
 #
-# [*use_account*]
+# @param use_account
 #   The Let's Encrypt account that should be used (or registered).
+#   This account must exist in `$accounts` on your `$acme_host`.
 #
-# [*use_profile*]
+# @param use_profile
 #   Specify the profile that should be used to sign the certificate.
-#   A profile defines not only the challenge type, but also all required
-#   parameters and credentials to sign the certificate.
+#   This profile must exist in `$profiles` on your `$acme_host`.
 #
-# [*acme_host*]
-#   The host you want to run acme.sh on.
-#   Defaults to $::acme::acme_host
+# @param acme_host
+#   The host you want to run acme.sh on. Usually your Puppetserver.
+#   Defaults to `$acme::acme_host`.
 #
-# [*letsencrypt_ca*]
+# @param letsencrypt_ca
 #   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
-#   Encrypt CA that is configured on $acme_host.
+#   Encrypt CA that is configured on `$acme_host`.
 #
-# [*dh_param_size*]
+# @param dh_param_size
 #   dh parameter size, defaults to $::acme::dh_param_size
 #
-# [*ocsp_must_staple*]
+# @param ocsp_must_staple
 #   request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_must_staple
 #
-# === Examples
-#   ::acme::certificate( 'foo.example.com' :
-#   }
-#
 define acme::certificate (
-  Enum['production','staging'] $letsencrypt_ca,
   String $use_account,
   String $use_profile,
   String $domain = $name,
@@ -46,6 +36,7 @@ define acme::certificate (
   Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
   String $posthook_cmd = $acme::posthook_cmd,
   Integer $renew_days = $acme::renew_days,
+  Optional[Enum['production','staging']] $letsencrypt_ca = undef,
 ) {
   require ::acme::setup::common
 

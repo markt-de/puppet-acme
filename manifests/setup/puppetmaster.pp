@@ -1,7 +1,5 @@
-# == Class: acme::setup::puppetmaster
-#
-# setup all necessary directories and groups
-#
+# @summary Setup acme.sh and all necessary directories and packages.
+# @api private
 class acme::setup::puppetmaster (
   String $acme_git_url,
   Boolean $manage_packages = $acme::manage_packages,
@@ -54,5 +52,4 @@ class acme::setup::puppetmaster (
     user     => root,
     require  => $vcsrepo_require,
   }
-
 }

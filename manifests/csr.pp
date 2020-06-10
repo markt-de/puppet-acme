@@ -1,22 +1,21 @@
-# = Define: acme::csr
+# @summary Create a Certificate Signing Request (CSR) and send it to PuppetDB
 #
-# PRIVATE CLASS. Create a CSR and ask to sign it.
+# @param acme_host
+#   Host the certificate will be signed on.
 #
-# == Parameters:
-#
-# [*acme_host*]
-#   Host the certificates will be signed on
-#
-# [*use_account*]
+# @param use_account
 #   The Let's Encrypt account that should be used (or registered).
+#   This account must exist in `$accounts` on your `$acme_host`.
 #
-# [*use_profile*]
+# @param use_profile
 #   The profile that should be used to sign the certificate.
+#   This profile must exist in `$profiles` on your `$acme_host`.
 #
-# [*letsencrypt_ca*]
+# @param letsencrypt_ca
 #   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
-#   Encrypt CA that is configured on $acme_host.
+#   Encrypt CA that is configured on `$acme_host`.
 #
+# @api private
 define acme::csr (
   String $acme_host,
   String $use_account,
@@ -27,7 +26,7 @@ define acme::csr (
   Boolean $force = true,
   Boolean $ocsp_must_staple = true,
   Integer $renew_days = $acme::renew_days,
-  Optional[String] $letsencrypt_ca = undef,
+  Optional[Enum['production','staging']] $letsencrypt_ca = undef,
   Optional[String] $country = undef,
   Optional[String] $state = undef,
   Optional[String] $locality = undef,
