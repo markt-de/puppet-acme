@@ -1,0 +1,5 @@
+# File managed with puppet
+key "<%= $nsupdate_id %>" {
+  algorithm <%= $nsupdate_type %>;
+  secret "<%= $nsupdate_key %>";
+};

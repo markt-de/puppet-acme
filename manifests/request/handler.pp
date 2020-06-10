@@ -59,7 +59,12 @@ class acme::request::handler (
         owner   => $user,
         group   => $group,
         mode    => '0640',
-        content => epp("${module_name}/account.conf.epp"),
+        content => epp("${module_name}/account.conf.epp", {
+          account_email    => $account_email,
+          account_key_file => $account_key_file,
+          acme_dir         => $acme_dir,
+          acmelog          => $acmelog,
+          }),
         require => File[$account_dir],
       }
 
@@ -175,7 +180,11 @@ class acme::request::handler (
           owner   => $user,
           group   => $group,
           mode    => '0600',
-          content => epp("acme/hooks/${hook}.epp"),
+          content => epp("${module_name}/hooks/${hook}.epp", {
+            nsupdate_id   => $nsupdate_id,
+            nsupdate_key  => $nsupdate_key,
+            nsupdate_type => $nsupdate_type,
+            }),
           require => File[$hook_dir],
         }
       }
@@ -183,14 +192,18 @@ class acme::request::handler (
   }
 
   # needed for the openssl ocsp -header flag
-  $openssl_before_110 = versioncmp($::openssl_version, '1.1.0') < 0
+  $old_openssl = versioncmp($::openssl_version, '1.1.0') < 0
 
   file { $ocsp_request:
     ensure  => file,
     owner   => 'root',
     group   => $group,
     mode    => '0755',
-    content => template('acme/get_certificate_ocsp.sh.erb'),
+    content => epp("${module_name}/get_certificate_ocsp.sh.epp", {
+      old_openssl => $old_openssl,
+      path        => $acme::path,
+      proxy       => $letsencrypt_proxy,
+      }),
   }
 
   # Get all certificate signing requests that were tagged to be processed on
