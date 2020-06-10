@@ -62,9 +62,20 @@ describe 'acme::certificate', type: :define do
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.2= #{altname_test2}.*}) }
         end
 
-        # TODO
-        # context 'when creating a wildcard certificate' do
-        # end
+        context 'when creating a wildcard certificate' do
+          let :params do
+            {
+              use_profile: 'route53_example',
+              use_account: 'ssl@example.com',
+              letsencrypt_ca: 'staging',
+            }
+          end
+
+          let(:title) { wildcard_cert }
+          it { is_expected.to compile.with_all_deps }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{wildcard_cert}").with_ensure('directory') }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{wildcard_cert}/ssl.cnf").with_content(%r{.*commonName\s+= #{wildcard_cert}.*}) }
+        end
       end
     end
   end
