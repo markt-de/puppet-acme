@@ -238,11 +238,11 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
       notify         => Class['apache::service'],
     }
 
-    # get configuration from acme::params
-    include acme::params
-    $base_dir = $acme::params::base_dir
-    $crt_dir  = $acme::params::crt_dir
-    $key_dir  = $acme::params::key_dir
+    # get configuration from acme
+    include acme
+    $base_dir = $acme::base_dir
+    $crt_dir  = $acme::crt_dir
+    $key_dir  = $acme::key_dir
 
     # where acme stores our certificate and key files
     $my_key = "${key_dir}/${::fqdn}/private.key"
