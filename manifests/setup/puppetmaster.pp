@@ -2,6 +2,7 @@
 # @api private
 class acme::setup::puppetmaster (
   String $acme_git_url,
+  String $acme_revision,
   Boolean $manage_packages = $acme::manage_packages,
   String $acme_install_dir = $acme::acme_install_dir,
   String $csr_dir = $acme::csr_dir,
@@ -46,7 +47,7 @@ class acme::setup::puppetmaster (
   # Checkout aka "install" acme.sh.
   Vcsrepo { $acme_install_dir:
     ensure   => latest,
-    revision => master,
+    revision => $acme_revision,
     provider => git,
     source   => $acme_git_url,
     user     => root,

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 * Add support for FreeBSD ([#25], this time for real)
 * Add unit tests
+* Add parameter `$acme_revision` to checkout a different version of acme.sh
 
 ### Changed
 * Migrate default values from `params.pp` to module data

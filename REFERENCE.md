@@ -85,6 +85,13 @@ Data type: `String`
 URL to the acme.sh GIT repository. Defaults to the official GitHub project.
 Feel free to use a local mirror or fork.
 
+##### `acme_revision`
+
+Data type: `String`
+
+The GIT revision of the acme.sh repository. Defaults to `master` which should
+contain a stable version of acme.sh.
+
 ##### `letsencrypt_ca`
 
 Data type: `Enum['production','staging']`

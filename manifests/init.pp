@@ -24,6 +24,10 @@
 #   URL to the acme.sh GIT repository. Defaults to the official GitHub project.
 #   Feel free to use a local mirror or fork.
 #
+# @param acme_revision
+#   The GIT revision of the acme.sh repository. Defaults to `master` which should
+#   contain a stable version of acme.sh.
+#
 # @param letsencrypt_ca
 #   The Let's Encrypt CA you want to use. For testing and debugging you may want
 #   to set it to `staging`, otherwise `production` is used and the usual
@@ -52,6 +56,7 @@ class acme (
   Array $accounts,
   String $acme_git_url,
   String $acme_host,
+  String $acme_revision,
   Stdlib::Compat::Absolute_path $acme_install_dir,
   String $acmecmd,
   Stdlib::Compat::Absolute_path $acmelog,
@@ -89,6 +94,7 @@ class acme (
   if ($::fqdn == $acme_host) {
     class { '::acme::setup::puppetmaster' :
       acme_git_url    => $acme_git_url,
+      acme_revision   => $acme_revision,
       manage_packages => $manage_packages,
     }
 
