@@ -24,7 +24,7 @@ define acme::request (
   String $domain = $name,
   Integer $renew_days = $acme::renew_days,
   Boolean $ocsp_must_staple = true,
-  Optional[String] $altnames = undef,
+  Optional[Array] $altnames = undef,
   Optional[Enum['production','staging']] $letsencrypt_ca = undef,
 ) {
   $user = $acme::user
