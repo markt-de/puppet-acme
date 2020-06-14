@@ -46,6 +46,6 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 <% unless (!defined('$has_san') or !$has_san) { -%>
 [ alt_names ]
 <% $subject_alt_names.each |$index, $value| { -%>
-DNS.<%= $index -%> = <%= $value %>
+DNS.<%= $index + 1 -%> = <%= $value %>
 <% } -%>
 <% } %>

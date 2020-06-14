@@ -57,9 +57,9 @@ describe 'acme::certificate', type: :define do
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*commonName\s+= #{test_cert}.*}) }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*\[ alt_names \].*}) }
-          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.0= #{test_cert}.*}) }
-          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.1= #{altname_test1}.*}) }
-          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.2= #{altname_test2}.*}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.1= #{test_cert}.*}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.2= #{altname_test1}.*}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.3= #{altname_test2}.*}) }
         end
 
         context 'when creating a wildcard certificate' do
