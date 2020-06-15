@@ -1,39 +1,21 @@
 # @summary Gather all data and use acme.sh to create accounts and sign certificates.
 #
 # @api private
-class acme::request::handler (
-  Array $accounts = $acme::accounts,
-  Hash $profiles = $acme::profiles,
-  Enum['production','staging'] $letsencrypt_ca = $acme::letsencrypt_ca,
-  # acme.sh
-  String $user = $acme::user,
-  String $group = $acme::group,
-  String $acme_git_url = $acme::acme_git_url,
-  String $acmecmd = $acme::acmecmd,
-  String $acmelog = $acme::acmelog,
-  String $acme_install_dir = $acme::acme_install_dir,
-  String $base_dir = $acme::base_dir,
-  String $acme_dir = $acme::acme_dir,
-  String $acct_dir = $acme::acct_dir,
-  String $cfg_dir = $acme::cfg_dir,
-  String $path = $acme::path,
-  String $ocsp_request = $acme::ocsp_request,
-  Optional[String] $letsencrypt_proxy = $acme::letsencrypt_proxy,
-) {
+class acme::request::handler {
   File {
     owner => 'root',
     group => 0,
   }
 
   # Setup and register Let's Encrypt accounts.
-  $accounts.each |$account_email| {
-    $account_dir = "${acct_dir}/${account_email}"
+  $acme::accounts.each |$account_email| {
+    $account_dir = "${acme::acct_dir}/${account_email}"
 
     # Create a directory for each account.
     file { $account_dir:
       ensure => directory,
-      owner  => $user,
-      group  => $group,
+      owner  => $acme::user,
+      group  => $acme::group,
       mode   => '0750',
     }
 
@@ -48,14 +30,14 @@ class acme::request::handler (
 
       # Create account config file for acme.sh.
       file { $account_conf_file:
-        owner   => $user,
-        group   => $group,
+        owner   => $acme::user,
+        group   => $acme::group,
         mode    => '0640',
         content => epp("${module_name}/account.conf.epp", {
           account_email    => $account_email,
           account_key_file => $account_key_file,
-          acme_dir         => $acme_dir,
-          acmelog          => $acmelog,
+          acme_dir         => $acme::acme_dir,
+          acmelog          => $acme::acmelog,
           }),
         require => File[$account_dir],
       }
@@ -72,13 +54,13 @@ class acme::request::handler (
       }
 
       $le_create_command = join([
-        $acmecmd,
+        $acme::acmecmd,
         $staging_or_not,
         '--create-account-key',
         '--accountkeylength 4096',
         '--log-level 2',
-        "--log ${acmelog}",
-        "--home ${$acme_dir}",
+        "--log ${acme::acmelog}",
+        "--home ${acme::acme_dir}",
         "--accountconf ${account_conf_file}",
         '>/dev/null',
         '&&',
@@ -87,26 +69,26 @@ class acme::request::handler (
 
       # Run acme.sh to create the account key.
       exec { "create-account-${le_env}-${account_email}" :
-        user    => $user,
-        cwd     => $base_dir,
-        group   => $group,
-        path    => $path,
+        user    => $acme::user,
+        cwd     => $acme::base_dir,
+        group   => $acme::group,
+        path    => $acme::path,
         command => $le_create_command,
         creates => $account_created_file,
         require => [
-          User[$user],
-          Group[$group],
+          User[$acme::user],
+          Group[$acme::group],
           File[$account_conf_file],
         ],
       }
 
       $le_register_command = join([
-        $acmecmd,
+        $acme::acmecmd,
         $staging_or_not,
         '--registeraccount',
         '--log-level 2',
-        "--log ${acmelog}",
-        "--home ${$acme_dir}",
+        "--log ${acme::acmelog}",
+        "--home ${acme::acme_dir}",
         "--accountconf ${account_conf_file}",
         '>/dev/null',
         '&&',
@@ -115,15 +97,15 @@ class acme::request::handler (
 
       # Run acme.sh to register the account.
       exec { "register-account-${le_env}-${account_email}" :
-        user    => $user,
-        cwd     => $base_dir,
-        group   => $group,
-        path    => $path,
+        user    => $acme::user,
+        cwd     => $acme::base_dir,
+        group   => $acme::group,
+        path    => $acme::path,
         command => $le_register_command,
         creates => $account_registered_file,
         require => [
-          User[$user],
-          Group[$group],
+          User[$acme::user],
+          Group[$acme::group],
           File[$account_conf_file],
         ],
       }
@@ -134,8 +116,8 @@ class acme::request::handler (
 
   # Store config for profiles in filesystem, if we support them.
   # (Otherwise the user needs to manually create the required files.)
-  $profiles.each |$profile_name, $profile_config| {
-    # XXX: Test if $profile_config is not empty and of type Hash
+  $acme::profiles.each |$profile_name, $profile_config| {
+    # Simple validation of profile config
     if ($profile_config != undef) and (type($profile_config) =~ Type[Hash]) {
       $challengetype = $profile_config['challengetype']
       $hook = $profile_config['hook']
@@ -158,19 +140,19 @@ class acme::request::handler (
       # Make sure all required values are available.
       if ($nsupdate_id and $nsupdate_key and $nsupdate_type) {
         # Create config file for hook script.
-        $hook_dir = "${cfg_dir}/profile_${profile_name}"
+        $hook_dir = "${acme::cfg_dir}/profile_${profile_name}"
         $hook_conf_file = "${hook_dir}/hook.cnf"
 
         file { $hook_dir:
           ensure => directory,
-          owner  => $user,
-          group  => $group,
+          owner  => $acme::user,
+          group  => $acme::group,
           mode   => '0600',
         }
 
         file { $hook_conf_file:
-          owner   => $user,
-          group   => $group,
+          owner   => $acme::user,
+          group   => $acme::group,
           mode    => '0600',
           content => epp("${module_name}/hooks/${hook}.epp", {
             nsupdate_id   => $nsupdate_id,
@@ -186,15 +168,15 @@ class acme::request::handler (
   # needed for the openssl ocsp -header flag
   $old_openssl = versioncmp($::openssl_version, '1.1.0') < 0
 
-  file { $ocsp_request:
+  file { $acme::ocsp_request:
     ensure  => file,
     owner   => 'root',
-    group   => $group,
+    group   => $acme::group,
     mode    => '0755',
     content => epp("${module_name}/get_certificate_ocsp.sh.epp", {
       old_openssl => $old_openssl,
       path        => $acme::path,
-      proxy       => $letsencrypt_proxy,
+      proxy       => $acme::letsencrypt_proxy,
       }),
   }
 

@@ -1,77 +1,67 @@
 # @summary Setup all necessary directories, users and groups.
 # @api private
-class acme::setup::common (
-  String $base_dir = $acme::base_dir,
-  String $acme_dir = $acme::acme_dir,
-  String $crt_dir = $acme::crt_dir,
-  String $cfg_dir = $acme::cfg_dir,
-  String $key_dir = $acme::key_dir,
-  String $acct_dir = $acme::acct_dir,
-  String $user = $acme::user,
-  String $group = $acme::group,
-  String $shell = $acme::shell,
-) {
-  User { $user:
-    gid        => $group,
-    home       => $base_dir,
-    shell      => $shell,
+class acme::setup::common {
+  User { $acme::user:
+    gid        => $acme::group,
+    home       => $acme::base_dir,
+    shell      => $acme::shell,
     managehome => false,
     password   => '!!',
     system     => true,
   }
 
-  group { $group:
+  group { $acme::group:
     ensure => present,
     system => true,
   }
 
   File {
     ensure  => directory,
-    owner   => $user,
-    group   => $group,
+    owner   => $acme::user,
+    group   => $acme::group,
     mode    => '0755',
-    require => Group[$group],
+    require => Group[$acme::group],
   }
 
-  File { $base_dir :
+  File { $acme::base_dir :
     ensure => directory,
     mode   => '0755',
-    owner  => $user,
-    group  => $group,
+    owner  => $acme::user,
+    group  => $acme::group,
   }
 
-  File { $key_dir :
+  File { $acme::key_dir :
     ensure => directory,
     mode   => '0750',
-    owner  => $user,
-    group  => $group,
+    owner  => $acme::user,
+    group  => $acme::group,
   }
 
-  File { $crt_dir :
+  File { $acme::crt_dir :
     ensure => directory,
     mode   => '0755',
-    owner  => $user,
-    group  => $group,
+    owner  => $acme::user,
+    group  => $acme::group,
   }
 
-  File { $acme_dir :
+  File { $acme::acme_dir :
     ensure => directory,
     mode   => '0750',
-    owner  => $user,
-    group  => $group,
+    owner  => $acme::user,
+    group  => $acme::group,
   }
 
-  File { $acct_dir :
+  File { $acme::acct_dir :
     ensure => directory,
     mode   => '0700',
-    owner  => $user,
-    group  => $group,
+    owner  => $acme::user,
+    group  => $acme::group,
   }
 
-  File { $cfg_dir :
+  File { $acme::cfg_dir :
     ensure => directory,
     mode   => '0700',
-    owner  => $user,
-    group  => $group,
+    owner  => $acme::user,
+    group  => $acme::group,
   }
 }

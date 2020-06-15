@@ -103,11 +103,7 @@ class acme (
 
   # Is this the host to sign CSRs?
   if ($::fqdn == $acme_host) {
-    class { '::acme::setup::puppetmaster' :
-      acme_git_url    => $acme_git_url,
-      acme_revision   => $acme_revision,
-      manage_packages => $manage_packages,
-    }
+    class { '::acme::setup::puppetmaster': }
 
     # Validate configuration of $acme_host.
     if !($profiles) {
@@ -122,12 +118,7 @@ class acme (
       }
     } else {
       class { '::acme::request::handler' :
-        acme_git_url      => $acme_git_url,
-        letsencrypt_ca    => $letsencrypt_ca,
-        accounts          => $accounts,
-        profiles          => $profiles,
-        letsencrypt_proxy => $letsencrypt_proxy,
-        require           => Class[::acme::setup::puppetmaster],
+        require => Class[::acme::setup::puppetmaster],
       }
     }
     # Collect certificates.
