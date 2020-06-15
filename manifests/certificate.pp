@@ -65,5 +65,4 @@ define acme::certificate (
     renew_days       => $renew_days,
     letsencrypt_ca   => $letsencrypt_ca,
   }
-
 }

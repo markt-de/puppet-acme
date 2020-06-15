@@ -126,7 +126,7 @@ class acme (
       }
     }
     # Collect certificates.
-    if ($::acme_crts and $::acme_crts != '') {
+    if (defined('::acme_crts') and $::acme_crts and $::acme_crts != '') {
       $acme_crts_array = split($::acme_crts, ',')
       ::acme::request::crt { $acme_crts_array: }
     }
@@ -144,5 +144,4 @@ class acme (
     # Create the certificate resource.
     ::acme::certificate { $domain: * => $options }
   }
-
 }
