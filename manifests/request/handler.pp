@@ -30,16 +30,26 @@ class acme::request::handler {
 
       # Create account config file for acme.sh.
       file { $account_conf_file:
+        ensure  => present,
         owner   => $acme::user,
         group   => $acme::group,
         mode    => '0640',
-        content => epp("${module_name}/account.conf.epp", {
-          account_email    => $account_email,
-          account_key_file => $account_key_file,
-          acme_dir         => $acme::acme_dir,
-          acmelog          => $acme::acmelog,
-          }),
         require => File[$account_dir],
+      }
+      # Use Augeas to set the configuration, because acme.sh will also make
+      # changes to this file and we don't want to overwrite them without reason.
+      -> augeas { "update account conf: ${account_conf_file}":
+        lens    => 'Shellvars.lns',
+        incl    => $account_conf_file,
+        context => "/files${account_conf_file}",
+        changes => [
+          "set CERT_HOME \"'${acme::acme_dir}'\"",
+          "set LOG_FILE \"'${acme::acmelog}'\"",
+          "set ACCOUNT_KEY_PATH \"'${account_key_file}'\"",
+          "set ACCOUNT_EMAIL \"'${account_email}'\"",
+          "set LOG_LEVEL \"'2'\"",
+          "set USER_PATH \"'${acme::path}'\"",
+          ]
       }
 
       # Some status files so we avoid useless runs of acme.sh.
