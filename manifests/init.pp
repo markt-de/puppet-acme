@@ -24,6 +24,10 @@
 #   URL to the acme.sh GIT repository. Defaults to the official GitHub project.
 #   Feel free to use a local mirror or fork.
 #
+# @param acme_git_force
+#   Force repository creation, destroying any files on the path in the process.
+#   Useful when the repo URL has changed.
+#
 # @param acme_revision
 #   The GIT revision of the acme.sh repository. Defaults to `master` which should
 #   contain a stable version of acme.sh.
@@ -60,6 +64,7 @@
 class acme (
   Array $accounts,
   String $acme_git_url,
+  Boolean $acme_git_force,
   String $acme_host,
   String $acme_revision,
   Stdlib::Compat::Absolute_path $acme_install_dir,

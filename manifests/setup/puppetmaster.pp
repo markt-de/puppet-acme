@@ -51,6 +51,7 @@ class acme::setup::puppetmaster (
     provider => git,
     source   => $acme_git_url,
     user     => root,
+    force    => $acme::acme_git_force,
     require  => $vcsrepo_require,
   }
 }
