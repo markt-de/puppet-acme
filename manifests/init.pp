@@ -52,6 +52,11 @@
 #   Whether the module should install necessary packages, mainly git.
 #   Set to `false` to disable package management.
 #
+# @param wildcard_marker
+#   A string that is used to replace `*` in wildcard certificates. This is required
+#   because Puppet does not allow special chars in variable names.
+#   DO NOT CHANGE THIS VALUE! It is hardcoded in all custom facts too.
+#
 class acme (
   Array $accounts,
   String $acme_git_url,
@@ -84,6 +89,7 @@ class acme (
   String $shell,
   String $stat_expression,
   String $user,
+  String $wildcard_marker,
   # optional parameters
   Optional[String] $letsencrypt_proxy = undef,
   Optional[Hash] $profiles = undef

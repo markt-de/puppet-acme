@@ -32,6 +32,8 @@ acme::acme_host: "%{::servername}"
 acme::date_expression: "date --date='1 day ago' '+%s'"
 acme::group: 'acme'
 acme::manage_packages: true
+# DO NOT CHANGE THIS VALUE! It is hardcoded in all custom facts too.
+acme::wildcard_marker: '___acme___'
 acme::path: '/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin'
 acme::posthook_cmd: 'true'
 acme::shell: '/bin/sh'

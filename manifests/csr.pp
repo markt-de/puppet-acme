@@ -94,11 +94,11 @@ define acme::csr (
   $create_dh_unless = join([
     'test',
     '-f',
-    "'${dh_file}'",
+    "\'${dh_file}\'",
     '&&',
     'test',
     '$(',
-    "${stat_expression} ${dh_file}",
+    "${stat_expression} \'${dh_file}\'",
     ')',
     '-gt',
     '$(',
@@ -113,7 +113,7 @@ define acme::csr (
     user    => 'root',
     group   => $group,
     path    => $path,
-    command => "openssl dhparam -check -out ${dh_file} ${dh_param_size}",
+    command => "openssl dhparam -check -out \'${dh_file}\' ${dh_param_size}",
     unless  => $create_dh_unless,
     timeout => 30*60,
   }
@@ -186,7 +186,7 @@ define acme::csr (
     require => X509_request[$csr_file],
   }
 
-  $domain_rep = regsubst($domain, /[.-]/, '_', 'G')
+  $domain_rep = regsubst($domain, /[*.-]/, {'.' => '_', '-' => '_', '*' => $acme::wildcard_marker}, 'G')
   $csr_content = pick_default(getvar("::acme_csr_${domain_rep}"), '')
   if ($csr_content =~ /CERTIFICATE REQUEST/) {
     @@acme::request { $domain:

@@ -3,7 +3,8 @@ require 'facter'
 crt_domains = Dir['/etc/acme.sh/results/*.pem'].map { |a| File.basename(a, '.pem') }
 
 crt_domains.each do |crt_domain|
-  Facter.add('acme_crt_' + crt_domain.gsub(/[.-]/, '_')) do
+  sanitized_name = crt_domain.gsub(/[*.-]/, {'.' => '_', '-' => '_', '*' => '___acme___'})
+  Facter.add('acme_crt_' + sanitized_name) do
     setcode do
       crt = File.read("/etc/acme.sh/results/#{crt_domain}.pem")
       crt.strip
@@ -12,7 +13,8 @@ crt_domains.each do |crt_domain|
 end
 
 crt_domains.each do |crt_domain|
-  Facter.add('acme_ca_' + crt_domain.gsub(/[.-]/, '_')) do
+  sanitized_name = crt_domain.gsub(/[*.-]/, {'.' => '_', '-' => '_', '*' => '___acme___'})
+  Facter.add('acme_ca_' + sanitized_name) do
     setcode do
       ca = File.read("/etc/acme.sh/results/#{crt_domain}.ca")
       ca.strip

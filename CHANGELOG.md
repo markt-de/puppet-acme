@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 * Add missing default value for `acme::dnssleep`
 * Fix cert deployment when the OCSP Must-Staple extension was disabled
+* Fix support for wildcard certificates (would cause a server error)
 
 ## [1.0.5] - 2020-06-03
 

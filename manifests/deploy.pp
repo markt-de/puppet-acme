@@ -1,4 +1,4 @@
-# @summary Collects signed certificates and installs them.
+# @summary Collects signed certificates for this host from PuppetDB.
 #
 # @param acme_host
 #   Host the certificates were signed on
@@ -10,8 +10,11 @@ define acme::deploy (
   $domains = split($name, ' ')
   $domain = $domains[0]
 
+  # Avoid special characters (required for wildcard certs)
+  $domain_tag = regsubst($domain, /[*]/, $acme::wildcard_marker, 'G')
+
   # Install the signed certificate on this host.
   # Using the certificate name as a tag ensures that only those certificates
   # are installed that are configured on this host.
-  Acme::Deploy::Crt <<| tag == $domain |>>
+  Acme::Deploy::Crt <<| tag == $domain_tag |>>
 }

@@ -18,7 +18,9 @@ define acme::request::crt (
   $le_chain_file = "${acme_dir}/${domain}/ca.cer"
   $le_fullchain_file = "${acme_dir}/${domain}/fullchain.cer"
 
-  $domain_rep = regsubst($domain, /[.-]/, '_', 'G')
+  # Avoid special characters (required for wildcard certs)
+  $domain_rep = regsubst($domain, /[*.-]/, {'.' => '_', '-' => '_', '*' => $acme::wildcard_marker}, 'G')
+  $domain_tag = regsubst($domain, /[*]/, $acme::wildcard_marker, 'G')
 
   $crt = pick_default($facts["acme_crt_${domain_rep}"], '')
 
@@ -34,7 +36,7 @@ define acme::request::crt (
       ocsp_content      => $ocsp,
       # Use the certificate name to tag this resource. This ensures that
       # the certificate is only installed on the host where it is configured.
-      tag               => $domain,
+      tag               => $domain_tag,
     }
   }
 }

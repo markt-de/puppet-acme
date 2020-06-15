@@ -74,7 +74,7 @@ describe 'acme::certificate', type: :define do
           let(:title) { wildcard_cert }
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{wildcard_cert}").with_ensure('directory') }
-          it { is_expected.to contain_file("/etc/acme.sh/configs/#{wildcard_cert}/ssl.cnf").with_content(%r{.*commonName\s+= #{wildcard_cert}.*}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{wildcard_cert}/ssl.cnf").with_content(%r{.*commonName\s+= #{Regexp.escape(wildcard_cert)}.*}) }
         end
       end
     end
