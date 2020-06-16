@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Add parameter `$acme_revision` to checkout a different version of acme.sh
 * Add parameter `$acme_git_force` to force acme.sh repository checkout
 * Add parameter `$exec_timeout` to control how long acme.sh is allowed to run ([#28])
-* Make `$dnssleep` optional, setting it to `0` lets acme.sh poll for DNS changes
+* Make `$dnssleep` optional, setting it to `0` lets acme.sh poll for DNS changes (DoH)
 
 ### Changed
 * Migrate default values from `params.pp` to module data

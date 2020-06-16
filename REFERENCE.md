@@ -152,7 +152,7 @@ Data type: `Integer`
 
 The time in seconds acme.sh should wait for all DNS changes to take effect.
 Settings this to `0` disables the sleep mechanism and lets acme.sh poll DNS
-status automatically.
+status automatically by using DNS over HTTPS.
 
 ##### `exec_timeout`
 
