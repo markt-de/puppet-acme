@@ -114,7 +114,9 @@ define acme::request (
   notify { "hook params for domain ${domain}: ${hook_params}": loglevel => debug }
 
   # Collect additional options for acme.sh.
-  if ($profile['options']['dnssleep']) {
+  if ($profile['options']['dnssleep']
+      and ($profile['options']['dnssleep'] =~ Integer)
+      and ($profile['options']['dnssleep'] > 0)) {
     $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
   } elsif (defined('$acme::dnssleep') and ($acme::dnssleep > 0)) {
     $_dnssleep = "--dnssleep ${::acme::dnssleep}"
