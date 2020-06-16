@@ -1,3 +1,10 @@
+# puppet-acme
+
+[![Build Status](https://travis-ci.org/fraenki/puppet-acme.png?branch=master)](https://travis-ci.org/fraenki/puppet-acme)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/fraenki/acme.svg)](https://forge.puppetlabs.com/fraenki/acme)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/fraenki/acme.svg)](https://forge.puppetlabs.com/fraenki/acme)
+[![License](https://img.shields.io/github/license/fraenki/puppet-acme.svg)](https://github.com/fraenki/puppet-acme/blob/master/LICENSE.txt)
+
 #### Table of Contents
 
 1. [Overview](#overview)
