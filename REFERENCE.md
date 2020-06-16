@@ -24,8 +24,8 @@ _Public Defined types_
 _Private Defined types_
 
 * `acme::csr`: Create a Certificate Signing Request (CSR) and send it to PuppetDB
-* `acme::deploy`: Collects signed certificates and installs them.
-* `acme::deploy::crt`: Send a signed certificate via PuppetDB to the target host.
+* `acme::deploy`: Collects signed certificates for this host from PuppetDB.
+* `acme::deploy::crt`: Install a signed certificate on the target host.
 * `acme::request`: A request to sign a CSR or renew a certificate.
 * `acme::request::crt`: Fetch the certificate from facter and export it via PuppetDB.
 * `acme::request::ocsp`: Retrieve ocsp stapling information
@@ -85,6 +85,13 @@ Data type: `String`
 URL to the acme.sh GIT repository. Defaults to the official GitHub project.
 Feel free to use a local mirror or fork.
 
+##### `acme_git_force`
+
+Data type: `Boolean`
+
+Force repository creation, destroying any files on the path in the process.
+Useful when the repo URL has changed.
+
 ##### `acme_revision`
 
 Data type: `String`
@@ -138,6 +145,30 @@ Data type: `Boolean`
 
 Whether the module should install necessary packages, mainly git.
 Set to `false` to disable package management.
+
+##### `dnssleep`
+
+Data type: `Integer`
+
+The time in seconds acme.sh should wait for all DNS changes to take effect.
+Settings this to `0` disables the sleep mechanism and lets acme.sh poll DNS
+status automatically.
+
+##### `exec_timeout`
+
+Data type: `Integer`
+
+Specifies the time in seconds that any acme.sh operation can take before
+it is aborted by Puppet. This should usually be set to a higher value
+than `$dnssleep`.
+
+##### `wildcard_marker`
+
+Data type: `String`
+
+A string that is used to replace `*` in wildcard certificates. This is required
+because Puppet does not allow special chars in variable names.
+DO NOT CHANGE THIS VALUE! It is hardcoded in all custom facts too.
 
 ##### `acme_install_dir`
 
@@ -220,12 +251,6 @@ Data type: `Stdlib::Compat::Absolute_path`
 ##### `date_expression`
 
 Data type: `String`
-
-
-
-##### `dnssleep`
-
-Data type: `Integer`
 
 
 

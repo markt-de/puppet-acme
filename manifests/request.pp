@@ -116,8 +116,11 @@ define acme::request (
   # Collect additional options for acme.sh.
   if ($profile['options']['dnssleep']) {
     $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
-  } else {
+  } elsif (defined('$acme::dnssleep') and ($acme::dnssleep > 0)) {
     $_dnssleep = "--dnssleep ${::acme::dnssleep}"
+  } else {
+    # Let acme.sh poll dns status automatically.
+    $_dnssleep = ""
   }
 
   # Use the challenge or domain alias that is specified in the profile

@@ -56,6 +56,11 @@
 #   Whether the module should install necessary packages, mainly git.
 #   Set to `false` to disable package management.
 #
+# @param dnssleep
+#   The time in seconds acme.sh should wait for all DNS changes to take effect.
+#   Settings this to `0` disables the sleep mechanism and lets acme.sh poll DNS
+#   status automatically.
+#
 # @param exec_timeout
 #   Specifies the time in seconds that any acme.sh operation can take before
 #   it is aborted by Puppet. This should usually be set to a higher value
