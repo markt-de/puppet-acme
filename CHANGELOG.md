@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Add unit tests
 * Add parameter `$acme_revision` to checkout a different version of acme.sh
 * Add parameter `$acme_git_force` to force acme.sh repository checkout
+* Add parameter `$exec_timeout` to control how long acme.sh is allowed to run ([#28])
 
 ### Changed
 * Migrate default values from `params.pp` to module data
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Update list of supported operating systems
 * Require Puppet 6
 * Convert documentation to Puppet Strings
+* Increase default timeout for acme.sh related `Exec` resources to 3600 seconds
 
 ### Fixed
 * Only add subjectAltName to SAN certificates
@@ -83,6 +85,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#28]: https://github.com/fraenki/puppet-acme/pull/28
 [#25]: https://github.com/fraenki/puppet-acme/pull/25
 [#24]: https://github.com/fraenki/puppet-acme/pull/24
 [#22]: https://github.com/fraenki/puppet-acme/pull/22

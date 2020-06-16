@@ -56,6 +56,11 @@
 #   Whether the module should install necessary packages, mainly git.
 #   Set to `false` to disable package management.
 #
+# @param exec_timeout
+#   Specifies the time in seconds that any acme.sh operation can take before
+#   it is aborted by Puppet. This should usually be set to a higher value
+#   than `$dnssleep`.
+#
 # @param wildcard_marker
 #   A string that is used to replace `*` in wildcard certificates. This is required
 #   because Puppet does not allow special chars in variable names.
@@ -84,6 +89,7 @@ class acme (
   String $date_expression,
   Integer $dh_param_size,
   Integer $dnssleep,
+  Integer $exec_timeout,
   String $group,
   Enum['production','staging'] $letsencrypt_ca,
   Boolean $manage_packages,

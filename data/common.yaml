@@ -33,6 +33,7 @@ acme::ocsp_must_staple: true
 # Module defaults
 acme::acme_host: "%{::servername}"
 acme::date_expression: "date --date='1 day ago' '+%s'"
+acme::exec_timeout: 3600
 acme::group: 'acme'
 acme::manage_packages: true
 # DO NOT CHANGE THIS VALUE! It is hardcoded in all custom facts too.

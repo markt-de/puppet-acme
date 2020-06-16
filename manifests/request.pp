@@ -267,6 +267,7 @@ define acme::request (
     path        => $path,
     environment => $hook_params,
     command     => $le_command_signcsr,
+    timeout     => $acme::exec_timeout,
     # Run this exec only if no old cert can be found.
     onlyif      => "test ! -f \'${le_crt_file}\'",
     require     => [
@@ -293,6 +294,7 @@ define acme::request (
     path        => $path,
     environment => $hook_params,
     command     => $le_command_renew,
+    timeout     => $acme::exec_timeout,
     returns     => [ 0, 2, ],
     # Run this exec only if an old cert can be found.
     onlyif      => "test -f \'${le_crt_file}\'",
