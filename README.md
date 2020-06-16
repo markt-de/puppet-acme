@@ -2,7 +2,7 @@
 
 1. [Overview](#overview)
 1. [Requirements](#requirements)
-1. [Module Description](#module-description)
+1. [Workflow](#workflow)
 1. [Setup](#setup)
     * [Configure your Puppetserver](#configure-your-puppet-server)
 1. [Usage](#usage)
@@ -34,10 +34,10 @@ sign the CSRs and distribute the certificates.
 * Puppet 6 with [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html) enabled
 * A [compatible DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to validate your Let's Encrypt certificates
 
-Furthermore you're advised to use [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml)
+Furthermore it is highly recommended to use [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml)
 to protect sensitive information (such as DNS API secrets).
 
-## Module Description
+## Workflow
 
 This module creates private keys and CSRs, transfers the CSR to your Puppetserver
 where it is signed using the popular and lightweight [acmesh-official/acme.sh](https://github.com/acmesh-official/acme.sh).
