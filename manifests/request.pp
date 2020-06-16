@@ -122,7 +122,7 @@ define acme::request (
     $_dnssleep = "--dnssleep ${::acme::dnssleep}"
   } else {
     # Let acme.sh poll dns status automatically.
-    $_dnssleep = ""
+    $_dnssleep = ''
   }
 
   # Use the challenge or domain alias that is specified in the profile

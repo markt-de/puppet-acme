@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - 2020-06-16
+This new major release is an effort to modernize the module. It fixes some long-standing bugs that have been uncovered by new unit tests. Please note that these bugfixes most likely trigger a re-issue of ALL certificates.
 
 ### Added
 * Add support for FreeBSD ([#25], this time for real)
@@ -24,10 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Increase default timeout for acme.sh related `Exec` resources to 3600 seconds
 
 ### Fixed
-* Only add subjectAltName to SAN certificates
+* Only add subjectAltName for SAN certificates
 * Add missing default value for `acme::dnssleep`
-* Fix cert deployment when the OCSP Must-Staple extension was disabled
-* Fix support for wildcard certificates (would cause a server error)
+* Fix cert deployment when the OCSP Must-Staple extension is disabled
+* Fix support for wildcard certificates (caused a server error)
 * No longer overwrite acme.sh's changes in account config files
 
 ## [1.0.5] - 2020-06-03
@@ -80,7 +81,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.0.0] - 2917-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/fraenki/puppet-acme/compare/1.0.5...HEAD
+[Unreleased]: https://github.com/fraenki/puppet-acme/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/fraenki/puppet-acme/compare/1.0.5...2.0.0
 [1.0.5]: https://github.com/fraenki/puppet-acme/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/fraenki/puppet-acme/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
