@@ -49,7 +49,7 @@ define acme::csr (
   # Handle certificates with multiple domain names (SAN).
   $domains = split($domain_list, ' ')
   $domain = $domains[0]
-  $has_san = size(domains) > 1
+  $has_san = size($domains) > 1
   if ($has_san) {
     $altnames = delete_at($domains, 0)
     $subject_alt_names = $domains

@@ -34,6 +34,8 @@ describe 'acme::certificate', type: :define do
           it { is_expected.to contain_acme__csr('test.example.com') }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}").with_ensure('directory') }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*commonName\s+= #{test_cert}.*}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").without_content(%r{subjectAltName}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").without_content(%r{alt_names}) }
           it { is_expected.to contain_exec("create-dh-/etc/acme.sh/configs/#{test_cert}/params.dh") }
           it { is_expected.to contain_file("/etc/acme.sh/keys/#{test_cert}").with_ensure('directory') }
           it { is_expected.to contain_ssl_pkey("/etc/acme.sh/keys/#{test_cert}/private.key") }
@@ -56,6 +58,7 @@ describe 'acme::certificate', type: :define do
 
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*commonName\s+= #{test_cert}.*}) }
+          it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{subjectAltName}) }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*\[ alt_names \].*}) }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.1 = #{test_cert}.*}) }
           it { is_expected.to contain_file("/etc/acme.sh/configs/#{test_cert}/ssl.cnf").with_content(%r{.*DNS.2 = #{altname_test1}.*}) }

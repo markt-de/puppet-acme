@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Convert documentation to Puppet Strings
 
 ### Fixed
+* Only add subjectAltName to SAN certificates
 * Add missing default value for `acme::dnssleep`
 * Fix cert deployment when the OCSP Must-Staple extension was disabled
 * Fix support for wildcard certificates (would cause a server error)
