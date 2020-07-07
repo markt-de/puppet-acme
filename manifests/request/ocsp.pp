@@ -29,25 +29,25 @@ define acme::request::ocsp (
 
   $ocsp_command = join([
     $ocsp_request,
-    $crt_file,
-    $chain_file,
-    $ocsp_file,
+    "\'${crt_file}\'",
+    "\'${chain_file}\'",
+    "\'${ocsp_file}\'",
   ], ' ')
 
   $ocsp_onlyif = join([
     'test',
     '-f',
-    "'${crt_file}'",
+    "\'${crt_file}\'",
   ], ' ')
 
   $ocsp_unless = join([
     'test',
     '-f',
-    "'${ocsp_file}'",
+    "\'${ocsp_file}\'",
     '&&',
     'test',
     '$(',
-    "${stat_expression} ${ocsp_file}",
+    "${stat_expression} \'${ocsp_file}\'",
     ')',
     '-gt',
     '$(',
