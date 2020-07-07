@@ -28,7 +28,9 @@ class acme::setup::puppetmaster {
   }
 
   if ($acme::manage_packages) {
-    ensure_packages('git')
+    if !defined(Package['git']) {
+      ensure_packages('git')
+    }
     $vcsrepo_require = [File[$acme::acme_install_dir],Package['git']]
   } else {
     $vcsrepo_require = File[$acme::acme_install_dir]
