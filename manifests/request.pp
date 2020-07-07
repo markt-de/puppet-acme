@@ -191,7 +191,7 @@ define acme::request (
   notify { "acme renew set to ${renew_days} days (or ${renew_seconds} seconds) for domain ${domain}": loglevel => debug }
 
   $le_check_command = join([
-    "test -f ${le_crt_file}",
+    "test -f \'${le_crt_file}\'",
     '&&',
     "openssl x509 -checkend ${renew_seconds} -noout -in \'${le_crt_file}\'",
     '&&',
@@ -228,7 +228,7 @@ define acme::request (
     $acme_validation,
     "--log ${acmelog}",
     '--log-level 2',
-    "--home ${$acme_dir}",
+    "--home ${acme_dir}",
     '--keylength 4096',
     "--accountconf ${account_conf_file}",
     $_ocsp,
@@ -251,7 +251,7 @@ define acme::request (
     "--days ${renew_days}",
     "--log ${acmelog}",
     '--log-level 2',
-    "--home ${$acme_dir}",
+    "--home ${acme_dir}",
     '--keylength 4096',
     "--accountconf ${account_conf_file}",
     $_ocsp,
