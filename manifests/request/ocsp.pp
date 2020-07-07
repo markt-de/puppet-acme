@@ -34,25 +34,15 @@ define acme::request::ocsp (
     "\'${ocsp_file}\'",
   ], ' ')
 
-  $ocsp_onlyif = join([
-    'test',
-    '-f',
-    "\'${crt_file}\'",
-  ], ' ')
+  $ocsp_onlyif = "test -f \'${crt_file}\'"
 
   $ocsp_unless = join([
-    'test',
-    '-f',
-    "\'${ocsp_file}\'",
+    "test -f \'${ocsp_file}\'",
     '&&',
     'test',
-    '$(',
-    "${stat_expression} \'${ocsp_file}\'",
-    ')',
+    "\$( ${stat_expression} \'${ocsp_file}\' )",
     '-gt',
-    '$(',
-    $date_expression,
-    ')',
+    "\$( ${date_expression} )",
   ], ' ')
 
   exec { "update_ocsp_file_for_${domain}":

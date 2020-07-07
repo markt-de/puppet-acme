@@ -196,13 +196,9 @@ define acme::request (
     "openssl x509 -checkend ${renew_seconds} -noout -in \'${le_crt_file}\'",
     '&&',
     'test',
-    '$(',
-    "${stat_expression} \'${le_crt_file}\'",
-    ')',
+    "\$( ${stat_expression} \'${le_crt_file}\' )",
     '-gt',
-    '$(',
-    "${stat_expression} \'${csr_file}\'",
-    ')',
+    "\$( ${stat_expression} \'${csr_file}\' )",
   ], ' ')
 
   # Check if challenge type is supported.
