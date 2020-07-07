@@ -190,6 +190,12 @@ define acme::request (
   $renew_seconds = $renew_days*86400
   notify { "acme renew set to ${renew_days} days (or ${renew_seconds} seconds) for domain ${domain}": loglevel => debug }
 
+  # NOTE: If the CSR file is newer than the cert, this check will trigger
+  # a renewal of the cert. However, acme.sh may not recognize the change
+  # in the CSR or decide that the change does not need a renewal of the cert.
+  # In this case it will be triggered on every Puppet run, until $renew_days
+  # is reached and acme.sh finally renews the cert. This is a known limitation
+  # that does not cause any side-effects.
   $le_check_command = join([
     "test -f \'${le_crt_file}\'",
     '&&',
