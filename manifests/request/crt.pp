@@ -38,5 +38,7 @@ define acme::request::crt (
       # the certificate is only installed on the host where it is configured.
       tag               => $domain_tag,
     }
+  } else {
+    notify { "got no cert from facter for domain ${domain} (may need another puppet run)": }
   }
 }
