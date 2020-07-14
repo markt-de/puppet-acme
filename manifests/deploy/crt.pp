@@ -96,7 +96,6 @@ define acme::deploy::crt (
     target  => $crt_full_chain,
     source  => $dh,
     order   => '30',
-    require => File[$dh],
   }
 
   if ($crt_chain_content and $crt_chain_content =~ /BEGIN CERTIFICATE/) {
