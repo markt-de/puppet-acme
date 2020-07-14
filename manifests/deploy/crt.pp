@@ -93,9 +93,9 @@ define acme::deploy::crt (
   }
 
   concat::fragment { "${real_domain}_dh":
-    target  => $crt_full_chain,
-    source  => $dh,
-    order   => '30',
+    target => $crt_full_chain,
+    source => $dh,
+    order  => '30',
   }
 
   if ($crt_chain_content and $crt_chain_content =~ /BEGIN CERTIFICATE/) {
