@@ -36,7 +36,7 @@ define acme::request::crt (
       ocsp_content      => $ocsp,
       # Use the certificate name to tag this resource. This ensures that
       # the certificate is only installed on the host where it is configured.
-      tag               => $domain_tag,
+      tag               => "crt_${domain_tag}",
     }
   } else {
     notify { "got no cert from facter for domain ${domain} (may need another puppet run)": }

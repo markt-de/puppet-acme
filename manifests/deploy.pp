@@ -16,5 +16,5 @@ define acme::deploy (
   # Install the signed certificate on this host.
   # Using the certificate name as a tag ensures that only those certificates
   # are installed that are configured on this host.
-  Acme::Deploy::Crt <<| tag == $domain_tag |>>
+  Acme::Deploy::Crt <<| tag == "crt_${domain_tag}" |>>
 }

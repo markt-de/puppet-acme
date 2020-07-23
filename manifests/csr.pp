@@ -191,7 +191,7 @@ define acme::csr (
   if ($csr_content =~ /CERTIFICATE REQUEST/) {
     @@acme::request { $domain:
       csr              => $csr_content,
-      tag              => $acme_host,
+      tag              => "master_${acme_host}",
       altnames         => $altnames,
       use_account      => $use_account,
       use_profile      => $use_profile,
