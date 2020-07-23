@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2020-07-24
+NOTE: When upgrading from version 1.x to 2.x temporarely set `$acme_git_force` to `true`.
+
+### Changed
+* Change default value of `$acme_git_force` to `false`
+
+### Fixed
+* Fix an issue where certificates would incorrectly be deployed on Puppetserver ([#31])
+
 ## [2.1.0] - 2020-07-08
 This is a maintenance release. It fixes an issue with deployment of signed certificates.
 
@@ -93,7 +102,8 @@ This new major release is an effort to modernize the module. It fixes some long-
 ## [1.0.0] - 2917-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/fraenki/puppet-acme/compare/2.1.0...HEAD
+[Unreleased]: https://github.com/fraenki/puppet-acme/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/fraenki/puppet-acme/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/fraenki/puppet-acme/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/fraenki/puppet-acme/compare/1.0.5...2.0.0
 [1.0.5]: https://github.com/fraenki/puppet-acme/compare/1.0.4...1.0.5
@@ -101,6 +111,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#31]: https://github.com/fraenki/puppet-acme/pull/31
 [#30]: https://github.com/fraenki/puppet-acme/pull/30
 [#28]: https://github.com/fraenki/puppet-acme/pull/28
 [#25]: https://github.com/fraenki/puppet-acme/pull/25
