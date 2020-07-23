@@ -3,7 +3,7 @@
 acme::acme_git_url: 'https://github.com/acmesh-official/acme.sh.git'
 # NOTE: Since the repo URL has changed we need to set force=true.
 #       The default will be changed to false in a later version.
-acme::acme_git_force: true
+acme::acme_git_force: false
 acme::acme_install_dir: '/opt/acme.sh'
 acme::acme_revision: 'master'
 acme::acmecmd: "%{lookup('acme::acme_install_dir')}/acme.sh"
