@@ -9,7 +9,7 @@ Facter.add(:acme_csrs) do
 end
 
 csr_domains.each do |csr_domain|
-  sanitized_name = csr_domain.gsub(%r{[*.-]}, { '.' => '_', '-' => '_', '*' => '___acme___' }) # rubocop:disable Style/BracesAroundHashParameters
+  sanitized_name = csr_domain.gsub(%r{[*.-]}, { '.' => '_', '-' => '_', '*' => '___acme___' })
   Facter.add('acme_csr_' + sanitized_name) do
     setcode do
       csr = File.read("/etc/acme.sh/certs/#{csr_domain}/cert.csr")
