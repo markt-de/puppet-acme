@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'acme' do
-  context 'supported operating systems' do
+  context 'on supported operating systems' do
     on_supported_os.each do |os, facts|
       context "on #{os}" do
         let(:facts) do
@@ -105,10 +105,10 @@ describe 'acme' do
           it { is_expected.to contain_file("/etc/acme.sh/accounts/#{le_account}/account_production.conf") }
           it { is_expected.to contain_augeas("update account conf: /etc/acme.sh/accounts/#{le_account}/account_staging.conf") }
           it { is_expected.to contain_augeas("update account conf: /etc/acme.sh/accounts/#{le_account}/account_production.conf") }
-          it { is_expected.to contain_exec("create-account-staging-#{le_account}") }
-          it { is_expected.to contain_exec("create-account-production-#{le_account}") }
-          it { is_expected.to contain_exec("register-account-staging-#{le_account}") }
-          it { is_expected.to contain_exec("register-account-production-#{le_account}") }
+          it { is_expected.to contain_exec("create-account-letsencrypt_test-#{le_account}") }
+          it { is_expected.to contain_exec("create-account-letsencrypt-#{le_account}") }
+          it { is_expected.to contain_exec("register-account-letsencrypt_test-#{le_account}") }
+          it { is_expected.to contain_exec("register-account-letsencrypt-#{le_account}") }
 
           it { is_expected.to contain_file("/etc/acme.sh/configs/profile_#{le_profile}").with_ensure('directory') }
           it { is_expected.to contain_file("/etc/acme.sh/configs/profile_#{le_profile}/hook.cnf").with_content(%r{.*secret.*abcdefg1234567890.*}) }

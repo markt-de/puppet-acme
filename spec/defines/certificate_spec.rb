@@ -19,7 +19,7 @@ describe 'acme::certificate', type: :define do
             {
               use_profile: 'route53_example',
               use_account: 'ssl@example.com',
-              letsencrypt_ca: 'staging',
+              ca: 'letsencrypt_test',
             }
           end
 
@@ -50,7 +50,7 @@ describe 'acme::certificate', type: :define do
             {
               use_profile: 'route53_example',
               use_account: 'ssl@example.com',
-              letsencrypt_ca: 'staging',
+              ca: 'letsencrypt_test',
             }
           end
 
@@ -70,7 +70,7 @@ describe 'acme::certificate', type: :define do
             {
               use_profile: 'route53_example',
               use_account: 'ssl@example.com',
-              letsencrypt_ca: 'staging',
+              ca: 'letsencrypt_test',
             }
           end
 

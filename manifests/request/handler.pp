@@ -29,10 +29,10 @@ class acme::request::handler {
       # were generated for the Let's Encrypt Production/Staging CA
       # can still be used.
       case $acme_ca {
-        /letsencrypt/: {
+        'letsencrypt': {
           $acme_ca_compat = 'production'
         }
-        /letsencrypt_test/: {
+        'letsencrypt_test': {
           $acme_ca_compat = 'staging'
         }
         default: {

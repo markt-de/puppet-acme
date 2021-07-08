@@ -75,10 +75,10 @@ define acme::request (
   # were generated for the Let's Encrypt Production/Staging CA
   # can still be used.
   case $ca {
-    /letsencrypt/: {
+    'letsencrypt': {
       $ca_compat = 'production'
     }
-    /letsencrypt_test/: {
+    'letsencrypt_test': {
       $ca_compat = 'staging'
     }
     default: {
