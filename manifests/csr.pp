@@ -3,17 +3,17 @@
 # @param acme_host
 #   Host the certificate will be signed on.
 #
+# @param ca
+#   The ACME CA that should be used. Used to overwrite the default
+#   CA that is configured on `$acme_host`.
+#
 # @param use_account
-#   The Let's Encrypt account that should be used (or registered).
+#   The ACME account that should be used (or registered).
 #   This account must exist in `$accounts` on your `$acme_host`.
 #
 # @param use_profile
 #   The profile that should be used to sign the certificate.
 #   This profile must exist in `$profiles` on your `$acme_host`.
-#
-# @param letsencrypt_ca
-#   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
-#   Encrypt CA that is configured on `$acme_host`.
 #
 # @api private
 define acme::csr (
@@ -26,7 +26,7 @@ define acme::csr (
   Boolean $force = true,
   Boolean $ocsp_must_staple = true,
   Integer $renew_days = $acme::renew_days,
-  Optional[Enum['production','staging']] $letsencrypt_ca = undef,
+  Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']] $ca = undef,
   Optional[String] $country = undef,
   Optional[String] $state = undef,
   Optional[String] $locality = undef,
@@ -196,7 +196,7 @@ define acme::csr (
       use_account      => $use_account,
       use_profile      => $use_profile,
       renew_days       => $renew_days,
-      letsencrypt_ca   => $letsencrypt_ca,
+      ca               => $ca,
       ocsp_must_staple => $ocsp_must_staple,
     }
   } else {

@@ -12,7 +12,7 @@
 #   Should only be defined on $acme_host.
 #
 # @param accounts
-#   An array of e-mail addresses that acme.sh may use during the Let's Encrypt
+#   An array of e-mail addresses that acme.sh may use during the ACME
 #   account registration. Should only be defined on $acme_host.
 #
 # @param acme_host
@@ -32,16 +32,22 @@
 #   The GIT revision of the acme.sh repository. Defaults to `master` which should
 #   contain a stable version of acme.sh.
 #
-# @param letsencrypt_ca
-#   The Let's Encrypt CA you want to use. For testing and debugging you may want
-#   to set it to `staging`, otherwise `production` is used and the usual
-#   rate limits apply.
+# @param ca_whitelist
+#   Specifies the CAs that may be used on `$acme_host`. The module will register
+#   any account specified in `$accounts` with all specified CAs. This ensure that
+#   these accounts are ready for use.
+#
+# @param default_ca
+#   The default ACME CA you want to use. May be overriden by specifying a
+#   different value for `$ca` for the certificate.
+#   Previous versions of acme.sh used to have Let's Encrypt as their default CA,
+#   hence this is the default value for this Puppet module.
+#
+# @param proxy
+#   Proxy server to use to connect to the ACME CA, for example `proxy.example.com:3128`
 #
 # @param renew_days
 #   Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
-#
-# @param letsencrypt_proxy
-#   Proxyserver to use to connect to the Let's Encrypt CA, for example `proxy.example.com:3128`
 #
 # @param posthook_cmd
 #   Specified a optional command to run after a certificate has been changed.
@@ -90,13 +96,14 @@ class acme (
   Stdlib::Compat::Absolute_path $results_dir,
   Stdlib::Compat::Absolute_path $log_dir,
   Stdlib::Compat::Absolute_path $ocsp_request,
+  Array $ca_whitelist,
   Hash $certificates,
   String $date_expression,
+  Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'] $default_ca,
   Integer $dh_param_size,
   Integer $dnssleep,
   Integer $exec_timeout,
   String $group,
-  Enum['production','staging'] $letsencrypt_ca,
   Boolean $manage_packages,
   Boolean $ocsp_must_staple,
   String $path,
@@ -107,7 +114,7 @@ class acme (
   String $user,
   String $wildcard_marker,
   # optional parameters
-  Optional[String] $letsencrypt_proxy = undef,
+  Optional[String] $proxy = undef,
   Optional[Hash] $profiles = undef
 ) {
   require ::acme::setup::common

@@ -1,12 +1,16 @@
 # @summary Request a certificate.
 #
+# @param ca
+#   The ACME CA that should be used. Used to overwrite the default
+#   CA that is configured on `$acme_host`.
+#
 # @param domain
 #   Full qualified domain names you want to request a certificate for.
 #   For SAN certificates you need to pass space seperated strings,
 #   for example 'foo.example.com fuzz.example.com'
 #
 # @param use_account
-#   The Let's Encrypt account that should be used (or registered).
+#   The ACME account that should be used (or registered).
 #   This account must exist in `$accounts` on your `$acme_host`.
 #
 # @param use_profile
@@ -16,10 +20,6 @@
 # @param acme_host
 #   The host you want to run acme.sh on. Usually your Puppetserver.
 #   Defaults to `$acme::acme_host`.
-#
-# @param letsencrypt_ca
-#   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
-#   Encrypt CA that is configured on `$acme_host`.
 #
 # @param dh_param_size
 #   dh parameter size, defaults to $::acme::dh_param_size
@@ -36,7 +36,7 @@ define acme::certificate (
   Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
   String $posthook_cmd = $acme::posthook_cmd,
   Integer $renew_days = $acme::renew_days,
-  Optional[Enum['production','staging']] $letsencrypt_ca = undef,
+  Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']] $ca = undef,
 ) {
   require ::acme::setup::common
 
@@ -63,6 +63,6 @@ define acme::certificate (
     dh_param_size    => $dh_param_size,
     ocsp_must_staple => $ocsp_must_staple,
     renew_days       => $renew_days,
-    letsencrypt_ca   => $letsencrypt_ca,
+    ca               => $ca,
   }
 }

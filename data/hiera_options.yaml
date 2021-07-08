@@ -1,5 +1,9 @@
 ---
 lookup_options:
+  # Allow to replace/override the default whitelist.
+  "^acme::ca_whitelist":
+    merge:
+      strategy: first
   "^acme::.*":
     merge:
       strategy: deep

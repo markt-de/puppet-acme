@@ -1,5 +1,9 @@
 # @summary A request to sign a CSR or renew a certificate.
 #
+# @param ca
+#   The ACME CA that should be used. Used to overwrite the default
+#   CA that is configured on `$acme_host`.
+#
 # @param csr
 #   The full CSR as a string.
 #
@@ -7,25 +11,21 @@
 #   Certificate commonname / domainname.
 #
 # @param use_account
-#   The Let's Encrypt account that should be used.
+#   The ACME account that should be used.
 #
 # @param use_profile
 #   The profile that should be used to sign the certificate.
-#
-# @param letsencrypt_ca
-#   The Let's Encrypt CA you want to use. Used to overwrite the default Let's
-#   Encrypt CA that is configured on `$acme_host`.
 #
 # @api private
 define acme::request (
   String $csr,
   String $use_account,
   String $use_profile,
+  Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'] $ca = $acme::default_ca,
   String $domain = $name,
   Integer $renew_days = $acme::renew_days,
   Boolean $ocsp_must_staple = true,
   Optional[Array] $altnames = undef,
-  Optional[Enum['production','staging']] $letsencrypt_ca = undef,
 ) {
   $user = $acme::user
   $group = $acme::group
@@ -59,24 +59,34 @@ define acme::request (
 
   # Check if the profile is actually defined.
   $profiles = $acme::profiles
-  #if ($profiles == Hash) and $profiles[$use_profile] {
   if $profiles[$use_profile] {
     $profile = $profiles[$use_profile]
   } else {
     fail("Module ${module_name}: unable to find profile \"${use_profile}\" for",
       "cert ${domain}")
   }
+
+  # Get configured values from the profile.
   $challengetype = $profile['challengetype']
   $hook = $profile['hook']
 
-  # We need to tell acme.sh when to use LE staging servers.
-  if ( $letsencrypt_ca == 'staging' ) {
-    $staging_or_not = '--staging'
-  } else {
-    $staging_or_not = ''
+  # Evaluate how the CA should be represented in filenames.
+  # This is a compatibility layer. It ensures that old files that
+  # were generated for the Let's Encrypt Production/Staging CA
+  # can still be used.
+  case $ca {
+    /letsencrypt/: {
+      $ca_compat = 'production'
+    }
+    /letsencrypt_test/: {
+      $ca_compat = 'staging'
+    }
+    default: {
+      $ca_compat = $ca
+    }
   }
 
-  $account_conf_file = "${acct_dir}/${account_email}/account_${letsencrypt_ca}.conf"
+  $account_conf_file = "${acct_dir}/${account_email}/account_${ca_compat}.conf"
 
   # Add ocsp if must-staple is requested
   if ($ocsp_must_staple) {
@@ -223,7 +233,6 @@ define acme::request (
   # acme.sh command to sign a new csr.
   $le_command_signcsr = join([
     $acmecmd,
-    $staging_or_not,
     '--signcsr',
     "--domain \'${domain}\'",
     $_altnames,
@@ -238,6 +247,7 @@ define acme::request (
     "--cert-file \'${crt_file}\'",
     "--ca-file \'${chain_file}\'",
     "--fullchain-file \'${fullchain_file}\'",
+    "--server ${ca}",
     $acme_options,
     '>/dev/null',
   ], ' ')
@@ -245,7 +255,6 @@ define acme::request (
   # acme.sh command to renew an existing certificate.
   $le_command_renew = join([
     $acmecmd,
-    $staging_or_not,
     '--issue',
     "--domain \'${domain}\'",
     $_altnames,
@@ -261,6 +270,7 @@ define acme::request (
     "--cert-file \'${crt_file}\'",
     "--ca-file \'${chain_file}\'",
     "--fullchain-file \'${fullchain_file}\'",
+    "--server ${ca}",
     $acme_options,
     '>/dev/null',
   ], ' ')

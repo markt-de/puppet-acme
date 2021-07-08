@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+This new major release is a response to the most recent changes in acme.sh,
+namely the switch from Let's Encrypt to ZeroSSL as default ACME CA. This module
+will keep Let's Encrypt as the default CA, but adds support for all CA's that are
+currently supported by acme.sh.
+
+### Added
+* Add support for new ACME CA's: buypass, buypass_test, sslcom, zerossl
+* Add parameters `$ca` and `$default_ca`
+* Add parameter `$ca_whitelist` to specify which CA's will be used on `$acme_host`
+
+### Changed
+* Set default CA to Let's Encrypt
+* New parameter `$ca` must be used to use Let's Encrypt "staging" environment (set it to `letsencrypt_test`)
+* New parameter `$ca` must be used to use Let's Encrypt "production" environment (set it to `letsencrypt`)
+* Rename parameter `$letsencrypt_proxy` to `$proxy`
+* Adjust wording: replace "Let's Encrypt" with "ACME" wherever applicable
+
+### Removed
+* Remove parameter `$letsencrypt_ca`, new parameter `$ca` must be used instead
+
 ## [2.3.0] - 2020-08-17
 NOTE: When upgrading from version 1.x to 2.x temporarely set `$acme_git_force` to `true`.
 

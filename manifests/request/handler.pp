@@ -7,7 +7,7 @@ class acme::request::handler {
     group => 0,
   }
 
-  # Setup and register Let's Encrypt accounts.
+  # Setup and register ACME accounts.
   $acme::accounts.each |$account_email| {
     $account_dir = "${acme::acct_dir}/${account_email}"
 
@@ -19,14 +19,30 @@ class acme::request::handler {
       mode   => '0750',
     }
 
-    # Register accounts for both Let's Encrypt environments.
-    # (Because we just don't know for which env it will be used later.)
-    $le_envs = ['staging', 'production']
-    $le_envs.each |$le_env| {
+    # Register accounts for all whitelisted ACME CAs.
+    # (Because we just don't know for which it will be used later.)
+    $acme_cas = $acme::ca_whitelist
+    $acme_cas.each |$acme_ca| {
+
+      # Evaluate how the CA should be represented in filenames.
+      # This is a compatibility layer. It ensures that old files that
+      # were generated for the Let's Encrypt Production/Staging CA
+      # can still be used.
+      case $acme_ca {
+        /letsencrypt/: {
+          $acme_ca_compat = 'production'
+        }
+        /letsencrypt_test/: {
+          $acme_ca_compat = 'staging'
+        }
+        default: {
+          $acme_ca_compat = $acme_ca
+        }
+      }
 
       # Handle switching CAs with different account keys.
-      $account_key_file = "${account_dir}/private_${le_env}.key"
-      $account_conf_file = "${account_dir}/account_${le_env}.conf"
+      $account_key_file = "${account_dir}/private_${acme_ca_compat}.key"
+      $account_conf_file = "${account_dir}/account_${acme_ca_compat}.conf"
 
       # Create account config file for acme.sh.
       file { $account_conf_file:
@@ -53,32 +69,25 @@ class acme::request::handler {
       }
 
       # Some status files so we avoid useless runs of acme.sh.
-      $account_created_file = "${account_dir}/${le_env}.created"
-      $account_registered_file = "${account_dir}/${le_env}.registered"
-
-      # We need to tell acme.sh when to use LE staging servers.
-      if ( $le_env == 'staging' ) {
-        $staging_or_not = '--staging'
-      } else {
-        $staging_or_not = ''
-      }
+      $account_created_file = "${account_dir}/${acme_ca_compat}.created"
+      $account_registered_file = "${account_dir}/${acme_ca_compat}.registered"
 
       $le_create_command = join([
         $acme::acmecmd,
-        $staging_or_not,
         '--create-account-key',
         '--accountkeylength 4096',
         '--log-level 2',
         "--log ${acme::acmelog}",
         "--home ${acme::acme_dir}",
         "--accountconf ${account_conf_file}",
+        "--server ${acme_ca}",
         '>/dev/null',
         '&&',
         "touch ${account_created_file}",
       ], ' ')
 
       # Run acme.sh to create the account key.
-      exec { "create-account-${le_env}-${account_email}" :
+      exec { "create-account-${acme_ca}-${account_email}" :
         user    => $acme::user,
         cwd     => $acme::base_dir,
         group   => $acme::group,
@@ -94,19 +103,19 @@ class acme::request::handler {
 
       $le_register_command = join([
         $acme::acmecmd,
-        $staging_or_not,
         '--registeraccount',
         '--log-level 2',
         "--log ${acme::acmelog}",
         "--home ${acme::acme_dir}",
         "--accountconf ${account_conf_file}",
+        "--server ${acme_ca}",
         '>/dev/null',
         '&&',
         "touch ${account_registered_file}",
       ], ' ')
 
       # Run acme.sh to register the account.
-      exec { "register-account-${le_env}-${account_email}" :
+      exec { "register-account-${acme_ca}-${account_email}" :
         user    => $acme::user,
         cwd     => $acme::base_dir,
         group   => $acme::group,
@@ -186,7 +195,7 @@ class acme::request::handler {
     content => epp("${module_name}/get_certificate_ocsp.sh.epp", {
       old_openssl => $old_openssl,
       path        => $acme::path,
-      proxy       => $acme::letsencrypt_proxy,
+      proxy       => $acme::proxy,
       }),
   }
 

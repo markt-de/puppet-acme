@@ -20,11 +20,15 @@ acme::log_dir: '/var/log/acme.sh'
 acme::acmelog: "%{lookup('acme::log_dir')}/acme.log"
 acme::dnssleep: 60
 
-# Let's Encrypt defaults
+# ACME defaults
+acme::ca_whitelist:
+  - 'letsencrypt'
+  - 'letsencrypt_test'
+acme::default_ca: 'letsencrypt'
 acme::letsencrypt_ca: 'production'
-acme::letsencrypt_proxy: ~
-acme::renew_days: 30
 acme::ocsp_request: "%{lookup('acme::base_dir')}/get_certificate_ocsp.sh"
+acme::proxy: ~
+acme::renew_days: 30
 
 # Cert defaults
 acme::dh_param_size: 2048
