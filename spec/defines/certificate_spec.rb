@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'acme::certificate', type: :define do
-  context 'supported operating systems' do
+  context 'on supported operating systems' do
     on_supported_os.each do |os, facts|
       context "on #{os}" do
         let(:facts) do

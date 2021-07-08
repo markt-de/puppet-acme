@@ -60,7 +60,7 @@ describe 'acme' do
           it { is_expected.not_to contain_package('git').with_ensure('present') }
         end
 
-        context 'on Puppetserver' do
+        context 'on Puppet Server' do
           test_host = 'puppetserver.example.com'
           le_account = 'certmaster@example.com'
           le_profile = 'nsupdate_example'
@@ -118,6 +118,58 @@ describe 'acme' do
           it { is_expected.to contain_file('/opt/acme.sh').with_ensure('directory') }
           it { is_expected.to contain_vcsrepo('/opt/acme.sh').with_revision('master') }
           it { is_expected.to contain_package('git').with_ensure('present') }
+        end
+
+        context 'on Puppet Server with custom ca_whitelist' do
+          test_host = 'puppetserver.example.com'
+          le_account = 'certmaster@example.com'
+          le_ca = 'zerosl'
+
+          let(:facts) do
+            facts.merge(
+              fqdn: test_host,
+              servername: test_host,
+              openssl_version: '1.0.2k-fips',
+            )
+          end
+          let :params do
+            {
+              accounts: [le_account],
+              profiles: {
+                nsupdate_example: {
+                  challengetype: 'dns-01',
+                  hook: 'nsupdate',
+                  env: {
+                    NSUPDATE_SERVER: 'bind.example.com',
+                  },
+                  options: {
+                    dnssleep: 15,
+                    nsupdate_id: 'example-key',
+                    nsupdate_type: 'hmac-md5',
+                    nsupdate_key: 'abcdefg1234567890',
+                  },
+                },
+              },
+              ca_whitelist: [le_ca],
+            }
+          end
+
+          it { is_expected.to compile.with_all_deps }
+          it { is_expected.to contain_class('acme') }
+
+          it { is_expected.to contain_file("/etc/acme.sh/accounts/#{le_account}/account_#{le_ca}.conf") }
+          it { is_expected.not_to contain_file("/etc/acme.sh/accounts/#{le_account}/account_staging.conf") }
+          it { is_expected.not_to contain_file("/etc/acme.sh/accounts/#{le_account}/account_production.conf") }
+
+          it { is_expected.to contain_augeas("update account conf: /etc/acme.sh/accounts/#{le_account}/account_#{le_ca}.conf") }
+          it { is_expected.not_to contain_augeas("update account conf: /etc/acme.sh/accounts/#{le_account}/account_staging.conf") }
+          it { is_expected.not_to contain_augeas("update account conf: /etc/acme.sh/accounts/#{le_account}/account_production.conf") }
+
+          it { is_expected.to contain_exec("create-account-#{le_ca}-#{le_account}") }
+          it { is_expected.not_to contain_exec("create-account-letsencrypt-#{le_account}") }
+
+          it { is_expected.to contain_exec("register-account-#{le_ca}-#{le_account}") }
+          it { is_expected.not_to contain_exec("register-account-letsencrypt-#{le_account}") }
         end
       end
     end
