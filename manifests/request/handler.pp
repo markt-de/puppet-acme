@@ -200,6 +200,6 @@ class acme::request::handler {
   }
 
   # Get all certificate signing requests that were tagged to be processed on
-  # this host. Usually you want them all to run on the Puppetserver.
+  # this host. Usually you want them all to run on the Puppet Server.
   Acme::Request<<| tag == "master_${::fqdn}" |>>
 }

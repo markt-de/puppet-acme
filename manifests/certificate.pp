@@ -18,7 +18,7 @@
 #   This profile must exist in `$profiles` on your `$acme_host`.
 #
 # @param acme_host
-#   The host you want to run acme.sh on. Usually your Puppetserver.
+#   The host you want to run acme.sh on. Usually your Puppet Server.
 #   Defaults to `$acme::acme_host`.
 #
 # @param dh_param_size

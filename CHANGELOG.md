@@ -10,6 +10,10 @@ namely the switch from Let's Encrypt to ZeroSSL as default ACME CA. This module
 will keep Let's Encrypt as the default CA, but adds support for all CA's that are
 currently supported by acme.sh.
 
+Existing users need to update acme.sh to a recent version (using the `$acme_revision`
+parameter) and adopt the parameter changes, especially replacing the old parameter
+`$letsencrypt_ca` with `$ca` (or `$default_ca` respectively).
+
 ### Added
 * Add support for new ACME CA's: buypass, buypass_test, sslcom, zerossl
 * Add parameters `$ca` and `$default_ca`
@@ -21,6 +25,9 @@ currently supported by acme.sh.
 * New parameter `$ca` must be used to use Let's Encrypt "production" environment (set it to `letsencrypt`)
 * Rename parameter `$letsencrypt_proxy` to `$proxy`
 * Adjust wording: replace "Let's Encrypt" with "ACME" wherever applicable
+
+### Fixed
+* Fix accidential switch from Let's Encrypt to ZeroSSL with recent version of acme.sh ([#33])
 
 ### Removed
 * Remove parameter `$letsencrypt_ca`, new parameter `$ca` must be used instead
@@ -37,7 +44,7 @@ NOTE: When upgrading from version 1.x to 2.x temporarely set `$acme_git_force` t
 * Change default value of `$acme_git_force` to `false`
 
 ### Fixed
-* Fix an issue where certificates would incorrectly be deployed on Puppetserver ([#31])
+* Fix an issue where certificates would incorrectly be deployed on Puppet Server ([#31])
 
 ## [2.1.0] - 2020-07-08
 This is a maintenance release. It fixes an issue with deployment of signed certificates.
@@ -138,6 +145,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#33]: https://github.com/fraenki/puppet-acme/pull/33
 [#32]: https://github.com/fraenki/puppet-acme/pull/32
 [#31]: https://github.com/fraenki/puppet-acme/pull/31
 [#30]: https://github.com/fraenki/puppet-acme/pull/30

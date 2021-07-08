@@ -11,12 +11,14 @@
 1. [Requirements](#requirements)
 1. [Workflow](#workflow)
 1. [Setup](#setup)
-    * [Configure your Puppetserver](#configure-your-puppet-server)
+    * [Configure your Puppet Server](#configure-your-puppet-server)
 1. [Usage](#usage)
     * [Request a certificate](#request-a-certificate)
+    * [Using other ACME CA's](#using-other-acme-cas)
     * [SAN certificates](#san-certificates)
     * [DNS alias mode](#dns-alias-mode)
     * [Testing and debugging](#testing-and-debugging)
+    * [Updating acme.sh](#updating-acmesh)
 1. [Examples](#examples)
     * [Apache](#apache)
 1. [Reference](#reference)
@@ -32,13 +34,13 @@
 
 ## Overview
 
-Centralized SSL certificate management using Let's Encrypt™ (or other ACME CA's).
-Keep your private keys safe on the host they belong to and let your Puppetserver
+Centralized SSL certificate management using Let's Encrypt™ or other ACME CA's.
+Keep your private keys safe on the host they belong to and let your Puppet Server
 sign the CSRs and distribute the certificates.
 
 ## Requirements
 
-* Puppet 6+ with [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html) enabled
+* Puppet 6+ with [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html) enabled (PuppetDB)
 * A [compatible DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to validate your ACME certificates
 
 Furthermore it is highly recommended to use [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml)
@@ -46,20 +48,20 @@ to protect sensitive information (such as DNS API secrets).
 
 ## Workflow
 
-This module creates private keys and CSRs, transfers the CSR to your Puppetserver
+For every configured certificate, this module creates a private key and CSR, transfers the CSR to your Puppet Server
 where it is signed using the popular and lightweight [acmesh-official/acme.sh](https://github.com/acmesh-official/acme.sh).
 
-Signed certificates are shipped back to the originating host.
+Signed certificates are shipped back to the originating host. The private key is never exposed.
 
-You just need to specify the required challenge configuration on your Puppetserver.
+You just need to specify the required challenge configuration on your Puppet Server.
 All DNS-01 hooks that are [supported by acme.sh](https://github.com/acmesh-official/acme.sh/blob/master/dnsapi/README.md) will work immediately.
 
 ## Setup
 
-### Configure your Puppetserver
+### Configure your Puppet Server
 
 The whole idea is centralized certificate management, thus you have to
-add some configuration on your Puppetserver.
+add some configuration on your Puppet Server.
 
 First configure the ACME accounts that are available to issue certificates:
 
@@ -113,7 +115,7 @@ Note that the `hook` parameter must exactly match the name of the hook that is u
 Some DNS hooks require environment variables that contain usernames or API tokens,
 simply add them to the `env` parameter.
 
-All CSRs are collected and signed on your Puppetserver via PuppetDB, and the resulting
+All CSRs are collected and signed on your Puppet Server via PuppetDB, and the resulting
 certificates and CA chain files are shipped back to the originating host via PuppetDB.
 
 ## Usage
@@ -126,36 +128,67 @@ On the Puppet node where you need the certificate(s):
       certificates => {
         # issue a test certificate
         test.example.com => {
-          use_profile    => 'route53_example',
-          use_account    => 'ssl@example.com',
-          letsencrypt_ca => 'staging',
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
         }
         # a cert for the current FQDN is nice too
         ${::fqdn} => {
-          use_profile    => 'nsupdate_example',
-          use_account    => 'certmaster@example.com',
-          letsencrypt_ca => 'production',
+          use_profile => 'nsupdate_example',
+          use_account => 'certmaster@example.com',
+          ca          => 'letsencrypt',
         },
       }
     }
 ~~~
 
 *Note:* The `use_profile` and `use_account` parameters must match the profiles
-and accounts that you've previously configured on your Puppetserver. Otherwise
+and accounts that you've previously configured on your Puppet Server. Otherwise
 the module will refuse to issue the certificate.
 
 The private key and CSR will be generated on your node and the CSR is shipped
-to your Puppetserver for signing. The certificate is put on your node as soon
-as it was signed on your Puppetserver.
+to your Puppet Server for signing. The certificate is put on your node as soon
+as it was signed on your Puppet Server.
 
 Instead of specifying the domains as parameter to the `acme` class, it is
 also possible to use the `acme::certificate` defined type directly:
 
 ~~~puppet
     acme::certificate { 'test.example.com':
-      use_profile    => 'route53_example',
-      use_account    => 'ssl@example.com',
-      letsencrypt_ca => 'staging',
+      use_profile => 'route53_example',
+      use_account => 'ssl@example.com',
+      ca          => 'letsencrypt_test',
+    }
+~~~
+
+#### Using other ACME CA's
+
+This module uses the Let's Encrypt ACME CA by default. The default ACME CA can
+be changed on the Puppet Server:
+
+~~~puppet
+    Class { 'acme':
+      default_ca => 'zerossl',
+      ca_whitelist => ['letsencrypt', 'letsencrypt_test', 'zerossl'],
+      ...
+    }
+~~~
+
+Note that other CA's must always be added to the `$ca_whitelist`, otherwise issueing
+certificates will fail for this CA. By default only 'letsencrypt' and 'letsencrypt_test'
+are whitelisted.
+
+Besides that a different CA can also be specified for individual certificates:
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        test.example.com => {
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'zerossl',
+        }
+      }
     }
 ~~~
 
@@ -170,9 +203,9 @@ For example:
     class { 'acme':
       certificates => {
         'test.example.com foo.example.com bar.example.com' => {
-          use_profile    => 'route53_example',
-          use_account    => 'ssl@example.com',
-          letsencrypt_ca => 'staging',
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
         }
     }
 ~~~
@@ -181,9 +214,9 @@ Or use the defined type directly:
 
 ~~~puppet
     acme::certificate { 'test.example.com foo.example.com bar.example.com':
-      use_profile    => 'route53_example',
-      use_account    => 'ssl@example.com',
-      letsencrypt_ca => 'staging',
+      use_profile => 'route53_example',
+      use_account => 'ssl@example.com',
+      ca          => 'letsencrypt_test',
     }
 ~~~
 
@@ -218,7 +251,7 @@ In order to use DNS alias mode, specify the domain name either in the `challenge
 
 For testing purposes you should use a test CA, such as `letsencrypt_test`. Otherwise
 you will hit rate limits pretty soon. It is possible to set the default CA on
-your Puppetserver by using the `default_ca` parameter:
+your Puppet Server by using the `default_ca` parameter:
 
 ~~~puppet
     class { 'acme' :
@@ -232,6 +265,21 @@ Puppet nodes, as shown in the previous examples.
 Note that certificates generated by a test CA cannot be validated and as a result
 will generate security warnings.
 
+#### Updating acme.sh
+
+This module automatically updates acme.sh to the latest version, which may not
+always be desirable. It is possible to change the `$acme_revision` parameter to
+install a specific version of acme.sh:
+
+~~~puppet
+    class { 'acme' :
+      acme_revision => '9293bcfb1cd5a56c6cede3f5f46af8529ee99624'
+    }
+~~~
+
+The revision should be taken from the official acme.sh repository. In order to
+revert to the latest version, the value should be set to 'master'.
+
 ## Examples
 
 ### Apache
@@ -240,11 +288,11 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
 ~~~puppet
     # request a certificate from acme
     acme::certificate { $::fqdn:
-      use_profile    => 'nsupdate_example',
-      use_account    => 'certmaster@example.com',
-      letsencrypt_ca => 'production',
+      use_profile => 'nsupdate_example',
+      use_account => 'certmaster@example.com',
+      ca          => 'letsencrypt',
       # restart apache when the certificate is signed (or renewed)
-      notify         => Class['apache::service'],
+      notify      => Class['apache::service'],
     }
 
     # get configuration from acme
@@ -314,15 +362,15 @@ Locations of the important certificate files (i.e. "cert.example.com"):
 
 Basic directory layout:
 
-* `/etc/acme.sh/accounts`: (Puppetserver) Private keys and other files related to ACME accounts
+* `/etc/acme.sh/accounts`: (Puppet Server) Private keys and other files related to ACME accounts
 * `/etc/acme.sh/certs`: Certificates, CA chains and OCSP files
 * `/etc/acme.sh/configs`: OpenSSL configuration and other files required for the CSR
 * `/etc/acme.sh/csrs`: Certificate signing requests (CSR)
-* `/etc/acme.sh/home`: (Puppetserver) Working directory for acme.sh
+* `/etc/acme.sh/home`: (Puppet Server) Working directory for acme.sh
 * `/etc/acme.sh/keys`: Private keys for each certificate
-* `/etc/acme.sh/results`: (Puppetserver) Working directory, used to export certificates
-* `/opt/acme.sh`: (Puppetserver) Local copy of acme.sh (GIT repository)
-* `/var/log/acme.sh/acme.log`: (Puppetserver) acme.sh log file
+* `/etc/acme.sh/results`: (Puppet Server) Working directory, used to export certificates
+* `/opt/acme.sh`: (Puppet Server) Local copy of acme.sh (GIT repository)
+* `/var/log/acme.sh/acme.log`: (Puppet Server) acme.sh log file
 
 ### Classes and parameters
 
@@ -334,7 +382,7 @@ Classes and parameters are documented in [REFERENCE.md](REFERENCE.md).
 
 It takes several puppet runs to issue a certificate. Two Puppet runs are
 required to prepare the CSR on your Puppet node. Two more Puppet runs
-on your Puppetserver are required to sign the certificate and send it to
+on your Puppet Server are required to sign the certificate and send it to
 PuppetDB. Now it's ready to be collected by your Puppet node.
 
 The process is seamless for certificate renewals, but it takes a little time

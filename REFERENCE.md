@@ -389,7 +389,7 @@ This profile must exist in `$profiles` on your `$acme_host`.
 
 Data type: `String`
 
-The host you want to run acme.sh on. Usually your Puppetserver.
+The host you want to run acme.sh on. Usually your Puppet Server.
 Defaults to `$acme::acme_host`.
 
 Default value: `$acme::acme_host`
