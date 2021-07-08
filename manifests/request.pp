@@ -66,6 +66,13 @@ define acme::request (
       "cert ${domain}")
   }
 
+  # Check if the CA is whitelisted.
+  $ca_whitelist = $acme::ca_whitelist
+  if ! ($ca in $ca_whitelist) {
+    fail("Module ${module_name}: the ACME CA \"${ca}\" is not whitelisted,",
+      "unable to proceed with cert ${domain}")
+  }
+
   # Get configured values from the profile.
   $challengetype = $profile['challengetype']
   $hook = $profile['hook']
