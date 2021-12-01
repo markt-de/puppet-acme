@@ -401,7 +401,7 @@ When rebuilding or reinstalling an existing node, the module will be unable to
 create new or update existing certificates for this node. Instead a key mismatch
 will occur, because an entirely new private key will be created on the node.
 
-There is currently no way to fix this (#6) automatically.
+There is currently no way to fix this automatically [#6](https://github.com/fraenki/puppet-acme/issues/6).
 
 The old files can be manually cleaned on the Puppet Server by running something
 like this:
