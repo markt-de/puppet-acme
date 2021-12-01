@@ -27,6 +27,7 @@
 1. [Limitations](#limitations)
     * [Requires multiple Puppet runs](#requires-multiple-puppet-runs)
     * [HTTP-01 challenge type untested](#http-01-challenge-type-untested)
+    * [Rebuilding nodes](#rebuilding-nodes)
     * [OS Compatibility](#os-compatibility)
 1. [Development](#development)
 1. [Fork](#fork)
@@ -393,6 +394,24 @@ to issue a new certificate.
 The HTTP-01 challenge type is theoretically supported, but it is untested with this module.
 Some additional parameters may be missing. Feel free to report issues
 or suggest enhancements.
+
+### Rebuilding nodes
+
+When rebuilding or reinstalling an existing node, the module will be unable to
+create new or update existing certificates for this node. Instead a key mismatch
+will occur, because an entirely new private key will be created on the node.
+
+There is currently no way to fix this (#6) automatically.
+
+The old files can be manually cleaned on the Puppet Server by running something
+like this:
+
+```
+find /etc/acme.sh -name '*NODENAME*' -type f -delete
+```
+
+Besides that it may also be necessary to purge the old PuppetDB contents for this
+node.
 
 ### OS Compatibility
 
