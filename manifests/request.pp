@@ -116,9 +116,10 @@ define acme::request (
       }
     }
   }
+
   # Merge those pre-defined hook options with user-defined hook options.
   # NOTE: We intentionally use Hashes so that *values* can be overriden.
-  if ($_hook_params_pre =~ Hash) {
+  if defined('$_hook_params_pre') and ($_hook_params_pre =~ Hash) {
     $_hook_params = deep_merge($_hook_params_pre, $profile['env'])
   } elsif ($profile and $profile['env'] =~ Hash) {
     $_hook_params = $profile['env']

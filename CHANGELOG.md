@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+* Fix unknown variable '_hook_params_pre'
+
 ## [3.0.0] - 2021-07-08
 This new major release is a response to the most recent changes in acme.sh,
 namely the switch from Let's Encrypt to ZeroSSL as default ACME CA. This module
