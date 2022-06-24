@@ -62,7 +62,6 @@ The following parameters are available in the `acme` class:
 * [`manage_packages`](#manage_packages)
 * [`dnssleep`](#dnssleep)
 * [`exec_timeout`](#exec_timeout)
-* [`wildcard_marker`](#wildcard_marker)
 * [`acme_install_dir`](#acme_install_dir)
 * [`acmecmd`](#acmecmd)
 * [`acmelog`](#acmelog)
@@ -209,14 +208,6 @@ Data type: `Integer`
 Specifies the time in seconds that any acme.sh operation can take before
 it is aborted by Puppet. This should usually be set to a higher value
 than `$dnssleep`.
-
-##### <a name="wildcard_marker"></a>`wildcard_marker`
-
-Data type: `String`
-
-A string that is used to replace `*` in wildcard certificates. This is required
-because Puppet does not allow special chars in variable names.
-DO NOT CHANGE THIS VALUE! It is hardcoded in all custom facts too.
 
 ##### <a name="acme_install_dir"></a>`acme_install_dir`
 

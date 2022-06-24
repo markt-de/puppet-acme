@@ -223,6 +223,70 @@ Or use the defined type directly:
 
 In both examples "test.example.com" will be used as base domain for the CSR.
 
+Alternatively, you can specify the domains explicitly:
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        'test.example.com' => {
+          domain      => 'test.example.com foo.example.com bar.example.com',
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
+        }
+    }
+~~~
+
+or as a list of domains:
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        'test.example.com' => {
+          domain      => ['test.example.com', 'foo.example.com', 'bar.example.com'],
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
+        }
+    }
+~~~
+
+It is recommended to use the first domain as name for the certificate resource,
+to increase compatibility with the acme.sh script. However, it is not a strict
+requirement, and is not possible when multiple certificates are required for the
+same base name (see below).
+
+### Multiple certificates for one base domain
+
+Sometimes you need to issue multiple certificates for the same base domain.
+This can happen either on a single node (for example one certificate with ocsp_must_staple flag
+set, and one without it), or on multiple nodes (for example two failover nodes serving the same 
+domain).
+
+You can use the resource name to specify a unique identifier, and the `domain` parameter to
+explicitly list the domain(s):
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        'mail.example.com (webserver)' => {
+          domain      => 'mail.example.com',
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
+        },
+        'mail.example.com (mailserver)' => {
+          domain           => 'mail.example.com',
+          use_profile      => 'route53_example',
+          use_account      => 'ssl@example.com',
+          ca               => 'letsencrypt_test',
+          ocsp_must_staple => true,
+        }
+      }
+   }
+~~~
+
+
 ### DNS alias mode
 
 In order to use DNS alias mode, specify the domain name either in the `challenge_alias` or `domain_alias` parameter of your profile:

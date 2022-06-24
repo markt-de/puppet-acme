@@ -59,7 +59,8 @@ class acme::request::handler {
         incl    => $account_conf_file,
         context => "/files${account_conf_file}",
         changes => [
-          "set CERT_HOME \"'${acme::acme_dir}'\"",
+          # CERT_HOME must not be set, otherwise it cannot be set on the command line
+          "rm CERT_HOME",
           "set LOG_FILE \"'${acme::acmelog}'\"",
           "set ACCOUNT_KEY_PATH \"'${account_key_file}'\"",
           "set ACCOUNT_EMAIL \"'${account_email}'\"",
@@ -78,12 +79,12 @@ class acme::request::handler {
         '--accountkeylength 4096',
         '--log-level 2',
         "--log ${acme::acmelog}",
-        "--home ${acme::acme_dir}",
-        "--accountconf ${account_conf_file}",
+        "--home \'${acme::acme_dir}\'",
+        "--accountconf \'${account_conf_file}\'",
         "--server ${acme_ca}",
         '>/dev/null',
         '&&',
-        "touch ${account_created_file}",
+        "touch \'${account_created_file}\'",
       ], ' ')
 
       # Run acme.sh to create the account key.
@@ -106,12 +107,12 @@ class acme::request::handler {
         '--registeraccount',
         '--log-level 2',
         "--log ${acme::acmelog}",
-        "--home ${acme::acme_dir}",
+        "--home \'${acme::acme_dir}\'",
         "--accountconf ${account_conf_file}",
         "--server ${acme_ca}",
         '>/dev/null',
         '&&',
-        "touch ${account_registered_file}",
+        "touch \'${account_registered_file}\'",
       ], ' ')
 
       # Run acme.sh to register the account.

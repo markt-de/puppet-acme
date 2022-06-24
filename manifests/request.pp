@@ -44,15 +44,15 @@ define acme::request (
   # acme.sh configuration
   $acmecmd = $acme::acmecmd
   $acmelog = $acme::acmelog
-  $csr_file = "${csr_dir}/${domain}/cert.csr"
-  $crt_file = "${crt_dir}/${domain}/cert.pem"
-  $chain_file = "${crt_dir}/${domain}/chain.pem"
-  $fullchain_file = "${crt_dir}/${domain}/fullchain.pem"
+  $csr_file = "${csr_dir}/${name}/cert.csr"
+  $crt_file = "${crt_dir}/${name}/cert.pem"
+  $chain_file = "${crt_dir}/${name}/chain.pem"
+  $fullchain_file = "${crt_dir}/${name}/fullchain.pem"
 
   # Check if the account is actually defined.
   $accounts = $acme::accounts
   if ! ($use_account in $accounts) {
-    fail("Module ${module_name}: account \"${use_account}\" for cert ${domain}",
+    fail("Module ${module_name}: account \"${use_account}\" for cert ${name}",
       "is not defined on \$acme_host")
   }
   $account_email = $use_account
@@ -63,14 +63,14 @@ define acme::request (
     $profile = $profiles[$use_profile]
   } else {
     fail("Module ${module_name}: unable to find profile \"${use_profile}\" for",
-      "cert ${domain}")
+      "cert ${name}")
   }
 
   # Check if the CA is whitelisted.
   $ca_whitelist = $acme::ca_whitelist
   if ! ($ca in $ca_whitelist) {
     fail("Module ${module_name}: the ACME CA \"${ca}\" is not whitelisted,",
-      "unable to proceed with cert ${domain}")
+      "unable to proceed with cert ${name}")
   }
 
   # Get configured values from the profile.
@@ -129,7 +129,7 @@ define acme::request (
 
   # Convert the Hash to an Array, required for Exec's "environment" attribute.
   $hook_params = $_hook_params.map |$key,$value| { "${key}=${value}" }
-  notify { "hook params for domain ${domain}: ${hook_params}": loglevel => debug }
+  notify { "hook params for cert ${name}: ${hook_params}": loglevel => debug }
 
   # Collect additional options for acme.sh.
   if ($profile['options']['dnssleep']
@@ -166,7 +166,7 @@ define acme::request (
   # NOTE: We need to use a different directory on $acme_host to avoid
   #       duplicate declaration errors (in cases where the CSR was also
   #       generated on $acme_host).
-  file { "${csr_dir}/${domain}":
+  file { "${csr_dir}/${name}":
     ensure => directory,
     mode   => '0755',
   }
@@ -178,7 +178,7 @@ define acme::request (
   }
 
   # Create directory to place the crt_file for each domain
-  $crt_dir_domain = "${crt_dir}/${domain}"
+  $crt_dir_domain = "${crt_dir}/${name}"
   ensure_resource('file', $crt_dir_domain, {
     ensure  => directory,
     mode    => '0755',
@@ -190,23 +190,29 @@ define acme::request (
     ],
   })
 
+  if ($domain == $name) {
+    $cert_home = $acme_dir
+  } else {
+    $cert_home = "${acme_dir}/${name}_"
+  }
+
   # Places where acme.sh stores the resulting certificate.
-  $le_crt_file = "${acme_dir}/${domain}/${domain}.cer"
-  $le_chain_file = "${acme_dir}/${domain}/ca.cer"
-  $le_fullchain_file = "${acme_dir}/${domain}/fullchain.cer"
+  $le_crt_file = "${cert_home}/${domain}/${domain}.cer"
+  $le_chain_file = "${cert_home}/${domain}/ca.cer"
+  $le_fullchain_file = "${cert_home}/${domain}/fullchain.cer"
 
   # We create a copy of the resulting certificates in a separate folder
   # to make it easier to collect them with facter.
   # XXX: Also required by acme::request::crt.
-  $result_crt_file = "${results_dir}/${domain}.pem"
-  $result_chain_file = "${results_dir}/${domain}.ca"
+  $result_crt_file = "${results_dir}/${name}.pem"
+  $result_chain_file = "${results_dir}/${name}.ca"
 
   # Convert altNames to be compatible with acme.sh.
-  $_altnames = $altnames.map |$item| { "--domain ${item}" }
+  $_altnames = $altnames.map |$item| { "--domain \'${item}\'" }
 
   # Convert days to seconds for openssl...
   $renew_seconds = $renew_days*86400
-  notify { "acme renew set to ${renew_days} days (or ${renew_seconds} seconds) for domain ${domain}": loglevel => debug }
+  notify { "acme renew set to ${renew_days} days (or ${renew_seconds} seconds) for cert ${name}": loglevel => debug }
 
   # NOTE: If the CSR file is newer than the cert, this check will trigger
   # a renewal of the cert. However, acme.sh may not recognize the change
@@ -245,11 +251,12 @@ define acme::request (
     "--domain \'${domain}\'",
     $_altnames,
     $acme_validation,
-    "--log ${acmelog}",
+    "--log \'${acmelog}\'",
     '--log-level 2',
-    "--home ${acme_dir}",
+    "--home \'${acme_dir}\'",
+    "--cert-home \'${cert_home}\'",
     '--keylength 4096',
-    "--accountconf ${account_conf_file}",
+    "--accountconf \'${account_conf_file}\'",
     $_ocsp,
     "--csr \'${csr_file}\'",
     "--cert-file \'${crt_file}\'",
@@ -268,11 +275,12 @@ define acme::request (
     $_altnames,
     $acme_validation,
     "--days ${renew_days}",
-    "--log ${acmelog}",
+    "--log \'${acmelog}\'",
     '--log-level 2',
-    "--home ${acme_dir}",
+    "--home \'${acme_dir}\'",
+    "--cert-home \'${cert_home}\'",
     '--keylength 4096',
-    "--accountconf ${account_conf_file}",
+    "--accountconf \'${account_conf_file}\'",
     $_ocsp,
     "--csr \'${csr_file}\'",
     "--cert-file \'${crt_file}\'",
@@ -284,7 +292,7 @@ define acme::request (
   ], ' ')
 
   # Run acme.sh to issue the certificate
-  exec { "issue-certificate-${domain}" :
+  exec { "issue-certificate-${name}" :
     user        => $user,
     cwd         => $base_dir,
     group       => $group,
@@ -311,7 +319,7 @@ define acme::request (
   }
 
   # Run acme.sh to issue/renew the certificate
-  exec { "renew-certificate-${domain}" :
+  exec { "renew-certificate-${name}" :
     user        => $user,
     cwd         => $base_dir,
     group       => $group,
@@ -353,7 +361,7 @@ define acme::request (
     mode   => '0644',
   }
 
-  ::acme::request::ocsp { $domain:
+  ::acme::request::ocsp { $name:
     require => File[$result_crt_file],
   }
 }
