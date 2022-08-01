@@ -25,8 +25,8 @@
       "version_requirement": ">= 1.0.0 <2.0.0"
     },
     {
-      "name": "camptocamp-openssl",
-      "version_requirement": ">= 1.5.1 <2.0.0"
+      "name": "puppet-openssl",
+      "version_requirement": ">= 2.0.0 <3.0.0"
     }
   ],
   "operatingsystem_support": [

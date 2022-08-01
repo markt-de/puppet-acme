@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+* Replace dependency camptocamp/openssl with voxpupuli/openssl
+
 ### Fixed
 * Fix unknown variable '_hook_params_pre'
 
