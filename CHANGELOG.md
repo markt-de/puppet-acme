@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 * Replace dependency camptocamp/openssl with voxpupuli/openssl
+* Migrate unit tests to GitHub Actions
 
 ### Fixed
 * Fix unknown variable '_hook_params_pre'
