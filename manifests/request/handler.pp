@@ -23,7 +23,6 @@ class acme::request::handler {
     # (Because we just don't know for which it will be used later.)
     $acme_cas = $acme::ca_whitelist
     $acme_cas.each |$acme_ca| {
-
       # Evaluate how the CA should be represented in filenames.
       # This is a compatibility layer. It ensures that old files that
       # were generated for the Let's Encrypt Production/Staging CA
@@ -46,7 +45,6 @@ class acme::request::handler {
 
       # Create account config file for acme.sh.
       file { $account_conf_file:
-        ensure  => present,
         owner   => $acme::user,
         group   => $acme::group,
         mode    => '0640',
@@ -66,7 +64,7 @@ class acme::request::handler {
           "set ACCOUNT_EMAIL \"'${account_email}'\"",
           "set LOG_LEVEL \"'2'\"",
           "set USER_PATH \"'${acme::path}'\"",
-          ]
+        ],
       }
 
       # Some status files so we avoid useless runs of acme.sh.
@@ -74,21 +72,21 @@ class acme::request::handler {
       $account_registered_file = "${account_dir}/${acme_ca_compat}.registered"
 
       $le_create_command = join([
-        $acme::acmecmd,
-        '--create-account-key',
-        '--accountkeylength 4096',
-        '--log-level 2',
-        "--log ${acme::acmelog}",
-        "--home \'${acme::acme_dir}\'",
-        "--accountconf \'${account_conf_file}\'",
-        "--server ${acme_ca}",
-        '>/dev/null',
-        '&&',
-        "touch \'${account_created_file}\'",
+          $acme::acmecmd,
+          '--create-account-key',
+          '--accountkeylength 4096',
+          '--log-level 2',
+          "--log ${acme::acmelog}",
+          "--home \'${acme::acme_dir}\'",
+          "--accountconf \'${account_conf_file}\'",
+          "--server ${acme_ca}",
+          '>/dev/null',
+          '&&',
+          "touch \'${account_created_file}\'",
       ], ' ')
 
       # Run acme.sh to create the account key.
-      exec { "create-account-${acme_ca}-${account_email}" :
+      exec { "create-account-${acme_ca}-${account_email}":
         user    => $acme::user,
         cwd     => $acme::base_dir,
         group   => $acme::group,
@@ -103,20 +101,20 @@ class acme::request::handler {
       }
 
       $le_register_command = join([
-        $acme::acmecmd,
-        '--registeraccount',
-        '--log-level 2',
-        "--log ${acme::acmelog}",
-        "--home \'${acme::acme_dir}\'",
-        "--accountconf ${account_conf_file}",
-        "--server ${acme_ca}",
-        '>/dev/null',
-        '&&',
-        "touch \'${account_registered_file}\'",
+          $acme::acmecmd,
+          '--registeraccount',
+          '--log-level 2',
+          "--log ${acme::acmelog}",
+          "--home \'${acme::acme_dir}\'",
+          "--accountconf ${account_conf_file}",
+          "--server ${acme_ca}",
+          '>/dev/null',
+          '&&',
+          "touch \'${account_registered_file}\'",
       ], ' ')
 
       # Run acme.sh to register the account.
-      exec { "register-account-${acme_ca}-${account_email}" :
+      exec { "register-account-${acme_ca}-${account_email}":
         user    => $acme::user,
         cwd     => $acme::base_dir,
         group   => $acme::group,
@@ -129,9 +127,7 @@ class acme::request::handler {
           File[$account_conf_file],
         ],
       }
-
     }
-
   }
 
   # Store config for profiles in filesystem, if we support them.
@@ -148,7 +144,7 @@ class acme::request::handler {
     # Basic validation for ALL profiles.
     if !$challengetype or !$hook {
       fail("Module ${module_name}: profile \"${profile_name}\" is incomplete,",
-        "missing either \"challengetype\" or \"hook\"")
+      "missing either \"challengetype\" or \"hook\"")
     }
 
     # DNS-01: nsupdate hook
@@ -175,10 +171,10 @@ class acme::request::handler {
           group   => $acme::group,
           mode    => '0600',
           content => epp("${module_name}/hooks/${hook}.epp", {
-            nsupdate_id   => $nsupdate_id,
-            nsupdate_key  => $nsupdate_key,
-            nsupdate_type => $nsupdate_type,
-            }),
+              nsupdate_id   => $nsupdate_id,
+              nsupdate_key  => $nsupdate_key,
+              nsupdate_type => $nsupdate_type,
+          }),
           require => File[$hook_dir],
         }
       }
@@ -186,7 +182,7 @@ class acme::request::handler {
   }
 
   # needed for the openssl ocsp -header flag
-  $old_openssl = versioncmp($::openssl_version, '1.1.0') < 0
+  $old_openssl = versioncmp($facts['openssl_version'], '1.1.0') < 0
 
   file { $acme::ocsp_request:
     ensure  => file,
@@ -194,13 +190,13 @@ class acme::request::handler {
     group   => $acme::group,
     mode    => '0755',
     content => epp("${module_name}/get_certificate_ocsp.sh.epp", {
-      old_openssl => $old_openssl,
-      path        => $acme::path,
-      proxy       => $acme::proxy,
-      }),
+        old_openssl => $old_openssl,
+        path        => $acme::path,
+        proxy       => $acme::proxy,
+    }),
   }
 
   # Get all certificate signing requests that were tagged to be processed on
   # this host. Usually you want them all to run on the Puppet Server.
-  Acme::Request<<| tag == "master_${::fqdn}" |>>
+  Acme::Request<<| tag == "master_${facts['networking']['fqdn']}" |>>
 }

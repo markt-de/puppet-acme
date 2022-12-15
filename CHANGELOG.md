@@ -15,7 +15,9 @@ with all existing configurations.
 ### Changed
 * Replace dependency camptocamp/openssl with voxpupuli/openssl
 * Update OS support and module dependencies
+* Replace legacy facts with modern facts
 * Migrate unit tests to GitHub Actions
+* Update to PDK 2.5.0
 
 ### Fixed
 * Fix unknown variable '_hook_params_pre'

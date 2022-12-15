@@ -74,14 +74,14 @@ define acme::csr (
   }
 
   ensure_resource('file', "${crt_dir}/${name}", {
-    ensure  => directory,
-    mode    => '0755',
-    owner   => $user,
-    group   => $group,
-    require => [
-      User[$user],
-      Group[$group]
-    ],
+      ensure  => directory,
+      mode    => '0755',
+      owner   => $user,
+      group   => $group,
+      require => [
+        User[$user],
+        Group[$group]
+      ],
   })
 
   $cnf_file = "${cfg_dir}/${name}/ssl.cnf"
@@ -91,18 +91,18 @@ define acme::csr (
   $crt_file = "${crt_dir}/${name}/cert.pem"
 
   $create_dh_unless = join([
-    'test',
-    '-f',
-    "\'${dh_file}\'",
-    '&&',
-    'test',
-    '$(',
-    "${stat_expression} \'${dh_file}\'",
-    ')',
-    '-gt',
-    '$(',
-    $date_expression,
-    ')',
+      'test',
+      '-f',
+      "\'${dh_file}\'",
+      '&&',
+      'test',
+      '$(',
+      "${stat_expression} \'${dh_file}\'",
+      ')',
+      '-gt',
+      '$(',
+      $date_expression,
+      ')',
   ], ' ')
 
   exec { "create-dh-${dh_file}" :
@@ -131,17 +131,17 @@ define acme::csr (
     group   => $group,
     mode    => '0644',
     content => epp("${module_name}/cert.cnf.epp", {
-      country           => $country,
-      domain            => $domain,
-      email             => $email,
-      has_san           => $has_san,
-      locality          => $locality,
-      ocsp_must_staple  => $ocsp_must_staple,
-      organization      => $organization,
-      state             => $state,
-      subject_alt_names => $subject_alt_names,
-      unit              => $unit,
-      }),
+        country           => $country,
+        domain            => $domain,
+        email             => $email,
+        has_san           => $has_san,
+        locality          => $locality,
+        ocsp_must_staple  => $ocsp_must_staple,
+        organization      => $organization,
+        state             => $state,
+        subject_alt_names => $subject_alt_names,
+        unit              => $unit,
+    }),
   }
 
   ssl_pkey { $key_file:

@@ -1,8 +1,15 @@
 # @summary Request a certificate.
 #
+# @param acme_host
+#   The host you want to run acme.sh on. Usually your Puppet Server.
+#   Defaults to `$acme::acme_host`.
+#
 # @param ca
 #   The ACME CA that should be used. Used to overwrite the default
 #   CA that is configured on `$acme_host`.
+#
+# @param dh_param_size
+#   dh parameter size, defaults to $::acme::dh_param_size
 #
 # @param domain
 #   Full qualified domain names you want to request a certificate for.
@@ -12,6 +19,15 @@
 #   If no domain is specified, the resource name will be parsed as a
 #   list of domains, and the first domain will be used as certificate name.
 #
+# @param ocsp_must_staple
+#   request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_must_staple
+#
+# @param posthook_cmd
+#   Specifies a optional command to run after a certificate has been changed.
+#
+# @param renew_days
+#   Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
+#
 # @param use_account
 #   The ACME account that should be used (or registered).
 #   This account must exist in `$accounts` on your `$acme_host`.
@@ -19,16 +35,6 @@
 # @param use_profile
 #   Specify the profile that should be used to sign the certificate.
 #   This profile must exist in `$profiles` on your `$acme_host`.
-#
-# @param acme_host
-#   The host you want to run acme.sh on. Usually your Puppet Server.
-#   Defaults to `$acme::acme_host`.
-#
-# @param dh_param_size
-#   dh parameter size, defaults to $::acme::dh_param_size
-#
-# @param ocsp_must_staple
-#   request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_must_staple
 #
 define acme::certificate (
   String $use_account,
@@ -41,7 +47,7 @@ define acme::certificate (
   Integer $renew_days = $acme::renew_days,
   Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']] $ca = undef,
 ) {
-  require ::acme::setup::common
+  require acme::setup::common
 
   $path = $acme::path
 

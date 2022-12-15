@@ -23,21 +23,21 @@ define acme::request::ocsp {
   $ocsp_request = $acme::ocsp_request
 
   $ocsp_command = join([
-    $ocsp_request,
-    "\'${crt_file}\'",
-    "\'${chain_file}\'",
-    "\'${ocsp_file}\'",
+      $ocsp_request,
+      "\'${crt_file}\'",
+      "\'${chain_file}\'",
+      "\'${ocsp_file}\'",
   ], ' ')
 
   $ocsp_onlyif = "test -f \'${crt_file}\'"
 
   $ocsp_unless = join([
-    "test -f \'${ocsp_file}\'",
-    '&&',
-    'test',
-    "\$( ${stat_expression} \'${ocsp_file}\' )",
-    '-gt',
-    "\$( ${date_expression} )",
+      "test -f \'${ocsp_file}\'",
+      '&&',
+      'test',
+      "\$( ${stat_expression} \'${ocsp_file}\' )",
+      '-gt',
+      "\$( ${date_expression} )",
   ], ' ')
 
   exec { "update_ocsp_file_for_${name}":

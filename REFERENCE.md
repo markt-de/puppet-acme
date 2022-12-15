@@ -37,52 +37,95 @@
 
 ## Classes
 
-### <a name="acme"></a>`acme`
+### `acme`
 
 Install and configure acme.sh to manage SSL certificates
 
 #### Parameters
 
-The following parameters are available in the `acme` class:
+The following parameters are available in the `acme` class.
 
-* [`certificates`](#certificates)
-* [`profiles`](#profiles)
-* [`accounts`](#accounts)
-* [`acme_host`](#acme_host)
-* [`acme_git_url`](#acme_git_url)
-* [`acme_git_force`](#acme_git_force)
-* [`acme_revision`](#acme_revision)
-* [`ca_whitelist`](#ca_whitelist)
-* [`default_ca`](#default_ca)
-* [`proxy`](#proxy)
-* [`renew_days`](#renew_days)
-* [`posthook_cmd`](#posthook_cmd)
-* [`dh_param_size`](#dh_param_size)
-* [`ocsp_must_staple`](#ocsp_must_staple)
-* [`manage_packages`](#manage_packages)
-* [`dnssleep`](#dnssleep)
-* [`exec_timeout`](#exec_timeout)
-* [`acme_install_dir`](#acme_install_dir)
-* [`acmecmd`](#acmecmd)
-* [`acmelog`](#acmelog)
-* [`base_dir`](#base_dir)
-* [`acme_dir`](#acme_dir)
-* [`acct_dir`](#acct_dir)
-* [`cfg_dir`](#cfg_dir)
-* [`key_dir`](#key_dir)
-* [`crt_dir`](#crt_dir)
-* [`csr_dir`](#csr_dir)
-* [`results_dir`](#results_dir)
-* [`log_dir`](#log_dir)
-* [`ocsp_request`](#ocsp_request)
-* [`date_expression`](#date_expression)
-* [`group`](#group)
-* [`path`](#path)
-* [`shell`](#shell)
-* [`stat_expression`](#stat_expression)
-* [`user`](#user)
+##### `accounts`
 
-##### <a name="certificates"></a>`certificates`
+Data type: `Array`
+
+An array of e-mail addresses that acme.sh may use during the ACME
+account registration. Should only be defined on $acme_host.
+
+##### `acct_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The directory for acme.sh accounts.
+
+##### `acme_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The working directory for acme.sh.
+
+##### `acme_git_url`
+
+Data type: `String`
+
+URL to the acme.sh GIT repository. Defaults to the official GitHub project.
+Feel free to use a local mirror or fork.
+
+##### `acme_git_force`
+
+Data type: `Boolean`
+
+Force repository creation, destroying any files on the path in the process.
+Useful when the repo URL has changed.
+
+##### `acme_host`
+
+Data type: `String`
+
+The host you want to run acme.sh on.
+For now it needs to be a puppetmaster, as it needs direct access
+to the certificates using functions in Puppet.
+
+##### `acme_install_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The installation directory for acme.sh.
+
+##### `acme_revision`
+
+Data type: `String`
+
+The GIT revision of the acme.sh repository. Defaults to `master` which should
+contain a stable version of acme.sh.
+
+##### `acmecmd`
+
+Data type: `String`
+
+The binary path to acme.sh.
+
+##### `acmelog`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The log file.
+
+##### `base_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The configuration base directory for acme.sh.
+
+##### `ca_whitelist`
+
+Data type: `Array`
+
+Specifies the CAs that may be used on `$acme_host`. The module will register
+any account specified in `$accounts` with all specified CAs. This ensure that
+these accounts are ready for use.
+
+##### `certificates`
 
 Data type: `Hash`
 
@@ -90,7 +133,111 @@ Array of full qualified domain names you want to request a certificate for.
 For SAN certificates you need to pass space seperated strings,
 for example ['foo.example.com fuzz.example.com', 'blub.example.com']
 
-##### <a name="profiles"></a>`profiles`
+##### `cfg_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The directory for acme.sh configs.
+
+##### `crt_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The directory for acme.sh certificates.
+
+##### `csr_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The directory for acme.sh CSRs.
+
+##### `date_expression`
+
+Data type: `String`
+
+The command used to calculate renewal dates for existing certificates.
+
+##### `default_ca`
+
+Data type: `Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']`
+
+The default ACME CA you want to use. May be overriden by specifying a
+different value for `$ca` for the certificate.
+Previous versions of acme.sh used to have Let's Encrypt as their default CA,
+hence this is the default value for this Puppet module.
+
+##### `dh_param_size`
+
+Data type: `Integer`
+
+Specifies the DH parameter size, defaults to `2048`.
+
+##### `dnssleep`
+
+Data type: `Integer`
+
+The time in seconds acme.sh should wait for all DNS changes to take effect.
+Settings this to `0` disables the sleep mechanism and lets acme.sh poll DNS
+status automatically by using DNS over HTTPS.
+
+##### `exec_timeout`
+
+Data type: `Integer`
+
+Specifies the time in seconds that any acme.sh operation can take before
+it is aborted by Puppet. This should usually be set to a higher value
+than `$dnssleep`.
+
+##### `group`
+
+Data type: `String`
+
+The group for acme.sh.
+
+##### `key_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The directory for acme.sh keys.
+
+##### `log_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The log directory for acme.sh.
+
+##### `manage_packages`
+
+Data type: `Boolean`
+
+Whether the module should install necessary packages, mainly git.
+Set to `false` to disable package management.
+
+##### `ocsp_must_staple`
+
+Data type: `Boolean`
+
+Whether to request certificates with OCSP Must-Staple extension, defaults to `true`.
+
+##### `ocsp_request`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The script used by acme.sh to get OCSP data.
+
+##### `path`
+
+Data type: `String`
+
+The content of the PATH env variable when running Exec resources.
+
+##### `posthook_cmd`
+
+Data type: `String`
+
+Specifies a optional command to run after a certificate has been changed.
+
+##### `profiles`
 
 Data type: `Optional[Hash]`
 
@@ -101,60 +248,7 @@ Should only be defined on $acme_host.
 
 Default value: ``undef``
 
-##### <a name="accounts"></a>`accounts`
-
-Data type: `Array`
-
-An array of e-mail addresses that acme.sh may use during the ACME
-account registration. Should only be defined on $acme_host.
-
-##### <a name="acme_host"></a>`acme_host`
-
-Data type: `String`
-
-The host you want to run acme.sh on.
-For now it needs to be a puppetmaster, as it needs direct access
-to the certificates using functions in Puppet.
-
-##### <a name="acme_git_url"></a>`acme_git_url`
-
-Data type: `String`
-
-URL to the acme.sh GIT repository. Defaults to the official GitHub project.
-Feel free to use a local mirror or fork.
-
-##### <a name="acme_git_force"></a>`acme_git_force`
-
-Data type: `Boolean`
-
-Force repository creation, destroying any files on the path in the process.
-Useful when the repo URL has changed.
-
-##### <a name="acme_revision"></a>`acme_revision`
-
-Data type: `String`
-
-The GIT revision of the acme.sh repository. Defaults to `master` which should
-contain a stable version of acme.sh.
-
-##### <a name="ca_whitelist"></a>`ca_whitelist`
-
-Data type: `Array`
-
-Specifies the CAs that may be used on `$acme_host`. The module will register
-any account specified in `$accounts` with all specified CAs. This ensure that
-these accounts are ready for use.
-
-##### <a name="default_ca"></a>`default_ca`
-
-Data type: `Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']`
-
-The default ACME CA you want to use. May be overriden by specifying a
-different value for `$ca` for the certificate.
-Previous versions of acme.sh used to have Let's Encrypt as their default CA,
-hence this is the default value for this Puppet module.
-
-##### <a name="proxy"></a>`proxy`
+##### `proxy`
 
 Data type: `Optional[String]`
 
@@ -162,221 +256,47 @@ Proxy server to use to connect to the ACME CA, for example `proxy.example.com:31
 
 Default value: ``undef``
 
-##### <a name="renew_days"></a>`renew_days`
+##### `renew_days`
 
 Data type: `Integer`
 
 Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
 
-##### <a name="posthook_cmd"></a>`posthook_cmd`
+##### `results_dir`
+
+Data type: `Stdlib::Compat::Absolute_path`
+
+The output directory for acme.sh.
+
+##### `shell`
 
 Data type: `String`
 
-Specified a optional command to run after a certificate has been changed.
+The shell for the acme.sh user account.
 
-##### <a name="dh_param_size"></a>`dh_param_size`
-
-Data type: `Integer`
-
-Specifies the DH parameter size, defaults to `2048`.
-
-##### <a name="ocsp_must_staple"></a>`ocsp_must_staple`
-
-Data type: `Boolean`
-
-Whether to request certificates with OCSP Must-Staple extension, defaults to `true`.
-
-##### <a name="manage_packages"></a>`manage_packages`
-
-Data type: `Boolean`
-
-Whether the module should install necessary packages, mainly git.
-Set to `false` to disable package management.
-
-##### <a name="dnssleep"></a>`dnssleep`
-
-Data type: `Integer`
-
-The time in seconds acme.sh should wait for all DNS changes to take effect.
-Settings this to `0` disables the sleep mechanism and lets acme.sh poll DNS
-status automatically by using DNS over HTTPS.
-
-##### <a name="exec_timeout"></a>`exec_timeout`
-
-Data type: `Integer`
-
-Specifies the time in seconds that any acme.sh operation can take before
-it is aborted by Puppet. This should usually be set to a higher value
-than `$dnssleep`.
-
-##### <a name="acme_install_dir"></a>`acme_install_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="acmecmd"></a>`acmecmd`
+##### `stat_expression`
 
 Data type: `String`
 
+The command used to get the modification time of a file.
 
-
-##### <a name="acmelog"></a>`acmelog`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="base_dir"></a>`base_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="acme_dir"></a>`acme_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="acct_dir"></a>`acct_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="cfg_dir"></a>`cfg_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="key_dir"></a>`key_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="crt_dir"></a>`crt_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="csr_dir"></a>`csr_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="results_dir"></a>`results_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="log_dir"></a>`log_dir`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="ocsp_request"></a>`ocsp_request`
-
-Data type: `Stdlib::Compat::Absolute_path`
-
-
-
-##### <a name="date_expression"></a>`date_expression`
+##### `user`
 
 Data type: `String`
 
-
-
-##### <a name="group"></a>`group`
-
-Data type: `String`
-
-
-
-##### <a name="path"></a>`path`
-
-Data type: `String`
-
-
-
-##### <a name="shell"></a>`shell`
-
-Data type: `String`
-
-
-
-##### <a name="stat_expression"></a>`stat_expression`
-
-Data type: `String`
-
-
-
-##### <a name="user"></a>`user`
-
-Data type: `String`
-
-
+The user for acme.sh.
 
 ## Defined types
 
-### <a name="acmecertificate"></a>`acme::certificate`
+### `acme::certificate`
 
 Request a certificate.
 
 #### Parameters
 
-The following parameters are available in the `acme::certificate` defined type:
+The following parameters are available in the `acme::certificate` defined type.
 
-* [`ca`](#ca)
-* [`domain`](#domain)
-* [`use_account`](#use_account)
-* [`use_profile`](#use_profile)
-* [`acme_host`](#acme_host)
-* [`dh_param_size`](#dh_param_size)
-* [`ocsp_must_staple`](#ocsp_must_staple)
-* [`posthook_cmd`](#posthook_cmd)
-* [`renew_days`](#renew_days)
-
-##### <a name="ca"></a>`ca`
-
-Data type: `Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']]`
-
-The ACME CA that should be used. Used to overwrite the default
-CA that is configured on `$acme_host`.
-
-Default value: ``undef``
-
-##### <a name="domain"></a>`domain`
-
-Data type: `String`
-
-Full qualified domain names you want to request a certificate for.
-For SAN certificates you need to pass space seperated strings,
-for example 'foo.example.com fuzz.example.com'
-
-Default value: `$name`
-
-##### <a name="use_account"></a>`use_account`
-
-Data type: `String`
-
-The ACME account that should be used (or registered).
-This account must exist in `$accounts` on your `$acme_host`.
-
-##### <a name="use_profile"></a>`use_profile`
-
-Data type: `String`
-
-Specify the profile that should be used to sign the certificate.
-This profile must exist in `$profiles` on your `$acme_host`.
-
-##### <a name="acme_host"></a>`acme_host`
+##### `acme_host`
 
 Data type: `String`
 
@@ -385,7 +305,16 @@ Defaults to `$acme::acme_host`.
 
 Default value: `$acme::acme_host`
 
-##### <a name="dh_param_size"></a>`dh_param_size`
+##### `ca`
+
+Data type: `Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']]`
+
+The ACME CA that should be used. Used to overwrite the default
+CA that is configured on `$acme_host`.
+
+Default value: ``undef``
+
+##### `dh_param_size`
 
 Data type: `Integer`
 
@@ -393,7 +322,20 @@ dh parameter size, defaults to $::acme::dh_param_size
 
 Default value: `$acme::dh_param_size`
 
-##### <a name="ocsp_must_staple"></a>`ocsp_must_staple`
+##### `domain`
+
+Data type: `Variant[String, Array[String], Undef]`
+
+Full qualified domain names you want to request a certificate for.
+For SAN certificates you need to pass space seperated strings,
+for example 'foo.example.com fuzz.example.com', or an array of names.
+
+If no domain is specified, the resource name will be parsed as a
+list of domains, and the first domain will be used as certificate name.
+
+Default value: ``undef``
+
+##### `ocsp_must_staple`
 
 Data type: `Boolean`
 
@@ -401,25 +343,39 @@ request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_
 
 Default value: `$acme::ocsp_must_staple`
 
-##### <a name="posthook_cmd"></a>`posthook_cmd`
+##### `posthook_cmd`
 
 Data type: `String`
 
-
+Specifies a optional command to run after a certificate has been changed.
 
 Default value: `$acme::posthook_cmd`
 
-##### <a name="renew_days"></a>`renew_days`
+##### `renew_days`
 
 Data type: `Integer`
 
-
+Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
 
 Default value: `$acme::renew_days`
 
+##### `use_account`
+
+Data type: `String`
+
+The ACME account that should be used (or registered).
+This account must exist in `$accounts` on your `$acme_host`.
+
+##### `use_profile`
+
+Data type: `String`
+
+Specify the profile that should be used to sign the certificate.
+This profile must exist in `$profiles` on your `$acme_host`.
+
 ## Functions
 
-### <a name="file_or_empty_string"></a>`file_or_empty_string`
+### `file_or_empty_string`
 
 Type: Ruby 3.x API
 

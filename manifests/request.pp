@@ -53,7 +53,7 @@ define acme::request (
   $accounts = $acme::accounts
   if ! ($use_account in $accounts) {
     fail("Module ${module_name}: account \"${use_account}\" for cert ${name}",
-      "is not defined on \$acme_host")
+    "is not defined on \$acme_host")
   }
   $account_email = $use_account
 
@@ -63,14 +63,14 @@ define acme::request (
     $profile = $profiles[$use_profile]
   } else {
     fail("Module ${module_name}: unable to find profile \"${use_profile}\" for",
-      "cert ${name}")
+    "cert ${name}")
   }
 
   # Check if the CA is whitelisted.
   $ca_whitelist = $acme::ca_whitelist
   if ! ($ca in $ca_whitelist) {
     fail("Module ${module_name}: the ACME CA \"${ca}\" is not whitelisted,",
-      "unable to proceed with cert ${name}")
+    "unable to proceed with cert ${name}")
   }
 
   # Get configured values from the profile.
@@ -132,12 +132,11 @@ define acme::request (
   notify { "hook params for cert ${name}: ${hook_params}": loglevel => debug }
 
   # Collect additional options for acme.sh.
-  if ($profile['options']['dnssleep']
-      and ($profile['options']['dnssleep'] =~ Integer)
-      and ($profile['options']['dnssleep'] > 0)) {
+  if ($profile['options']['dnssleep'] and ($profile['options']['dnssleep'] =~ Integer)
+  and ($profile['options']['dnssleep'] > 0)) {
     $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
   } elsif (defined('$acme::dnssleep') and ($acme::dnssleep > 0)) {
-    $_dnssleep = "--dnssleep ${::acme::dnssleep}"
+    $_dnssleep = "--dnssleep ${acme::dnssleep}"
   } else {
     # Let acme.sh poll dns status automatically.
     $_dnssleep = ''
@@ -180,14 +179,14 @@ define acme::request (
   # Create directory to place the crt_file for each domain
   $crt_dir_domain = "${crt_dir}/${name}"
   ensure_resource('file', $crt_dir_domain, {
-    ensure  => directory,
-    mode    => '0755',
-    owner   => $user,
-    group   => $group,
-    require => [
-      User[$user],
-      Group[$group]
-    ],
+      ensure  => directory,
+      mode    => '0755',
+      owner   => $user,
+      group   => $group,
+      require => [
+        User[$user],
+        Group[$group]
+      ],
   })
 
   if ($domain == $name) {
@@ -221,14 +220,14 @@ define acme::request (
   # is reached and acme.sh finally renews the cert. This is a known limitation
   # that does not cause any side-effects.
   $le_check_command = join([
-    "test -f \'${le_crt_file}\'",
-    '&&',
-    "openssl x509 -checkend ${renew_seconds} -noout -in \'${le_crt_file}\'",
-    '&&',
-    'test',
-    "\$( ${stat_expression} \'${le_crt_file}\' )",
-    '-gt',
-    "\$( ${stat_expression} \'${csr_file}\' )",
+      "test -f \'${le_crt_file}\'",
+      '&&',
+      "openssl x509 -checkend ${renew_seconds} -noout -in \'${le_crt_file}\'",
+      '&&',
+      'test',
+      "\$( ${stat_expression} \'${le_crt_file}\' )",
+      '-gt',
+      "\$( ${stat_expression} \'${csr_file}\' )",
   ], ' ')
 
   # Check if challenge type is supported.
@@ -240,55 +239,55 @@ define acme::request (
     # when they are added to acme.sh.
     $acme_validation = "--dns dns_${hook}"
   } else {
-    fail("${::hostname}: Module ${module_name}: unsupported challenge",
-      "type \"${challengetype}\"")
+    fail("${facts['networking']['hostname']}: Module ${module_name}: unsupported challenge",
+    "type \"${challengetype}\"")
   }
 
   # acme.sh command to sign a new csr.
   $le_command_signcsr = join([
-    $acmecmd,
-    '--signcsr',
-    "--domain \'${domain}\'",
-    $_altnames,
-    $acme_validation,
-    "--log \'${acmelog}\'",
-    '--log-level 2',
-    "--home \'${acme_dir}\'",
-    "--cert-home \'${cert_home}\'",
-    '--keylength 4096',
-    "--accountconf \'${account_conf_file}\'",
-    $_ocsp,
-    "--csr \'${csr_file}\'",
-    "--cert-file \'${crt_file}\'",
-    "--ca-file \'${chain_file}\'",
-    "--fullchain-file \'${fullchain_file}\'",
-    "--server ${ca}",
-    $acme_options,
-    '>/dev/null',
+      $acmecmd,
+      '--signcsr',
+      "--domain \'${domain}\'",
+      $_altnames,
+      $acme_validation,
+      "--log \'${acmelog}\'",
+      '--log-level 2',
+      "--home \'${acme_dir}\'",
+      "--cert-home \'${cert_home}\'",
+      '--keylength 4096',
+      "--accountconf \'${account_conf_file}\'",
+      $_ocsp,
+      "--csr \'${csr_file}\'",
+      "--cert-file \'${crt_file}\'",
+      "--ca-file \'${chain_file}\'",
+      "--fullchain-file \'${fullchain_file}\'",
+      "--server ${ca}",
+      $acme_options,
+      '>/dev/null',
   ], ' ')
 
   # acme.sh command to renew an existing certificate.
   $le_command_renew = join([
-    $acmecmd,
-    '--issue',
-    "--domain \'${domain}\'",
-    $_altnames,
-    $acme_validation,
-    "--days ${renew_days}",
-    "--log \'${acmelog}\'",
-    '--log-level 2',
-    "--home \'${acme_dir}\'",
-    "--cert-home \'${cert_home}\'",
-    '--keylength 4096',
-    "--accountconf \'${account_conf_file}\'",
-    $_ocsp,
-    "--csr \'${csr_file}\'",
-    "--cert-file \'${crt_file}\'",
-    "--ca-file \'${chain_file}\'",
-    "--fullchain-file \'${fullchain_file}\'",
-    "--server ${ca}",
-    $acme_options,
-    '>/dev/null',
+      $acmecmd,
+      '--issue',
+      "--domain \'${domain}\'",
+      $_altnames,
+      $acme_validation,
+      "--days ${renew_days}",
+      "--log \'${acmelog}\'",
+      '--log-level 2',
+      "--home \'${acme_dir}\'",
+      "--cert-home \'${cert_home}\'",
+      '--keylength 4096',
+      "--accountconf \'${account_conf_file}\'",
+      $_ocsp,
+      "--csr \'${csr_file}\'",
+      "--cert-file \'${crt_file}\'",
+      "--ca-file \'${chain_file}\'",
+      "--fullchain-file \'${fullchain_file}\'",
+      "--server ${ca}",
+      $acme_options,
+      '>/dev/null',
   ], ' ')
 
   # Run acme.sh to issue the certificate
@@ -328,7 +327,7 @@ define acme::request (
     environment => $hook_params,
     command     => $le_command_renew,
     timeout     => $acme::exec_timeout,
-    returns     => [ 0, 2, ],
+    returns     => [0,2],
     # Run this exec only if an old cert can be found.
     onlyif      => "test -f \'${le_crt_file}\'",
     require     => [
