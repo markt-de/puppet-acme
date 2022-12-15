@@ -18,9 +18,9 @@ Facter.add(:acme_certs) do
       cn = cert.subject.to_a.find { |name, _, _| name == 'CN' }[1]
 
       certs[cert_name] = {
-        :crt => crt.strip,
-        :ca => ca.strip,
-        :cn => cn,
+        crt: crt.strip,
+        ca: ca.strip,
+        cn: cn,
       }
     end
 

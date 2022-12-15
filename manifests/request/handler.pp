@@ -60,7 +60,7 @@ class acme::request::handler {
         context => "/files${account_conf_file}",
         changes => [
           # CERT_HOME must not be set, otherwise it cannot be set on the command line
-          "rm CERT_HOME",
+          'rm CERT_HOME',
           "set LOG_FILE \"'${acme::acmelog}'\"",
           "set ACCOUNT_KEY_PATH \"'${account_key_file}'\"",
           "set ACCOUNT_EMAIL \"'${account_email}'\"",

@@ -16,6 +16,7 @@
     * [Request a certificate](#request-a-certificate)
     * [Using other ACME CA's](#using-other-acme-cas)
     * [SAN certificates](#san-certificates)
+    * [Multiple certificates for one base domain](#multiple-certificates-for-one-base-domain)
     * [DNS alias mode](#dns-alias-mode)
     * [Testing and debugging](#testing-and-debugging)
     * [Updating acme.sh](#updating-acmesh)
@@ -286,6 +287,7 @@ explicitly list the domain(s):
    }
 ~~~
 
+Please note that this functionality relies on an [undocumented feature of acme.sh](https://github.com/acmesh-official/acme.sh/pull/4384).
 
 ### DNS alias mode
 
