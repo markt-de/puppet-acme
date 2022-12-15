@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+This major release adds new functionality that may be used in a
+backwards-incompatible way. However, this release aims to be compatible
+with all existing configurations.
+
+### Added
+* Allow the same certificate on multiple nodes ([#40])
 
 ### Changed
 * Replace dependency camptocamp/openssl with voxpupuli/openssl
@@ -156,6 +162,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#40]: https://github.com/fraenki/puppet-acme/pull/40
 [#33]: https://github.com/fraenki/puppet-acme/pull/33
 [#32]: https://github.com/fraenki/puppet-acme/pull/32
 [#31]: https://github.com/fraenki/puppet-acme/pull/31
