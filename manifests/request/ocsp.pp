@@ -1,12 +1,7 @@
 # @summary Retrieve ocsp stapling information
 #
-# @param domain
-#   The certificate commonname / domainname.
-#
 # @api private
-define acme::request::ocsp (
-  String $domain = $name
-) {
+define acme::request::ocsp {
   $user = $acme::user
   $group = $acme::group
   $base_dir = $acme::base_dir
@@ -21,9 +16,9 @@ define acme::request::ocsp (
   # acme.sh configuration
   $acmecmd = $acme::acmecmd
   $acmelog = $acme::acmelog
-  $crt_file = "${results_dir}/${domain}.pem"
-  $chain_file = "${results_dir}/${domain}.ca"
-  $ocsp_file = "${results_dir}/${domain}.ocsp"
+  $crt_file = "${results_dir}/${name}.pem"
+  $chain_file = "${results_dir}/${name}.ca"
+  $ocsp_file = "${results_dir}/${name}.ocsp"
 
   $ocsp_request = $acme::ocsp_request
 
@@ -45,7 +40,7 @@ define acme::request::ocsp (
     "\$( ${date_expression} )",
   ], ' ')
 
-  exec { "update_ocsp_file_for_${domain}":
+  exec { "update_ocsp_file_for_${name}":
     path    => $path,
     command => $ocsp_command,
     unless  => $ocsp_unless,
@@ -58,6 +53,6 @@ define acme::request::ocsp (
   file { $ocsp_file:
     mode    => '0644',
     replace => false,
-    require => Exec["update_ocsp_file_for_${domain}"],
+    require => Exec["update_ocsp_file_for_${name}"],
   }
 }

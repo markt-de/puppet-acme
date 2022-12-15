@@ -5,40 +5,39 @@
 #
 # @api private
 define acme::request::crt (
-  String $domain = $name
+  String $domain
 ) {
   # acme.sh configuration
   $acme_dir = $acme::acme_dir
   $crt_dir = $acme::crt_dir
   $results_dir = $acme::results_dir
-  $ocsp_file = "${results_dir}/${domain}.ocsp"
+  $ocsp_file = "${results_dir}/${name}.ocsp"
+
+  if ($domain == $name) {
+    $cert_home = $acme_dir
+  } else {
+    $cert_home = "${acme_dir}/${name}_"
+  }
 
   # Places where acme.sh stores the resulting certificate.
-  $le_crt_file = "${acme_dir}/${domain}/${domain}.cer"
-  $le_chain_file = "${acme_dir}/${domain}/ca.cer"
-  $le_fullchain_file = "${acme_dir}/${domain}/fullchain.cer"
+  $le_crt_file = "${cert_home}/${domain}/${domain}.cer"
+  $le_chain_file = "${cert_home}/${domain}/ca.cer"
+  $le_fullchain_file = "${cert_home}/${domain}/fullchain.cer"
 
-  # Avoid special characters (required for wildcard certs)
-  $domain_rep = regsubst($domain, /[*.-]/, {'.' => '_', '-' => '_', '*' => $acme::wildcard_marker}, 'G')
-  $domain_tag = regsubst($domain, /[*]/, $acme::wildcard_marker, 'G')
-
-  $crt = pick_default($facts["acme_crt_${domain_rep}"], '')
+  $crt = pick_default($facts.dig('acme_certs', $name, 'crt'), '')
 
   # special handling for ocsp stuff (binary data)
   $ocsp = base64('encode', file_or_empty_string($ocsp_file))
 
-  $chain = pick_default($facts["acme_ca_${domain_rep}"], '')
+  $chain = pick_default($facts.dig('acme_certs', $name, 'ca'), '')
 
   if ($crt =~ /BEGIN CERTIFICATE/) {
-    @@acme::deploy::crt { $domain:
+    @@acme::deploy::crt { $name:
       crt_content       => "${crt}\n",
       crt_chain_content => $chain,
       ocsp_content      => $ocsp,
-      # Use the certificate name to tag this resource. This ensures that
-      # the certificate is only installed on the host where it is configured.
-      tag               => "crt_${domain_tag}",
     }
   } else {
-    notify { "got no cert from facter for domain ${domain} (may need another puppet run)": }
+    notify { "got no cert from facter for ${name} (may need another puppet run)": }
   }
 }

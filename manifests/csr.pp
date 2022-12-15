@@ -20,8 +20,8 @@ define acme::csr (
   String $acme_host,
   String $use_account,
   String $use_profile,
+  Array[String] $domains,
   Integer $dh_param_size = 2048,
-  String $domain_list = $name,
   Enum['present','absent'] $ensure = 'present',
   Boolean $force = true,
   Boolean $ocsp_must_staple = true,
@@ -47,7 +47,6 @@ define acme::csr (
   $stat_expression = $acme::stat_expression
 
   # Handle certificates with multiple domain names (SAN).
-  $domains = split($domain_list, ' ')
   $domain = $domains[0]
   $has_san = size($domains) > 1
   if ($has_san) {
@@ -58,7 +57,7 @@ define acme::csr (
     $subject_alt_names = []
   }
 
-  file { "${cfg_dir}/${domain}":
+  file { "${cfg_dir}/${name}":
     ensure  => directory,
     owner   => $user,
     group   => $group,
@@ -66,7 +65,7 @@ define acme::csr (
     require => Group[$group],
   }
 
-  file { "${key_dir}/${domain}":
+  file { "${key_dir}/${name}":
     ensure  => directory,
     owner   => $user,
     group   => $group,
@@ -74,7 +73,7 @@ define acme::csr (
     require => Group[$group],
   }
 
-  ensure_resource('file', "${crt_dir}/${domain}", {
+  ensure_resource('file', "${crt_dir}/${name}", {
     ensure  => directory,
     mode    => '0755',
     owner   => $user,
@@ -85,11 +84,11 @@ define acme::csr (
     ],
   })
 
-  $cnf_file = "${cfg_dir}/${domain}/ssl.cnf"
-  $dh_file  = "${cfg_dir}/${domain}/params.dh"
-  $key_file = "${key_dir}/${domain}/private.key"
-  $csr_file = "${crt_dir}/${domain}/cert.csr"
-  $crt_file = "${crt_dir}/${domain}/cert.pem"
+  $cnf_file = "${cfg_dir}/${name}/ssl.cnf"
+  $dh_file  = "${cfg_dir}/${name}/params.dh"
+  $key_file = "${key_dir}/${name}/private.key"
+  $csr_file = "${crt_dir}/${name}/cert.csr"
+  $crt_file = "${crt_dir}/${name}/cert.pem"
 
   $create_dh_unless = join([
     'test',
@@ -162,7 +161,7 @@ define acme::csr (
 
   exec { "refresh-csr-${csr_file}":
     path        => $path,
-    command     => "rm -f ${csr_file}",
+    command     => "rm -f \'${csr_file}\'",
     refreshonly => true,
     user        => 'root',
     group       => $group,
@@ -186,12 +185,12 @@ define acme::csr (
     require => X509_request[$csr_file],
   }
 
-  $domain_rep = regsubst($domain, /[*.-]/, {'.' => '_', '-' => '_', '*' => $acme::wildcard_marker}, 'G')
-  $csr_content = pick_default(getvar("::acme_csr_${domain_rep}"), '')
+  $csr_content = pick_default($facts.dig('acme_csrs', $name), '')
   if ($csr_content =~ /CERTIFICATE REQUEST/) {
-    @@acme::request { $domain:
+    @@acme::request { $name:
       csr              => $csr_content,
       tag              => "master_${acme_host}",
+      domain           => $domain,
       altnames         => $altnames,
       use_account      => $use_account,
       use_profile      => $use_profile,
@@ -200,6 +199,6 @@ define acme::csr (
       ocsp_must_staple => $ocsp_must_staple,
     }
   } else {
-    notify { "no CSR from facter for domain ${domain} (normal on first run)" : }
+    notify { "no CSR from facter for cert ${name} (normal on first run)" : }
   }
 }

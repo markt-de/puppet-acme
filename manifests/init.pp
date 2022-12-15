@@ -72,11 +72,6 @@
 #   it is aborted by Puppet. This should usually be set to a higher value
 #   than `$dnssleep`.
 #
-# @param wildcard_marker
-#   A string that is used to replace `*` in wildcard certificates. This is required
-#   because Puppet does not allow special chars in variable names.
-#   DO NOT CHANGE THIS VALUE! It is hardcoded in all custom facts too.
-#
 class acme (
   Array $accounts,
   String $acme_git_url,
@@ -112,7 +107,6 @@ class acme (
   String $shell,
   String $stat_expression,
   String $user,
-  String $wildcard_marker,
   # optional parameters
   Optional[String] $proxy = undef,
   Optional[Hash] $profiles = undef
@@ -140,24 +134,26 @@ class acme (
       }
     }
     # Collect certificates.
-    if ($facts['acme_crts'] and $facts['acme_crts'] != '') {
-      $acme_crts_array = split($facts['acme_crts'], ',')
-      ::acme::request::crt { $acme_crts_array: }
+    if ($facts['acme_certs'] and $facts['acme_certs'].length > 0) {
+      $facts['acme_certs'].each |$cert, $props| {
+        ::acme::request::crt { $cert:
+          domain => $props['cn'],
+        }
+      }
     } else {
-      notify { 'got no acme_crts from facter (may need another puppet run)': }
+      notify { 'got no acme_certs from facter (may need another puppet run)': }
     }
   }
 
   # Generate CSRs.
-  $certificates.each |$domain, $config| {
+  $certificates.each |$name, $config| {
     # Merge domain params with module params.
     $options = deep_merge({
-      domain           => $domain,
       acme_host        => $acme_host,
       dh_param_size    => $dh_param_size,
       ocsp_must_staple => $ocsp_must_staple,
     },$config)
     # Create the certificate resource.
-    ::acme::certificate { $domain: * => $options }
+    ::acme::certificate { $name: * => $options }
   }
 }

@@ -7,7 +7,10 @@
 # @param domain
 #   Full qualified domain names you want to request a certificate for.
 #   For SAN certificates you need to pass space seperated strings,
-#   for example 'foo.example.com fuzz.example.com'
+#   for example 'foo.example.com fuzz.example.com', or an array of names.
+#
+#   If no domain is specified, the resource name will be parsed as a
+#   list of domains, and the first domain will be used as certificate name.
 #
 # @param use_account
 #   The ACME account that should be used (or registered).
@@ -30,7 +33,7 @@
 define acme::certificate (
   String $use_account,
   String $use_profile,
-  String $domain = $name,
+  Variant[String, Array[String], Undef] $domain = undef,
   String $acme_host = $acme::acme_host,
   Integer $dh_param_size = $acme::dh_param_size,
   Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
@@ -40,23 +43,35 @@ define acme::certificate (
 ) {
   require ::acme::setup::common
 
-  $domain_dc = downcase($domain)
   $path = $acme::path
 
+  if $domain == undef {
+    # compatibility mode, parse name as list of domains, and use first as certificate resource name
+    $domains = split(downcase($name), ' ')
+    $cert_name = $domains[0]
+  } elsif $domain =~ String {
+    $domains = split($domain, ' ')
+    $cert_name = $name
+  } else {
+    $domains = $domain
+    $cert_name = $name
+  }
+
   # Post-Hook CMD
-  exec { "posthook_${name}":
+  exec { "posthook_${cert_name}":
     command     => $posthook_cmd,
     path        => $path,
     refreshonly => true,
   }
 
   # Collect and install signed certificates.
-  ::acme::deploy { $domain_dc:
+  ::acme::deploy { $cert_name:
     acme_host => $acme_host,
-  } ~> Exec["posthook_${name}"]
+  } ~> Exec["posthook_${cert_name}"]
 
   # Generate CSRs.
-  ::acme::csr { $domain_dc:
+  ::acme::csr { $cert_name:
+    domains          => $domains,
     use_account      => $use_account,
     use_profile      => $use_profile,
     acme_host        => $acme_host,
