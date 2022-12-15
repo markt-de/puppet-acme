@@ -71,7 +71,7 @@ define acme::certificate (
   }
 
   # Collect and install signed certificates.
-  ::acme::deploy { $cert_name:
+  acme::deploy { $cert_name:
     acme_host => $acme_host,
   } ~> Exec["posthook_${cert_name}"]
 

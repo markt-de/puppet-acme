@@ -23,42 +23,42 @@ class acme::setup::common {
     require => Group[$acme::group],
   }
 
-  File { $acme::base_dir :
+  File { $acme::base_dir:
     ensure => directory,
     mode   => '0755',
     owner  => $acme::user,
     group  => $acme::group,
   }
 
-  File { $acme::key_dir :
+  File { $acme::key_dir:
     ensure => directory,
     mode   => '0750',
     owner  => $acme::user,
     group  => $acme::group,
   }
 
-  File { $acme::crt_dir :
+  File { $acme::crt_dir:
     ensure => directory,
     mode   => '0755',
     owner  => $acme::user,
     group  => $acme::group,
   }
 
-  File { $acme::acme_dir :
+  File { $acme::acme_dir:
     ensure => directory,
     mode   => '0750',
     owner  => $acme::user,
     group  => $acme::group,
   }
 
-  File { $acme::acct_dir :
+  File { $acme::acct_dir:
     ensure => directory,
     mode   => '0700',
     owner  => $acme::user,
     group  => $acme::group,
   }
 
-  File { $acme::cfg_dir :
+  File { $acme::cfg_dir:
     ensure => directory,
     mode   => '0700',
     owner  => $acme::user,

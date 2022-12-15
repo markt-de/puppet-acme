@@ -105,7 +105,7 @@ define acme::csr (
       ')',
   ], ' ')
 
-  exec { "create-dh-${dh_file}" :
+  exec { "create-dh-${dh_file}":
     require => [
       File[$crt_dir]
     ],

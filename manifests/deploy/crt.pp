@@ -70,7 +70,7 @@ define acme::deploy::crt (
     mode  => '0640',
   }
 
-  concat::fragment { "${name}_key" :
+  concat::fragment { "${name}_key":
     target => $crt_full_chain_with_key,
     source => $key,
     order  => '01',
