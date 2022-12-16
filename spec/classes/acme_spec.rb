@@ -65,11 +65,18 @@ describe 'acme' do
           le_account = 'certmaster@example.com'
           le_profile = 'nsupdate_example'
 
-          let(:facts) do
+          let :facts do
             facts.merge(
-              fqdn: test_host,
+              networking: {
+                fqdn: test_host,
+              },
               servername: test_host,
               openssl_version: '1.0.2k-fips',
+            )
+          end
+          let :server_facts do
+            server_facts.merge(
+              servername: test_host,
             )
           end
           let :params do
@@ -123,13 +130,20 @@ describe 'acme' do
         context 'on Puppet Server with custom ca_whitelist' do
           test_host = 'puppetserver.example.com'
           le_account = 'certmaster@example.com'
-          le_ca = 'zerosl'
+          le_ca = 'zerossl'
 
           let(:facts) do
             facts.merge(
-              fqdn: test_host,
+              networking: {
+                fqdn: test_host,
+              },
               servername: test_host,
               openssl_version: '1.0.2k-fips',
+            )
+          end
+          let :server_facts do
+            server_facts.merge(
+              servername: test_host,
             )
           end
           let :params do
