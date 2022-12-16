@@ -98,8 +98,8 @@ each configuration a "profile":
           challengetype => 'dns-01',
           hook          => 'aws',
           env           => {
-            AWS_ACCESS_KEY_ID     => 'foobar',
-            AWS_SECRET_ACCESS_KEY => 'secret',
+            'AWS_ACCESS_KEY_ID'     => 'foobar',
+            'AWS_SECRET_ACCESS_KEY' => 'secret',
           },
           options       => {
             dnssleep => 15,
