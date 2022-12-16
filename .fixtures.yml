@@ -5,5 +5,9 @@ fixtures:
     openssl: "puppet/openssl"
     stdlib: "puppetlabs/stdlib"
     vcsrepo: "puppetlabs/vcsrepo"
+  repositories:
+    facts: "https://github.com/puppetlabs/puppetlabs-facts.git"
+    provision: "https://github.com/puppetlabs/provision.git"
+    puppet_agent: "https://github.com/puppetlabs/puppetlabs-puppet_agent.git"
   symlinks:
     'acme': "#{source_dir}"
