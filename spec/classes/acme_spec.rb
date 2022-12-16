@@ -57,7 +57,7 @@ describe 'acme' do
           it { is_expected.not_to contain_file('/etc/acme.sh/csrs').with_ensure('directory') }
           it { is_expected.not_to contain_file('/etc/acme.sh/results').with_ensure('directory') }
           it { is_expected.not_to contain_vcsrepo('/opt/acme.sh').with_revision('master') }
-          it { is_expected.not_to contain_package('git').with_ensure('present') }
+          it { is_expected.not_to contain_package('git').with_ensure('installed') }
         end
 
         context 'on Puppet Server' do
@@ -124,7 +124,7 @@ describe 'acme' do
           it { is_expected.to contain_file('/etc/acme.sh/results').with_ensure('directory') }
           it { is_expected.to contain_file('/opt/acme.sh').with_ensure('directory') }
           it { is_expected.to contain_vcsrepo('/opt/acme.sh').with_revision('master') }
-          it { is_expected.to contain_package('git').with_ensure('present') }
+          it { is_expected.to contain_package('git').with_ensure('installed') }
         end
 
         context 'on Puppet Server with custom ca_whitelist' do
