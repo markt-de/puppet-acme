@@ -13,6 +13,7 @@ be careful when deploying this release.
 * Allow the same certificate on multiple nodes ([#40])
 
 ### Changed
+* Change names and output format of several custom facts ([#40])
 * Replace dependency camptocamp/openssl with voxpupuli/openssl
 * Update OS support and module dependencies
 * Replace legacy facts with modern facts
