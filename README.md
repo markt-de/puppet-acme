@@ -135,7 +135,7 @@ On the Puppet node where you need the certificate(s):
           ca          => 'letsencrypt_test',
         }
         # a cert for the current FQDN is nice too
-        ${::fqdn} => {
+        ${facts['networking']['fqdn']} => {
           use_profile => 'nsupdate_example',
           use_account => 'certmaster@example.com',
           ca          => 'letsencrypt',
@@ -354,7 +354,7 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
 
 ~~~puppet
     # request a certificate from acme
-    acme::certificate { $::fqdn:
+    acme::certificate { $facts['networking']['fqdn']:
       use_profile => 'nsupdate_example',
       use_account => 'certmaster@example.com',
       ca          => 'letsencrypt',
@@ -369,47 +369,47 @@ Using `acme` in combination with [puppetlabs-apache](https://github.com/puppetla
     $key_dir  = $acme::key_dir
 
     # where acme stores our certificate and key files
-    $my_key = "${key_dir}/${::fqdn}/private.key"
-    $my_cert = "${crt_dir}/${::fqdn}/cert.pem"
-    $my_chain = "${crt_dir}/${::fqdn}/chain.pem"
+    $my_key = "${key_dir}/${facts['networking']['fqdn']}/private.key"
+    $my_cert = "${crt_dir}/${facts['networking']['fqdn']}/cert.pem"
+    $my_chain = "${crt_dir}/${facts['networking']['fqdn']}/chain.pem"
 
     # configure apache
     include apache
-    apache::vhost { $::fqdn:
+    apache::vhost { $facts['networking']['fqdn']:
       port     => '443',
       docroot  => '/var/www/example',
       ssl      => true,
-      ssl_cert => "/etc/ssl/${::fqdn}.crt",
-      ssl_ca   => "/etc/ssl/${::fqdn}.ca",
-      ssl_key  => "/etc/ssl/${::fqdn}.key",
+      ssl_cert => "/etc/ssl/${facts['networking']['fqdn']}.crt",
+      ssl_ca   => "/etc/ssl/${facts['networking']['fqdn']}.ca",
+      ssl_key  => "/etc/ssl/${facts['networking']['fqdn']fqdn}.key",
     }
 
     # copy certificate files
-    file { "/etc/ssl/${::fqdn}.crt":
+    file { "/etc/ssl/${facts['networking']['fqdn']}.crt":
       ensure    => file,
       owner     => 'root',
       group     => 'root',
       mode      => '0644',
       source    => $my_cert,
-      subscribe => Acme::Certificate[$::fqdn],
+      subscribe => Acme::Certificate[$facts['networking']['fqdn']],
       notify    => Class['apache::service'],
     }
-    file { "/etc/ssl/${::fqdn}.key":
+    file { "/etc/ssl/${facts['networking']['fqdn']}.key":
       ensure    => file,
       owner     => 'root',
       group     => 'root',
       mode      => '0640',
       source    => $my_key,
-      subscribe => Acme::Certificate[$::fqdn],
+      subscribe => Acme::Certificate[$facts['networking']['fqdn']],
       notify    => Class['apache::service'],
     }
-    file { "/etc/ssl/${::fqdn}.ca":
+    file { "/etc/ssl/${facts['networking']['fqdn']}.ca":
       ensure    => file,
       owner     => 'root',
       group     => 'root',
       mode      => '0644',
       source    => $my_chain,
-      subscribe => Acme::Certificate[$::fqdn],
+      subscribe => Acme::Certificate[$facts['networking']['fqdn']],
       notify    => Class['apache::service'],
     }
 ~~~
