@@ -54,13 +54,13 @@ account registration. Should only be defined on $acme_host.
 
 ##### `acct_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The directory for acme.sh accounts.
 
 ##### `acme_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The working directory for acme.sh.
 
@@ -88,7 +88,7 @@ to the certificates using functions in Puppet.
 
 ##### `acme_install_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The installation directory for acme.sh.
 
@@ -107,13 +107,13 @@ The binary path to acme.sh.
 
 ##### `acmelog`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The log file.
 
 ##### `base_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The configuration base directory for acme.sh.
 
@@ -135,19 +135,19 @@ for example ['foo.example.com fuzz.example.com', 'blub.example.com']
 
 ##### `cfg_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The directory for acme.sh configs.
 
 ##### `crt_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The directory for acme.sh certificates.
 
 ##### `csr_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The directory for acme.sh CSRs.
 
@@ -196,13 +196,13 @@ The group for acme.sh.
 
 ##### `key_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The directory for acme.sh keys.
 
 ##### `log_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The log directory for acme.sh.
 
@@ -221,7 +221,7 @@ Whether to request certificates with OCSP Must-Staple extension, defaults to `tr
 
 ##### `ocsp_request`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The script used by acme.sh to get OCSP data.
 
@@ -264,7 +264,7 @@ Specifies the interval at which certs should be renewed automatically. Defaults 
 
 ##### `results_dir`
 
-Data type: `Stdlib::Compat::Absolute_path`
+Data type: `Stdlib::Absolutepath`
 
 The output directory for acme.sh.
 
