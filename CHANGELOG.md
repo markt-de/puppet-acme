@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 2023-07-11
+
+### Changed
+* Use modern facts in documentation ([#44])
+
 ## [4.0.0] - 2022-12-16
 This major release aims to be compatible with all existing
 configurations. However, a lot was changed unter the hood so
@@ -154,7 +159,8 @@ This new major release is an effort to modernize the module. It fixes some long-
 ## [1.0.0] - 2917-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/fraenki/puppet-acme/compare/4.0.0...HEAD
+[Unreleased]: https://github.com/fraenki/puppet-acme/compare/4.0.1...HEAD
+[4.0.1]: https://github.com/fraenki/puppet-acme/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/fraenki/puppet-acme/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/fraenki/puppet-acme/compare/2.3.0...3.0.0
 [2.3.0]: https://github.com/fraenki/puppet-acme/compare/2.2.0...2.3.0
@@ -166,6 +172,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#44]: https://github.com/fraenki/puppet-acme/pull/44
 [#40]: https://github.com/fraenki/puppet-acme/pull/40
 [#33]: https://github.com/fraenki/puppet-acme/pull/33
 [#32]: https://github.com/fraenki/puppet-acme/pull/32

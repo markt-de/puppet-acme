@@ -1,12 +1,12 @@
 {
-  "name": "fraenki-acme",
-  "version": "4.0.0",
-  "author": "Frank Wall",
+  "name": "markt-acme",
+  "version": "4.0.1",
+  "author": "markt.de",
   "summary": "Centralized SSL certificate management using Let's Encrypt and the lightweight acme.sh",
   "license": "Apache-2.0",
-  "source": "https://github.com/fraenki/puppet-acme",
-  "project_page": "https://github.com/fraenki/puppet-acme",
-  "issues_url": "https://github.com/fraenki/puppet-acme/issues",
+  "source": "https://github.com/markt-de/puppet-acme",
+  "project_page": "https://github.com/markt-de/puppet-acme",
+  "issues_url": "https://github.com/markt-de/puppet-acme/issues",
   "dependencies": [
     {
       "name": "puppetlabs-stdlib",

@@ -1,9 +1,9 @@
 # puppet-acme
 
-[![Build Status](https://github.com/fraenki/puppet-acme/actions/workflows/ci.yaml/badge.svg)](https://github.com/fraenki/puppet-acme/actions/workflows/ci.yaml)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/fraenki/acme.svg)](https://forge.puppetlabs.com/fraenki/acme)
-[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/fraenki/acme.svg)](https://forge.puppetlabs.com/fraenki/acme)
-[![License](https://img.shields.io/github/license/fraenki/puppet-acme.svg)](https://github.com/fraenki/puppet-acme/blob/master/LICENSE.txt)
+[![Build Status](https://github.com/markt-de/puppet-acme/actions/workflows/ci.yaml/badge.svg)](https://github.com/markt-de/puppet-acme/actions/workflows/ci.yaml)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/markt/acme.svg)](https://forge.puppetlabs.com/markt/acme)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/markt/acme.svg)](https://forge.puppetlabs.com/markt/acme)
+[![License](https://img.shields.io/github/license/markt-de/puppet-acme.svg)](https://github.com/markt-de/puppet-acme/blob/master/LICENSE.txt)
 
 #### Table of Contents
 
@@ -467,7 +467,7 @@ When rebuilding or reinstalling an existing node, the module will be unable to
 create new or update existing certificates for this node. Instead a key mismatch
 will occur, because an entirely new private key will be created on the node.
 
-There is currently no way to fix this automatically [#6](https://github.com/fraenki/puppet-acme/issues/6).
+There is currently no way to fix this automatically [#6](https://github.com/markt-de/puppet-acme/issues/6).
 
 The old files can be manually cleaned on the Puppet Server by running something
 like this:
