@@ -205,7 +205,7 @@ class acme (
   # Generate CSRs.
   $certificates.each |$name, $config| {
     # Merge domain params with module params.
-    $options = deep_merge( {
+    $options = deep_merge({
         acme_host        => $acme_host,
         dh_param_size    => $dh_param_size,
         ocsp_must_staple => $ocsp_must_staple,
