@@ -165,7 +165,7 @@ This new major release is an effort to modernize the module. It fixes some long-
 ### Fixed
 * Style fixes and documentation improvements
 
-## [1.0.0] - 2917-04-16
+## [1.0.0] - 2017-04-16
 Initial release (fork of bzed-letsencrypt).
 
 [Unreleased]: https://github.com/fraenki/puppet-acme/compare/4.1.0...HEAD
