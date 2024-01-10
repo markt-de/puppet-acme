@@ -80,7 +80,7 @@
     "ssl",
     "certificate"
   ],
-  "pdk-version": "3.0.0",
-  "template-url": "pdk-default#3.0.0",
-  "template-ref": "tags/3.0.0-0-g056e50d"
+  "pdk-version": "3.0.1",
+  "template-url": "https://github.com/markt-de/pdk-templates.git#main",
+  "template-ref": "heads/main-0-g909fd77"
 }
