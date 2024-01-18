@@ -9,7 +9,7 @@
 #   CA that is configured on `$acme_host`.
 #
 # @param dh_param_size
-#   dh parameter size, defaults to $::acme::dh_param_size
+#   dh parameter size, defaults to $acme::dh_param_size
 #
 # @param domain
 #   Full qualified domain names you want to request a certificate for.
@@ -20,7 +20,7 @@
 #   list of domains, and the first domain will be used as certificate name.
 #
 # @param ocsp_must_staple
-#   request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_must_staple
+#   request certificate with OCSP Must-Staple exctension, defaults to $acme::ocsp_must_staple
 #
 # @param posthook_cmd
 #   Specifies a optional command to run after a certificate has been changed.
