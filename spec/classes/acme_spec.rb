@@ -9,7 +9,12 @@ describe 'acme' do
         end
 
         context 'with example configuration' do
-          let :params do
+          let(:facts) do
+            super().merge(
+              openssl_version: '1.0.2k-fips',
+            )
+          end
+          let(:params) do
             {
               accounts: ['certmaster@example.com', 'ssl@example.com'],
               profiles: {
@@ -65,8 +70,8 @@ describe 'acme' do
           le_account = 'certmaster@example.com'
           le_profile = 'nsupdate_example'
 
-          let :facts do
-            facts.merge(
+          let(:facts) do
+            super().merge(
               networking: {
                 fqdn: test_host,
               },
@@ -74,12 +79,12 @@ describe 'acme' do
               openssl_version: '1.0.2k-fips',
             )
           end
-          let :server_facts do
-            server_facts.merge(
+          let(:server_facts) do
+            super().merge(
               servername: test_host,
             )
           end
-          let :params do
+          let(:params) do
             {
               accounts: [le_account],
               profiles: {
@@ -133,7 +138,7 @@ describe 'acme' do
           le_ca = 'zerossl'
 
           let(:facts) do
-            facts.merge(
+            super().merge(
               networking: {
                 fqdn: test_host,
               },
@@ -141,12 +146,12 @@ describe 'acme' do
               openssl_version: '1.0.2k-fips',
             )
           end
-          let :server_facts do
-            server_facts.merge(
+          let(:server_facts) do
+            super().merge(
               servername: test_host,
             )
           end
-          let :params do
+          let(:params) do
             {
               accounts: [le_account],
               profiles: {

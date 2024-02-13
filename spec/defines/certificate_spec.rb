@@ -15,7 +15,7 @@ describe 'acme::certificate', type: :define do
         altname_test2 = 'bar.example.com'
 
         context 'with example configuration' do
-          let :params do
+          let(:params) do
             {
               use_profile: 'route53_example',
               use_account: 'ssl@example.com',
@@ -46,7 +46,7 @@ describe 'acme::certificate', type: :define do
         end
 
         context 'when creating a SAN certificate' do
-          let :params do
+          let(:params) do
             {
               use_profile: 'route53_example',
               use_account: 'ssl@example.com',
@@ -66,7 +66,7 @@ describe 'acme::certificate', type: :define do
         end
 
         context 'when creating a wildcard certificate' do
-          let :params do
+          let(:params) do
             {
               use_profile: 'route53_example',
               use_account: 'ssl@example.com',
