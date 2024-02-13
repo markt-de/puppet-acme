@@ -35,7 +35,7 @@ acme::dh_param_size: 2048
 acme::ocsp_must_staple: true
 
 # Module defaults
-acme::acme_host: "%{::servername}"
+acme::acme_host: "%{server_facts.servername}"
 acme::date_expression: "date --date='1 day ago' '+%s'"
 acme::exec_timeout: 3600
 acme::group: 'acme'
