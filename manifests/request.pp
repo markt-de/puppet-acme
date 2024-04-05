@@ -210,7 +210,6 @@ define acme::request (
 
   # Convert days to seconds for openssl...
   $renew_seconds = $renew_days*86400
-  notify { "acme renew set to ${renew_days} days (or ${renew_seconds} seconds) for cert ${name}": loglevel => debug }
 
   # NOTE: If the CSR file is newer than the cert, this check will trigger
   # a renewal of the cert. However, acme.sh may not recognize the change
