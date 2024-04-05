@@ -129,7 +129,6 @@ define acme::request (
 
   # Convert the Hash to an Array, required for Exec's "environment" attribute.
   $hook_params = $_hook_params.map |$key,$value| { "${key}=${value}" }
-  notify { "hook params for cert ${name}: ${hook_params}": loglevel => debug }
 
   # Collect additional options for acme.sh.
   if ($profile['options']['dnssleep'] and ($profile['options']['dnssleep'] =~ Integer)
