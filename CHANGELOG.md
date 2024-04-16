@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+* Fix secret leakage in debug `notify` ([#50])
+
 ## [4.1.0] - 2023-08-07
 
 ### Changed
@@ -182,6 +187,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#50]: https://github.com/fraenki/puppet-acme/pull/50
 [#44]: https://github.com/fraenki/puppet-acme/pull/44
 [#40]: https://github.com/fraenki/puppet-acme/pull/40
 [#33]: https://github.com/fraenki/puppet-acme/pull/33
