@@ -37,8 +37,8 @@
 #   This profile must exist in `$profiles` on your `$acme_host`.
 #
 define acme::certificate (
-  String $use_account,
-  String $use_profile,
+  String $use_account = $acme::default_account,
+  String $use_profile = $acme::default_profile,
   Variant[String, Array[String], Undef] $domain = undef,
   String $acme_host = $acme::acme_host,
   Integer $dh_param_size = $acme::dh_param_size,

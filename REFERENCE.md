@@ -62,7 +62,9 @@ The following parameters are available in the `acme` class:
 * [`crt_dir`](#-acme--crt_dir)
 * [`csr_dir`](#-acme--csr_dir)
 * [`date_expression`](#-acme--date_expression)
+* [`default_account`](#-acme--default_account)
 * [`default_ca`](#-acme--default_ca)
+* [`default_profile`](#-acme--default_profile)
 * [`dh_param_size`](#-acme--dh_param_size)
 * [`dnssleep`](#-acme--dnssleep)
 * [`exec_timeout`](#-acme--exec_timeout)
@@ -194,14 +196,34 @@ Data type: `String`
 
 The command used to calculate renewal dates for existing certificates.
 
+##### <a name="-acme--default_account"></a>`default_account`
+
+Data type: `Optional[String]`
+
+The default account that should be used to new certificate requests.
+The account must already be defined in `$accounts`.
+May be overriden by specifying `$use_account` for the certificate.
+
+Default value: `undef`
+
 ##### <a name="-acme--default_ca"></a>`default_ca`
 
 Data type: `Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']`
 
-The default ACME CA you want to use. May be overriden by specifying a
-different value for `$ca` for the certificate.
+The default ACME CA that should be used to new certificate requests.
+May be overriden by specifying `$ca` for the certificate.
 Previous versions of acme.sh used to have Let's Encrypt as their default CA,
 hence this is the default value for this Puppet module.
+
+##### <a name="-acme--default_profile"></a>`default_profile`
+
+Data type: `Optional[String]`
+
+The default profile that should be used to new certificate requests.
+The profile must already be defined in `$profile`.
+May be overriden by specifying `$use_profile` for the certificate.
+
+Default value: `undef`
 
 ##### <a name="-acme--dh_param_size"></a>`dh_param_size`
 
@@ -359,13 +381,13 @@ Data type: `Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt
 The ACME CA that should be used. Used to overwrite the default
 CA that is configured on `$acme_host`.
 
-Default value: `undef`
+Default value: `$acme::default_ca`
 
 ##### <a name="-acme--certificate--dh_param_size"></a>`dh_param_size`
 
 Data type: `Integer`
 
-dh parameter size, defaults to $::acme::dh_param_size
+dh parameter size, defaults to $acme::dh_param_size
 
 Default value: `$acme::dh_param_size`
 
@@ -386,7 +408,7 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-request certificate with OCSP Must-Staple exctension, defaults to $::acme::ocsp_must_staple
+request certificate with OCSP Must-Staple exctension, defaults to $acme::ocsp_must_staple
 
 Default value: `$acme::ocsp_must_staple`
 
@@ -413,12 +435,16 @@ Data type: `String`
 The ACME account that should be used (or registered).
 This account must exist in `$accounts` on your `$acme_host`.
 
+Default value: `$acme::default_account`
+
 ##### <a name="-acme--certificate--use_profile"></a>`use_profile`
 
 Data type: `String`
 
 Specify the profile that should be used to sign the certificate.
 This profile must exist in `$profiles` on your `$acme_host`.
+
+Default value: `$acme::default_profile`
 
 ## Functions
 

@@ -61,11 +61,21 @@
 # @param date_expression
 #   The command used to calculate renewal dates for existing certificates.
 #
+# @param default_account
+#   The default account that should be used to new certificate requests.
+#   The account must already be defined in `$accounts`.
+#   May be overriden by specifying `$use_account` for the certificate.
+#
 # @param default_ca
-#   The default ACME CA you want to use. May be overriden by specifying a
-#   different value for `$ca` for the certificate.
+#   The default ACME CA that should be used to new certificate requests.
+#   May be overriden by specifying `$ca` for the certificate.
 #   Previous versions of acme.sh used to have Let's Encrypt as their default CA,
 #   hence this is the default value for this Puppet module.
+#
+# @param default_profile
+#   The default profile that should be used to new certificate requests.
+#   The profile must already be defined in `$profile`.
+#   May be overriden by specifying `$use_profile` for the certificate.
 #
 # @param dh_param_size
 #   Specifies the DH parameter size, defaults to `2048`.
@@ -165,6 +175,8 @@ class acme (
   String $stat_expression,
   String $user,
   # optional parameters
+  Optional[String] $default_account = undef,
+  Optional[String] $default_profile = undef,
   Optional[String] $proxy = undef,
   Optional[Hash] $profiles = undef
 ) {
