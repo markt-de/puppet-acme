@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+* Change default for `$ca` in `acme::certificate` to `$acme::default_ca` ([#37])
+
 ### Fixed
 * Fix secret leakage in debug `notify` ([#50])
 
@@ -190,6 +193,7 @@ Initial release (fork of bzed-letsencrypt).
 [#50]: https://github.com/fraenki/puppet-acme/pull/50
 [#44]: https://github.com/fraenki/puppet-acme/pull/44
 [#40]: https://github.com/fraenki/puppet-acme/pull/40
+[#37]: https://github.com/fraenki/puppet-acme/pull/37
 [#33]: https://github.com/fraenki/puppet-acme/pull/33
 [#32]: https://github.com/fraenki/puppet-acme/pull/32
 [#31]: https://github.com/fraenki/puppet-acme/pull/31
