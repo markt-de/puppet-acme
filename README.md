@@ -42,7 +42,7 @@ sign the CSRs and distribute the certificates.
 
 ## Requirements
 
-* Puppet 6+ with [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html) enabled (PuppetDB)
+* Puppet with [Exported Resources](https://puppet.com/docs/puppet/latest/lang_exported.html) enabled (PuppetDB)
 * A [compatible DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to validate your ACME certificates
 
 Furthermore it is highly recommended to use [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml)
