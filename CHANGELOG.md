@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.0.0] - 2024-04-17
 
 ### Added
 * New parameters: `$acme::default_account`, `$acme::default_profile` ([#38])
@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Change default for `$ca` in `acme::certificate` to `$acme::default_ca` ([#37])
 * Change default for `$use_account` in `acme::certificate` to `$acme::default_account` ([#38])
 * Change default for `$use_profile` in `acme::certificate` to `$acme::default_profile` ([#38])
+* Change default for `$acme_host` to `$server_facts['servername']`
+* Bump module dependencies
+* Update PDK to 3.0.1
+
+### Removed
+* Drop EOL operating systems
+* Drop Puppet 6 support
 
 ### Fixed
 * Fix secret leakage in debug `notify` ([#50])
@@ -181,7 +188,8 @@ This new major release is an effort to modernize the module. It fixes some long-
 ## [1.0.0] - 2017-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/fraenki/puppet-acme/compare/4.1.0...HEAD
+[Unreleased]: https://github.com/fraenki/puppet-acme/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/fraenki/puppet-acme/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/fraenki/puppet-acme/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/fraenki/puppet-acme/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/fraenki/puppet-acme/compare/3.0.0...4.0.0
