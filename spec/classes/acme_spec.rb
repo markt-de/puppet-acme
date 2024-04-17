@@ -11,7 +11,7 @@ describe 'acme' do
         context 'with example configuration' do
           let(:facts) do
             super().merge(
-              openssl_version: '1.0.2k-fips',
+              'openssl_version' => '1.0.2k-fips',
             )
           end
           let(:params) do
@@ -72,16 +72,12 @@ describe 'acme' do
 
           let(:facts) do
             super().merge(
-              networking: {
-                fqdn: test_host,
+              'fqdn' => test_host,
+              'networking' => {
+                'fqdn' => test_host,
               },
-              servername: test_host,
-              openssl_version: '1.0.2k-fips',
-            )
-          end
-          let(:server_facts) do
-            super().merge(
-              servername: test_host,
+              'servername' => test_host,
+              'openssl_version' => '1.0.2k-fips',
             )
           end
           let(:params) do
@@ -139,16 +135,12 @@ describe 'acme' do
 
           let(:facts) do
             super().merge(
-              networking: {
-                fqdn: test_host,
+              'fqdn' => test_host,
+              'networking' => {
+                'fqdn' => test_host,
               },
-              servername: test_host,
-              openssl_version: '1.0.2k-fips',
-            )
-          end
-          let(:server_facts) do
-            super().merge(
-              servername: test_host,
+              'servername' => test_host,
+              'openssl_version' => '1.0.2k-fips',
             )
           end
           let(:params) do
