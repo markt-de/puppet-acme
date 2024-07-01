@@ -10,8 +10,11 @@ describe 'acme' do
 
         context 'with example configuration' do
           let(:facts) do
-            super().merge(
-              'openssl_version' => '1.0.2k-fips',
+            super().deep_merge!(
+              networking: {
+                'fqdn' => 'random.fqdn.tld',
+              },
+              openssl_version: '1.0.2k-fips',
             )
           end
           let(:params) do
@@ -71,13 +74,13 @@ describe 'acme' do
           le_profile = 'nsupdate_example'
 
           let(:facts) do
-            super().merge(
-              'fqdn' => test_host,
-              'networking' => {
+            super().deep_merge!(
+              networking: {
                 'fqdn' => test_host,
               },
-              'servername' => test_host,
-              'openssl_version' => '1.0.2k-fips',
+              openssl_version: '1.0.2k-fips',
+              # workaround for disfunctional $server_facts in rspec-puppet
+              fqdn: test_host,
             )
           end
           let(:params) do
@@ -134,13 +137,13 @@ describe 'acme' do
           le_ca = 'zerossl'
 
           let(:facts) do
-            super().merge(
-              'fqdn' => test_host,
-              'networking' => {
+            super().deep_merge!(
+              networking: {
                 'fqdn' => test_host,
               },
-              'servername' => test_host,
-              'openssl_version' => '1.0.2k-fips',
+              openssl_version: '1.0.2k-fips',
+              # workaround for disfunctional $server_facts in rspec-puppet
+              fqdn: test_host,
             )
           end
           let(:params) do

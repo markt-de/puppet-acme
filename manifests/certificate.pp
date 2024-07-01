@@ -51,7 +51,7 @@ define acme::certificate (
 
   $path = $acme::path
 
-  if $domain == undef {
+  if $domain =~ Undef {
     # compatibility mode, parse name as list of domains, and use first as certificate resource name
     $domains = split(downcase($name), ' ')
     $cert_name = $domains[0]
