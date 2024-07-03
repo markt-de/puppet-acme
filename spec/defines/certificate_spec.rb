@@ -15,6 +15,13 @@ describe 'acme::certificate', type: :define do
         altname_test2 = 'bar.example.com'
 
         context 'with example configuration' do
+          let(:facts) do
+            super().deep_merge!(
+              networking: {
+                'fqdn' => 'random.fqdn.tld',
+              },
+            )
+          end
           let(:params) do
             {
               use_profile: 'route53_example',
