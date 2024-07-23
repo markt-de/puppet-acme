@@ -16,7 +16,7 @@ jobs:
         puppet_version: [7]
 
     name: Check / Puppet ${{ matrix.puppet_version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container: puppet/pdk:latest
 
     steps:
@@ -39,11 +39,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['rocky8', 'ub2204', 'deb11']
+        os: ['rocky8', 'ub2004', 'ub2204', 'ub2404', 'deb11', 'deb12']
         puppet_version: [7]
 
     name: Acceptance / ${{ matrix.os }} / Puppet ${{ matrix.puppet_version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - check
 
