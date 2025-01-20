@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 * Change default of `$ocsp_must_staple` from `true` to `false` ([#56])
+* Don't fetch OCSP data if `$ocsp_must_staple` is set to `false` ([#56])
 
 ## [5.0.0] - 2024-04-17
 

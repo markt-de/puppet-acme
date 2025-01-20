@@ -359,7 +359,9 @@ define acme::request (
     mode   => '0644',
   }
 
-  ::acme::request::ocsp { $name:
-    require => File[$result_crt_file],
+  if ($ocsp_must_staple) {
+    acme::request::ocsp { $name:
+      require => File[$result_crt_file],
+    }
   }
 }
