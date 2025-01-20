@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+BREAKING CHANGE: The default value of `$ocsp_must_staple` was changed
+to `false`. For systems that rely on this functionality this value must
+be changed to `true` (if supported by the CA).
+
+BREAKING CHANGE: Let's Encrypt ends support for the OCSP Must Staple
+extension on 30.01.2025. Issuance requests will fail if this option is
+still enabled past this date.
+
 ### Changed
 * Change default of `$ocsp_must_staple` from `true` to `false` ([#56])
 * Don't fetch OCSP data if `$ocsp_must_staple` is set to `false` ([#56])
