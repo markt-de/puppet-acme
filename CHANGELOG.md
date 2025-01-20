@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
+## [6.0.0] - 2025-01-20
 
 BREAKING CHANGE: The default value of `$ocsp_must_staple` was changed
 to `false`. For systems that rely on this functionality this value must
@@ -203,7 +203,8 @@ This new major release is an effort to modernize the module. It fixes some long-
 ## [1.0.0] - 2017-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/markt-de/puppet-acme/compare/5.0.0...HEAD
+[Unreleased]: https://github.com/markt-de/puppet-acme/compare/6.0.0...HEAD
+[6.0.0]: https://github.com/markt-de/puppet-acme/compare/5.0.0...6.0.0
 [5.0.0]: https://github.com/markt-de/puppet-acme/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/markt-de/puppet-acme/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/markt-de/puppet-acme/compare/4.0.0...4.0.1
