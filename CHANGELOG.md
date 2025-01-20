@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+
+## [Unreleased]
+
+### Changed
+* Change default of `$ocsp_must_staple` from `true` to `false` ([#56])
+
 ## [5.0.0] - 2024-04-17
 
 ### Added
@@ -203,6 +209,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/fraenki/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/fraenki/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/fraenki/puppet-acme/compare/1.0.0...1.0.1
+[#56]: https://github.com/fraenki/puppet-acme/pull/56
 [#50]: https://github.com/fraenki/puppet-acme/pull/50
 [#44]: https://github.com/fraenki/puppet-acme/pull/44
 [#40]: https://github.com/fraenki/puppet-acme/pull/40

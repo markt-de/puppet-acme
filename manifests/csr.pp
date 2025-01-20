@@ -24,7 +24,7 @@ define acme::csr (
   Integer $dh_param_size = 2048,
   Enum['present','absent'] $ensure = 'present',
   Boolean $force = true,
-  Boolean $ocsp_must_staple = true,
+  Boolean $ocsp_must_staple = false,
   Integer $renew_days = $acme::renew_days,
   Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']] $ca = undef,
   Optional[String] $country = undef,
