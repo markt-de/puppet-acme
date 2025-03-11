@@ -21,6 +21,7 @@ acme::acmelog: "%{lookup('acme::log_dir')}/acme.log"
 acme::dnssleep: 60
 
 # ACME defaults
+acme::ca_config: {}
 acme::ca_whitelist:
   - 'letsencrypt'
   - 'letsencrypt_test'

@@ -39,6 +39,14 @@ class acme::request::handler {
         }
       }
 
+      # Extract the CA URL for custom CA's.
+      if $acme_ca in $acme::ca_config {
+        $ca_url = $acme::ca_config[$acme_ca]
+      } else {
+        # Default CAs don't need to provide an URL, the name is sufficient.
+        $ca_url = $acme_ca
+      }
+
       # Handle switching CAs with different account keys.
       $account_key_file = "${account_dir}/private_${acme_ca_compat}.key"
       $account_conf_file = "${account_dir}/account_${acme_ca_compat}.conf"
@@ -67,7 +75,7 @@ class acme::request::handler {
         ],
       }
 
-      # Some status files so we avoid useless runs of acme.sh.
+      # Create status files so we avoid useless runs of acme.sh.
       $account_created_file = "${account_dir}/${acme_ca_compat}.created"
       $account_registered_file = "${account_dir}/${acme_ca_compat}.registered"
 
@@ -79,7 +87,7 @@ class acme::request::handler {
           "--log ${acme::acmelog}",
           "--home \'${acme::acme_dir}\'",
           "--accountconf \'${account_conf_file}\'",
-          "--server ${acme_ca}",
+          "--server ${ca_url}",
           '>/dev/null',
           '&&',
           "touch \'${account_created_file}\'",
@@ -107,7 +115,7 @@ class acme::request::handler {
           "--log ${acme::acmelog}",
           "--home \'${acme::acme_dir}\'",
           "--accountconf ${account_conf_file}",
-          "--server ${acme_ca}",
+          "--server ${ca_url}",
           '>/dev/null',
           '&&',
           "touch \'${account_registered_file}\'",
