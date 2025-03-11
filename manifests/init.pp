@@ -39,9 +39,13 @@
 # @param base_dir
 #   The configuration base directory for acme.sh.
 #
+# @param ca_config
+#   A hash that contains the name and URL of one of more custom CAs.
+#   Note that the name must not conflict with the default CAs.
+#
 # @param ca_whitelist
 #   Specifies the CAs that may be used on `$acme_host`. The module will register
-#   any account specified in `$accounts` with all specified CAs. This ensure that
+#   any account specified in `$accounts` with all specified CAs. This ensures that
 #   these accounts are ready for use.
 #
 # @param certificates
@@ -161,7 +165,10 @@ class acme (
   Array $ca_whitelist,
   Hash $certificates,
   String $date_expression,
-  Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'] $default_ca,
+  Variant[
+    Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
+    Pattern[/^[a-z0-9_-]+$/]
+  ] $default_ca,
   Integer $dh_param_size,
   Integer $dnssleep,
   Integer $exec_timeout,
@@ -175,6 +182,7 @@ class acme (
   String $stat_expression,
   String $user,
   # optional parameters
+  Optional[Hash[Pattern[/^[a-z0-9_-]+$/], Stdlib::HTTPSUrl]] $ca_config,
   Optional[String] $default_account = undef,
   Optional[String] $default_profile = undef,
   Optional[String] $proxy = undef,

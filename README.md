@@ -18,6 +18,7 @@
     * [SAN certificates](#san-certificates)
     * [Multiple certificates for one base domain](#multiple-certificates-for-one-base-domain)
     * [DNS alias mode](#dns-alias-mode)
+    * [Custom CA](#custom-ca)
     * [Testing and debugging](#testing-and-debugging)
     * [Updating acme.sh](#updating-acmesh)
 1. [Examples](#examples)
@@ -311,6 +312,29 @@ In order to use DNS alias mode, specify the domain name either in the `challenge
           }
         }
       }
+    }
+~~~
+
+### Custom CA
+
+Any ACME CA may be used by specifying a name that does not conflict with the default CAs:
+
+~~~puppet
+    acme::certificate { 'test.example.com':
+      use_profile => 'route53_example',
+      use_account => 'ssl@example.com',
+      ca          => 'private_ca123',
+    }
+~~~
+
+Note that the CA URL must be configured and the CA name must be whitelisted on the Puppet Server:
+
+~~~puppet
+    Class { 'acme':
+      default_ca   => 'letsencrypt',
+      ca_config    => { private_ca123 => 'https://ca.example.com/acme/directory' },
+      ca_whitelist => [ 'private_ca123', 'letsencrypt' ],
+      ...
     }
 ~~~
 

@@ -45,7 +45,10 @@ define acme::certificate (
   Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
   String $posthook_cmd = $acme::posthook_cmd,
   Integer $renew_days = $acme::renew_days,
-  Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']] $ca = $acme::default_ca,
+  Optional[Variant[
+      Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
+      Pattern[/^[a-z0-9_-]+$/]
+  ]] $ca = $acme::default_ca,
 ) {
   require acme::setup::common
 

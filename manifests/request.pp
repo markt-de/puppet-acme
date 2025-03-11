@@ -21,7 +21,10 @@ define acme::request (
   String $csr,
   String $use_account,
   String $use_profile,
-  Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'] $ca = $acme::default_ca,
+  Variant[
+    Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
+    Pattern[/^[a-z0-9_-]+$/]
+  ] $ca = $acme::default_ca,
   String $domain = $name,
   Integer $renew_days = $acme::renew_days,
   Boolean $ocsp_must_staple = false,
@@ -64,6 +67,14 @@ define acme::request (
   } else {
     fail("Module ${module_name}: unable to find profile \"${use_profile}\" for",
     "cert ${name}")
+  }
+
+  # Extract the CA URL for custom CA's.
+  if $ca in $acme::ca_config {
+    $ca_url = $acme::ca_config[$ca]
+  } else {
+    # Default CAs don't need to provide an URL, the name is sufficient.
+    $ca_url = $ca
   }
 
   # Check if the CA is whitelisted.
@@ -260,7 +271,7 @@ define acme::request (
       "--cert-file \'${crt_file}\'",
       "--ca-file \'${chain_file}\'",
       "--fullchain-file \'${fullchain_file}\'",
-      "--server ${ca}",
+      "--server ${ca_url}",
       $acme_options,
       '>/dev/null',
   ], ' ')
@@ -284,7 +295,7 @@ define acme::request (
       "--cert-file \'${crt_file}\'",
       "--ca-file \'${chain_file}\'",
       "--fullchain-file \'${fullchain_file}\'",
-      "--server ${ca}",
+      "--server ${ca_url}",
       $acme_options,
       '>/dev/null',
   ], ' ')
