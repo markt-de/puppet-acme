@@ -25,7 +25,6 @@ acme::ca_whitelist:
   - 'letsencrypt'
   - 'letsencrypt_test'
 acme::default_ca: 'letsencrypt'
-acme::letsencrypt_ca: 'production'
 acme::ocsp_request: "%{lookup('acme::base_dir')}/get_certificate_ocsp.sh"
 acme::proxy: ~
 acme::renew_days: 30
