@@ -131,7 +131,7 @@ define acme::request (
   $hook_params = $_hook_params.map |$key,$value| { "${key}=${value}" }
 
   # Collect additional options for acme.sh.
-  if ($profile['options']['dnssleep'] and ($profile['options']['dnssleep'] =~ Integer)
+  if ($profile['options'] and $profile['options']['dnssleep'] and ($profile['options']['dnssleep'] =~ Integer)
   and ($profile['options']['dnssleep'] > 0)) {
     $_dnssleep = "--dnssleep  ${profile['options']['dnssleep']}"
   } elsif (defined('$acme::dnssleep') and ($acme::dnssleep > 0)) {
@@ -142,10 +142,10 @@ define acme::request (
   }
 
   # Use the challenge or domain alias that is specified in the profile
-  if ($profile['options']['challenge_alias']) {
+  if ($profile['options'] and $profile['options']['challenge_alias']) {
     $_alias_mode = "--challenge-alias ${profile['options']['challenge_alias']}"
     $acme_options = join([$_dnssleep, $_alias_mode], ' ')
-  } elsif ($profile['options']['domain_alias']) {
+  } elsif ($profile['options'] and $profile['options']['domain_alias']) {
     $_alias_mode = "--domain-alias ${profile['options']['domain_alias']}"
     $acme_options = join([$_dnssleep, $_alias_mode], ' ')
   } else {
