@@ -15,6 +15,7 @@
 1. [Usage](#usage)
     * [Request a certificate](#request-a-certificate)
     * [Using other ACME CA's](#using-other-acme-cas)
+    * [Wildcard certificates](#wildcard-certificates)
     * [SAN certificates](#san-certificates)
     * [Multiple certificates for one base domain](#multiple-certificates-for-one-base-domain)
     * [DNS alias mode](#dns-alias-mode)
@@ -194,6 +195,20 @@ Besides that a different CA can also be specified for individual certificates:
       }
     }
 ~~~
+
+### Wildcard certificates
+
+To request a wildcard certificate:
+
+~~~puppet
+    acme::certificate { '*.example.com':
+      use_profile => 'route53_example',
+      use_account => 'ssl@example.com',
+      ca          => 'letsencrypt_test',
+    }
+~~~
+
+Wildcard certificates may also use multiple domains names like `*.example.com example.com` (see below).
 
 ### SAN certificates
 
