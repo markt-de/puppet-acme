@@ -332,7 +332,7 @@ In order to use DNS alias mode, specify the domain name either in the `challenge
 
 ### Custom CA
 
-Any ACME CA may be used by specifying a name that does not conflict with the default CAs:
+Any ACME CA (e.g. [step-ca](https://github.com/smallstep/certificates/)) may be used by specifying a name that does not conflict with the default CAs:
 
 ~~~puppet
     acme::certificate { 'test.example.com':
