@@ -167,15 +167,16 @@ class acme::request::handler {
         }
 
         file { $hook_conf_file:
-          owner   => $acme::user,
-          group   => $acme::group,
-          mode    => '0600',
-          content => epp("${module_name}/hooks/${hook}.epp", {
+          owner     => $acme::user,
+          group     => $acme::group,
+          mode      => '0600',
+          show_diff => false,
+          content   => epp("${module_name}/hooks/${hook}.epp", {
               nsupdate_id   => $nsupdate_id,
               nsupdate_key  => $nsupdate_key,
               nsupdate_type => $nsupdate_type,
           }),
-          require => File[$hook_dir],
+          require   => File[$hook_dir],
         }
       }
     }
