@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 * Update acme.sh's cached CSR file if CSR changes
+* Reverse OCSP logic in CSR template
 
 ### Fixed
 * Disabling OCSP Must Staple extension has no effect
