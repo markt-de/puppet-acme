@@ -48,6 +48,7 @@ define acme::request (
   $acmecmd = $acme::acmecmd
   $acmelog = $acme::acmelog
   $csr_file = "${csr_dir}/${name}/cert.csr"
+  $csr_cached_file = "${acme_dir}/${name}/${name}.csr"
   $crt_file = "${crt_dir}/${name}/cert.pem"
   $chain_file = "${crt_dir}/${name}/chain.pem"
   $fullchain_file = "${crt_dir}/${name}/fullchain.pem"
@@ -184,6 +185,18 @@ define acme::request (
     ensure  => file,
     content => $csr,
     mode    => '0640',
+  }
+
+  # acme.sh caches the CSR file. If the CSR was changed, the cached CSR file
+  # must be updated too. This should be skipped if no cached CSR can be found.
+  exec { "update cached csr for ${name}":
+    path        => $path,
+    command     => "cp ${csr_file} ${csr_cached_file}",
+    onlyif      => "test -f \'${csr_cached_file}\'",
+    user        => $user,
+    group       => $group,
+    refreshonly => true,
+    subscribe   => File[$csr_file],
   }
 
   # Create directory to place the crt_file for each domain
