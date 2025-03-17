@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [6.3.0] - 2025-03-17
 
-ATTENTION: The next major release will change the default RSA key size from 2048 to 4096. Please start migrating your certificates to the new key size now.
+ATTENTION: The next major release will change the default RSA key size from 2048 to 4096. Please start to use the new key size now.
 
 ### Added
 * New parameter `$key_size` to make RSA key size configurable
@@ -14,6 +14,7 @@ ATTENTION: The next major release will change the default RSA key size from 2048
 
 ### Changed
 * Replace cached renewal time if CSR changes (to force renewal)
+* Overwrite cached CSR file if CSR changes
 
 ### Fixed
 * CSR changes are ignored by acme.sh (until renewal date is reached)
@@ -234,7 +235,8 @@ This new major release is an effort to modernize the module. It fixes some long-
 ## [1.0.0] - 2017-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/markt-de/puppet-acme/compare/6.2.0...HEAD
+[Unreleased]: https://github.com/markt-de/puppet-acme/compare/6.3.0...HEAD
+[6.3.0]: https://github.com/markt-de/puppet-acme/compare/6.2.0...6.3.0
 [6.2.0]: https://github.com/markt-de/puppet-acme/compare/6.1.0...6.2.0
 [6.1.0]: https://github.com/markt-de/puppet-acme/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/markt-de/puppet-acme/compare/5.0.0...6.0.0

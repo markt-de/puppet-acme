@@ -1,6 +1,6 @@
 {
   "name": "markt-acme",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "author": "markt.de",
   "summary": "Centralized SSL certificate management using Let's Encrypt and the lightweight acme.sh",
   "license": "Apache-2.0",
