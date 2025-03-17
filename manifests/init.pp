@@ -82,7 +82,10 @@
 #   May be overriden by specifying `$use_profile` for the certificate.
 #
 # @param dh_param_size
-#   Specifies the DH parameter size, defaults to `2048`.
+#   Specifies the DH parameter size, defaults to $acme::dh_param_size.
+#
+# @param key_size
+#   The key size for RSA keys, defaults to $acme::key_size.
 #
 # @param dnssleep
 #   The time in seconds acme.sh should wait for all DNS changes to take effect.
@@ -173,6 +176,7 @@ class acme (
   Integer $dnssleep,
   Integer $exec_timeout,
   String $group,
+  Integer $key_size,
   Boolean $manage_packages,
   Boolean $ocsp_must_staple,
   String $path,
@@ -228,6 +232,7 @@ class acme (
     $options = deep_merge({
         acme_host        => $acme_host,
         dh_param_size    => $dh_param_size,
+        key_size         => $key_size,
         ocsp_must_staple => $ocsp_must_staple,
     },$config)
     # Create the certificate resource.

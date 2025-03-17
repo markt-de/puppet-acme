@@ -22,6 +22,7 @@ define acme::csr (
   String $use_profile,
   Array[String] $domains,
   Integer $dh_param_size = 2048,
+  Integer $key_size = $acme::key_size,
   Enum['present','absent'] $ensure = 'present',
   Boolean $force = true,
   Boolean $ocsp_must_staple = false,
@@ -150,6 +151,7 @@ define acme::csr (
   ssl_pkey { $key_file:
     ensure   => $ensure,
     password => $password,
+    size     => $key_size,
     require  => File[$key_dir],
   }
 

@@ -135,12 +135,14 @@ On the Puppet node where you need the certificate(s):
           use_profile => 'route53_example',
           use_account => 'ssl@example.com',
           ca          => 'letsencrypt_test',
+          key_size    => 4096,
         }
         # a cert for the current FQDN is nice too
         ${facts['networking']['fqdn']} => {
           use_profile => 'nsupdate_example',
           use_account => 'certmaster@example.com',
           ca          => 'letsencrypt',
+          key_size    => 4096,
         },
       }
     }

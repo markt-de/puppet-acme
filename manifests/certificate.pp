@@ -9,7 +9,10 @@
 #   CA that is configured on `$acme_host`.
 #
 # @param dh_param_size
-#   dh parameter size, defaults to $acme::dh_param_size
+#   Specifies the DH parameter size, defaults to $acme::dh_param_size.
+#
+# @param key_size
+#   The key size for RSA keys, defaults to $acme::key_size.
 #
 # @param domain
 #   Full qualified domain names you want to request a certificate for.
@@ -42,6 +45,7 @@ define acme::certificate (
   Variant[String, Array[String], Undef] $domain = undef,
   String $acme_host = $acme::acme_host,
   Integer $dh_param_size = $acme::dh_param_size,
+  Integer $key_size = $acme::key_size,
   Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
   String $posthook_cmd = $acme::posthook_cmd,
   Integer $renew_days = $acme::renew_days,
@@ -85,6 +89,7 @@ define acme::certificate (
     use_profile      => $use_profile,
     acme_host        => $acme_host,
     dh_param_size    => $dh_param_size,
+    key_size         => $key_size,
     ocsp_must_staple => $ocsp_must_staple,
     renew_days       => $renew_days,
     ca               => $ca,
