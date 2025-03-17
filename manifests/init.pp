@@ -240,6 +240,7 @@ class acme (
         key_size              => $key_size,
         ocsp_must_staple      => $ocsp_must_staple,
         purge_key_on_mismatch => $purge_key_on_mismatch,
+        renew_days            => $renew_days,
     },$config)
     # Create the certificate resource.
     acme::certificate { $name: * => $options }
