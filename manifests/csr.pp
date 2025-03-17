@@ -26,6 +26,7 @@ define acme::csr (
   Enum['present','absent'] $ensure = 'present',
   Boolean $force = true,
   Boolean $ocsp_must_staple = false,
+  Boolean $purge_key_on_mismatch = $acme::purge_key_on_mismatch,
   Integer $renew_days = $acme::renew_days,
   Optional[Variant[
       Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
@@ -148,11 +149,33 @@ define acme::csr (
     }),
   }
 
+  # This checks the length of the private key and will purge
+  # the current private key on mismatch.
+  if $purge_key_on_mismatch {
+    # Only trigger the purge operation if the key file exists and
+    # the expected key length cannot be found.
+    $key_purge_onlyif = "test -f ${key_file} && test `openssl rsa -text -noout -in ${key_file} | grep -c \'${key_size} bit\'` -eq 0"
+    $ssl_pkey_require = [
+      File[$key_dir],
+      Exec["purge private key due to length mismatch: ${key_file}"],
+    ]
+
+    exec { "purge private key due to length mismatch: ${key_file}":
+      path    => $path,
+      command => "rm ${key_file}",
+      onlyif  => $key_purge_onlyif,
+    }
+  } else {
+    $ssl_pkey_require = [
+      File[$key_dir],
+    ]
+  }
+
   ssl_pkey { $key_file:
     ensure   => $ensure,
     password => $password,
     size     => $key_size,
-    require  => File[$key_dir],
+    require  => $ssl_pkey_require,
   }
 
   x509_request { $csr_file:

@@ -28,6 +28,10 @@
 # @param posthook_cmd
 #   Specifies a optional command to run after a certificate has been changed.
 #
+# @param purge_key_on_mismatch
+#   Whether or not the private key should be removed if a $key_size mismatch is detected.
+#   Note that this will cause a cert/key mismatch for existing certificates, until a new certificate was issued using the new key.
+#
 # @param renew_days
 #   Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
 #
@@ -48,6 +52,7 @@ define acme::certificate (
   Integer $key_size = $acme::key_size,
   Boolean $ocsp_must_staple = $acme::ocsp_must_staple,
   String $posthook_cmd = $acme::posthook_cmd,
+  Boolean $purge_key_on_mismatch = $acme::purge_key_on_mismatch,
   Integer $renew_days = $acme::renew_days,
   Optional[Variant[
       Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
@@ -84,14 +89,15 @@ define acme::certificate (
 
   # Generate CSRs.
   ::acme::csr { $cert_name:
-    domains          => $domains,
-    use_account      => $use_account,
-    use_profile      => $use_profile,
-    acme_host        => $acme_host,
-    dh_param_size    => $dh_param_size,
-    key_size         => $key_size,
-    ocsp_must_staple => $ocsp_must_staple,
-    renew_days       => $renew_days,
-    ca               => $ca,
+    domains               => $domains,
+    use_account           => $use_account,
+    use_profile           => $use_profile,
+    acme_host             => $acme_host,
+    dh_param_size         => $dh_param_size,
+    key_size              => $key_size,
+    ocsp_must_staple      => $ocsp_must_staple,
+    purge_key_on_mismatch => $purge_key_on_mismatch,
+    renew_days            => $renew_days,
+    ca                    => $ca,
   }
 }

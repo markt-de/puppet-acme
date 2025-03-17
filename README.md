@@ -136,7 +136,7 @@ On the Puppet node where you need the certificate(s):
           use_account => 'ssl@example.com',
           ca          => 'letsencrypt_test',
           key_size    => 4096,
-        }
+        },
         # a cert for the current FQDN is nice too
         ${facts['networking']['fqdn']} => {
           use_profile => 'nsupdate_example',
@@ -387,6 +387,65 @@ install a specific version of acme.sh:
 
 The revision should be taken from the official acme.sh repository. In order to
 revert to the latest version, the value should be set to 'master'.
+
+### Updating Key Length
+
+Consider a certificate with an old 2048 bit RSA private key:
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        test.example.com => {
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
+          key_size    => 2048,
+        },
+      }
+    }
+~~~
+
+If this certificate should be migrated to a 4096 bit RSA private key, then it's usually the best approach to create a 2nd certificate with a new key:
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        test.example.com => {
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
+          key_size    => 2048,
+        },
+        'test.example.com (rsa4096)' => {
+          domain      => 'test.example.com',
+          use_profile => 'route53_example',
+          use_account => 'ssl@example.com',
+          ca          => 'letsencrypt_test',
+          key_size    => 4096,
+        },
+      }
+    }
+~~~
+
+Note that some ACME CA's may apply rate limits for duplicate names.
+
+Another approach would be to purge the old key and just replace it with a new one:
+
+~~~puppet
+    class { 'acme':
+      certificates => {
+        test.example.com => {
+          use_profile           => 'route53_example',
+          use_account           => 'ssl@example.com',
+          ca                    => 'letsencrypt_test',
+          key_size              => 4096,
+          purge_key_on_mismatch => true,
+        },
+      }
+    }
+~~~
+
+However, this has servere drawbacks, because it will cause a cert/key mismatch, possibly rendering applications unusable until a new certificate was issued. It heavily depends on the use-case if this approach may be acceptable.
 
 ## Examples
 

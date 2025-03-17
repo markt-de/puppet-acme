@@ -131,6 +131,10 @@
 # @param proxy
 #   Proxy server to use to connect to the ACME CA, for example `proxy.example.com:3128`
 #
+# @param purge_key_on_mismatch
+#   Whether or not the private key should be removed if a $key_size mismatch is detected.
+#   Note that this will cause a cert/key mismatch for existing certificates, until a new certificate was issued using the new key.
+#
 # @param renew_days
 #   Specifies the interval at which certs should be renewed automatically. Defaults to `60`.
 #
@@ -181,6 +185,7 @@ class acme (
   Boolean $ocsp_must_staple,
   String $path,
   String $posthook_cmd,
+  Boolean $purge_key_on_mismatch,
   Integer $renew_days,
   String $shell,
   String $stat_expression,
@@ -230,10 +235,11 @@ class acme (
   $certificates.each |$name, $config| {
     # Merge domain params with module params.
     $options = deep_merge({
-        acme_host        => $acme_host,
-        dh_param_size    => $dh_param_size,
-        key_size         => $key_size,
-        ocsp_must_staple => $ocsp_must_staple,
+        acme_host             => $acme_host,
+        dh_param_size         => $dh_param_size,
+        key_size              => $key_size,
+        ocsp_must_staple      => $ocsp_must_staple,
+        purge_key_on_mismatch => $purge_key_on_mismatch,
     },$config)
     # Create the certificate resource.
     acme::certificate { $name: * => $options }

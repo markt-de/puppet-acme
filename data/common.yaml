@@ -34,6 +34,7 @@ acme::renew_days: 30
 acme::dh_param_size: 2048
 acme::key_size: 2048
 acme::ocsp_must_staple: false
+acme::purge_key_on_mismatch: false
 
 # Module defaults
 acme::acme_host: "%{server_facts.servername}"

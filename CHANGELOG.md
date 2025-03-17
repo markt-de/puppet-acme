@@ -10,6 +10,7 @@ ATTENTION: The next major release will change the default RSA key size from 2048
 
 ### Added
 * New parameter `$key_size` to make RSA key size configurable
+* New parameter `$purge_key_on_mismatch` to purge private keys
 
 ## [6.2.0] - 2025-03-16
 
