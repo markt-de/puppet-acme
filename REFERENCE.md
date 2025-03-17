@@ -117,12 +117,19 @@ Data type: `Stdlib::Absolutepath`
 
 The configuration base directory for acme.sh.
 
+##### `ca_config`
+
+Data type: `Optional[Hash[Pattern[/^[a-z0-9_-]+$/], Stdlib::HTTPSUrl]]`
+
+A hash that contains the name and URL of one of more custom CAs.
+Note that the name must not conflict with the default CAs.
+
 ##### `ca_whitelist`
 
 Data type: `Array`
 
 Specifies the CAs that may be used on `$acme_host`. The module will register
-any account specified in `$accounts` with all specified CAs. This ensure that
+any account specified in `$accounts` with all specified CAs. This ensures that
 these accounts are ready for use.
 
 ##### `certificates`
@@ -169,7 +176,10 @@ Default value: ``undef``
 
 ##### `default_ca`
 
-Data type: `Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']`
+Data type: `Variant[
+    Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
+    Pattern[/^[a-z0-9_-]+$/]
+  ]`
 
 The default ACME CA that should be used to new certificate requests.
 May be overriden by specifying `$ca` for the certificate.
@@ -190,7 +200,13 @@ Default value: ``undef``
 
 Data type: `Integer`
 
-Specifies the DH parameter size, defaults to `2048`.
+Specifies the DH parameter size, defaults to $acme::dh_param_size.
+
+##### `key_size`
+
+Data type: `Integer`
+
+The key size for RSA keys, defaults to $acme::key_size.
 
 ##### `dnssleep`
 
@@ -276,6 +292,13 @@ Proxy server to use to connect to the ACME CA, for example `proxy.example.com:31
 
 Default value: ``undef``
 
+##### `purge_key_on_mismatch`
+
+Data type: `Boolean`
+
+Whether or not the private key should be removed if a $key_size mismatch is detected.
+Note that this will cause a cert/key mismatch for existing certificates, until a new certificate was issued using the new key.
+
 ##### `renew_days`
 
 Data type: `Integer`
@@ -327,7 +350,10 @@ Default value: `$acme::acme_host`
 
 ##### `ca`
 
-Data type: `Optional[Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl']]`
+Data type: `Optional[Variant[
+      Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
+      Pattern[/^[a-z0-9_-]+$/]
+  ]]`
 
 The ACME CA that should be used. Used to overwrite the default
 CA that is configured on `$acme_host`.
@@ -338,9 +364,17 @@ Default value: `$acme::default_ca`
 
 Data type: `Integer`
 
-dh parameter size, defaults to $acme::dh_param_size
+Specifies the DH parameter size, defaults to $acme::dh_param_size.
 
 Default value: `$acme::dh_param_size`
+
+##### `key_size`
+
+Data type: `Integer`
+
+The key size for RSA keys, defaults to $acme::key_size.
+
+Default value: `$acme::key_size`
 
 ##### `domain`
 
@@ -370,6 +404,15 @@ Data type: `String`
 Specifies a optional command to run after a certificate has been changed.
 
 Default value: `$acme::posthook_cmd`
+
+##### `purge_key_on_mismatch`
+
+Data type: `Boolean`
+
+Whether or not the private key should be removed if a $key_size mismatch is detected.
+Note that this will cause a cert/key mismatch for existing certificates, until a new certificate was issued using the new key.
+
+Default value: `$acme::purge_key_on_mismatch`
 
 ##### `renew_days`
 
