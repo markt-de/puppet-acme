@@ -12,6 +12,12 @@ ATTENTION: The next major release will change the default RSA key size from 2048
 * New parameter `$key_size` to make RSA key size configurable
 * New parameter `$purge_key_on_mismatch` to purge private keys
 
+### Changed
+* Replace cached renewal time if CSR changes (to force renewal)
+
+### Fixed
+* CSR changes are ignored by acme.sh (until renewal date is reached)
+
 ## [6.2.0] - 2025-03-16
 
 ### Changed

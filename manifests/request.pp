@@ -53,6 +53,27 @@ define acme::request (
   $chain_file = "${crt_dir}/${name}/chain.pem"
   $fullchain_file = "${crt_dir}/${name}/fullchain.pem"
 
+  # Check if a custom acme.sh home must be used
+  if ($domain == $name) {
+    $cert_home = $acme_dir
+  } else {
+    $cert_home = "${acme_dir}/${name}_"
+  }
+
+  # This config file is used by acme.sh to cache certificate information.
+  $conf_file = "${cert_home}/${domain}/${domain}.conf"
+
+  # Places where acme.sh stores the resulting certificate.
+  $le_crt_file = "${cert_home}/${domain}/${domain}.cer"
+  $le_chain_file = "${cert_home}/${domain}/ca.cer"
+  $le_fullchain_file = "${cert_home}/${domain}/fullchain.cer"
+
+  # We create a copy of the resulting certificates in a separate folder
+  # to make it easier to collect them with facter.
+  # XXX: Also required by acme::request::crt.
+  $result_crt_file = "${results_dir}/${name}.pem"
+  $result_chain_file = "${results_dir}/${name}.ca"
+
   # Check if the account is actually defined.
   $accounts = $acme::accounts
   if ! ($use_account in $accounts) {
@@ -187,11 +208,19 @@ define acme::request (
     mode    => '0640',
   }
 
+  # Handle different flavours of sed.
+  if ( $facts['kernel'] == 'FreeBSD' ) {
+    $sed_cmd = "sed -i ''"
+  } else {
+    $sed_cmd = 'sed -i '
+  }
+
   # acme.sh caches the CSR file. If the CSR was changed, the cached CSR file
   # must be updated too. This should be skipped if no cached CSR can be found.
-  exec { "update cached csr for ${name}":
+  # Furthermore the cached NextRenewTime is also replaced to enforce a renewal.
+  exec { "update cached csr and force renewal for ${name}":
     path        => $path,
-    command     => "cp ${csr_file} ${csr_cached_file}",
+    command     => "cp ${csr_file} ${csr_cached_file} && ${sed_cmd} 's@^Le_NextRenewTime=.*@Le_NextRenewTime=1000000000@' ${conf_file}",
     onlyif      => "test -f \'${csr_cached_file}\'",
     user        => $user,
     group       => $group,
@@ -211,23 +240,6 @@ define acme::request (
         Group[$group]
       ],
   })
-
-  if ($domain == $name) {
-    $cert_home = $acme_dir
-  } else {
-    $cert_home = "${acme_dir}/${name}_"
-  }
-
-  # Places where acme.sh stores the resulting certificate.
-  $le_crt_file = "${cert_home}/${domain}/${domain}.cer"
-  $le_chain_file = "${cert_home}/${domain}/ca.cer"
-  $le_fullchain_file = "${cert_home}/${domain}/fullchain.cer"
-
-  # We create a copy of the resulting certificates in a separate folder
-  # to make it easier to collect them with facter.
-  # XXX: Also required by acme::request::crt.
-  $result_crt_file = "${results_dir}/${name}.pem"
-  $result_chain_file = "${results_dir}/${name}.ca"
 
   # Convert altNames to be compatible with acme.sh.
   $_altnames = $altnames.map |$item| { "--domain \'${item}\'" }
