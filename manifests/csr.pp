@@ -3,6 +3,12 @@
 # @param acme_host
 #   Host the certificate will be signed on.
 #
+# @param challenge_alias
+#   Specifies a optional challenge alias, which will be used for DNS alias mode.
+#
+# @param domain_alias
+#   Specifies a optional domain alias, which will be used for DNS alias mode.
+#
 # @param ca
 #   The ACME CA that should be used. Used to overwrite the default
 #   CA that is configured on `$acme_host`.
@@ -39,6 +45,8 @@ define acme::csr (
   Optional[String] $unit = undef,
   Optional[String] $email = undef,
   Optional[String] $password = undef,
+  Optional[String] $challenge_alias = undef,
+  Optional[String] $domain_alias = undef,
 ) {
   $user = $acme::user
   $group = $acme::group
@@ -225,6 +233,8 @@ define acme::csr (
       renew_days       => $renew_days,
       ca               => $ca,
       ocsp_must_staple => $ocsp_must_staple,
+      challenge_alias  => $challenge_alias,
+      domain_alias     => $domain_alias,
     }
   } else {
     notify { "no CSR from facter for cert ${name} (normal on first run)" : }

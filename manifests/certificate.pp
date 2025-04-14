@@ -8,6 +8,9 @@
 #   The ACME CA that should be used. Used to overwrite the default
 #   CA that is configured on `$acme_host`.
 #
+# @param challenge_alias
+#   Specifies a optional challenge alias, which will be used for DNS alias mode.
+#
 # @param dh_param_size
 #   Specifies the DH parameter size, defaults to $acme::dh_param_size.
 #
@@ -21,6 +24,9 @@
 #
 #   If no domain is specified, the resource name will be parsed as a
 #   list of domains, and the first domain will be used as certificate name.
+#
+# @param domain_alias
+#   Specifies a optional domain alias, which will be used for DNS alias mode.
 #
 # @param ocsp_must_staple
 #   request certificate with OCSP Must-Staple exctension, defaults to $acme::ocsp_must_staple
@@ -58,6 +64,8 @@ define acme::certificate (
       Enum['buypass', 'buypass_test', 'letsencrypt', 'letsencrypt_test', 'sslcom', 'zerossl'],
       Pattern[/^[a-z0-9_-]+$/]
   ]] $ca = $acme::default_ca,
+  Optional[String] $challenge_alias = undef,
+  Optional[String] $domain_alias = undef,
 ) {
   require acme::setup::common
 
@@ -99,5 +107,7 @@ define acme::certificate (
     purge_key_on_mismatch => $purge_key_on_mismatch,
     renew_days            => $renew_days,
     ca                    => $ca,
+    challenge_alias       => $challenge_alias,
+    domain_alias          => $domain_alias,
   }
 }
