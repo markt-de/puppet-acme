@@ -4,11 +4,17 @@
 #   The ACME CA that should be used. Used to overwrite the default
 #   CA that is configured on `$acme_host`.
 #
+# @param challenge_alias
+#   Specifies a optional challenge alias, which will be used for DNS alias mode.
+#
 # @param csr
 #   The full CSR as a string.
 #
 # @param domain
 #   Certificate commonname / domainname.
+#
+# @param domain_alias
+#   Specifies a optional domain alias, which will be used for DNS alias mode.
 #
 # @param use_account
 #   The ACME account that should be used.
@@ -29,6 +35,8 @@ define acme::request (
   Integer $renew_days = $acme::renew_days,
   Boolean $ocsp_must_staple = false,
   Optional[Array] $altnames = undef,
+  Optional[String] $challenge_alias = undef,
+  Optional[String] $domain_alias = undef,
 ) {
   $user = $acme::user
   $group = $acme::group
@@ -174,16 +182,21 @@ define acme::request (
     $_dnssleep = ''
   }
 
-  # Use the challenge or domain alias that is specified in the profile
-  if ($profile['options'] and $profile['options']['challenge_alias']) {
+  # Check if DNS alias mode is configured.
+  # First check the certificate config, then the profile config.
+  if ($challenge_alias) {
+    $_alias_mode = "--challenge-alias ${challenge_alias}"
+  } elsif ($profile['options'] and $profile['options']['challenge_alias']) {
     $_alias_mode = "--challenge-alias ${profile['options']['challenge_alias']}"
-    $acme_options = join([$_dnssleep, $_alias_mode], ' ')
+  } elsif ($domain_alias) {
+    $_alias_mode = "--domain-alias ${domain_alias}"
   } elsif ($profile['options'] and $profile['options']['domain_alias']) {
     $_alias_mode = "--domain-alias ${profile['options']['domain_alias']}"
-    $acme_options = join([$_dnssleep, $_alias_mode], ' ')
   } else {
-    $acme_options = $_dnssleep
+    # Not using DNS alias mode.
+    $_alias_mode = ''
   }
+  $acme_options = join([$_dnssleep, $_alias_mode], ' ')
 
   File {
     owner   => $user,
