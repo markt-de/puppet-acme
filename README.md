@@ -445,7 +445,7 @@ Another approach would be to purge the old key and just replace it with a new on
     }
 ~~~
 
-However, this has servere drawbacks, because it will cause a cert/key mismatch, possibly rendering applications unusable until a new certificate was issued. It heavily depends on the use-case if this approach may be acceptable.
+However, this has severe drawbacks, because it will cause a cert/key mismatch, possibly rendering applications unusable until a new certificate was issued. It heavily depends on the use-case if this approach may be acceptable.
 
 ## Examples
 
