@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [6.4.0] - 2025-05-19
+
+### Added
+* New parameters `$challenge_alias` and `$domain_alias` ([#58])
+
 ## [6.3.0] - 2025-03-17
 
 ATTENTION: The next major release will change the default RSA key size from 2048 to 4096. Please start to use the new key size now.
@@ -235,7 +240,8 @@ This new major release is an effort to modernize the module. It fixes some long-
 ## [1.0.0] - 2017-04-16
 Initial release (fork of bzed-letsencrypt).
 
-[Unreleased]: https://github.com/markt-de/puppet-acme/compare/6.3.0...HEAD
+[Unreleased]: https://github.com/markt-de/puppet-acme/compare/6.4.0...HEAD
+[6.4.0]: https://github.com/markt-de/puppet-acme/compare/6.3.0...6.4.0
 [6.3.0]: https://github.com/markt-de/puppet-acme/compare/6.2.0...6.3.0
 [6.2.0]: https://github.com/markt-de/puppet-acme/compare/6.1.0...6.2.0
 [6.1.0]: https://github.com/markt-de/puppet-acme/compare/6.0.0...6.1.0
@@ -254,6 +260,7 @@ Initial release (fork of bzed-letsencrypt).
 [1.0.3]: https://github.com/markt-de/puppet-acme/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/markt-de/puppet-acme/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/markt-de/puppet-acme/compare/1.0.0...1.0.1
+[#58]: https://github.com/markt-de/puppet-acme/pull/58
 [#57]: https://github.com/markt-de/puppet-acme/pull/57
 [#56]: https://github.com/markt-de/puppet-acme/pull/56
 [#50]: https://github.com/markt-de/puppet-acme/pull/50
