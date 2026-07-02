@@ -124,6 +124,22 @@ Data type: `Optional[Hash[Pattern[/^[a-z0-9_-]+$/], Stdlib::HTTPSUrl]]`
 A hash that contains the name and URL of one of more custom CAs.
 Note that the name must not conflict with the default CAs.
 
+##### `ca_eab`
+
+Data type: `Optional[Hash[Pattern[/^[a-z0-9_-]+$/], Struct[{ kid => String[1], hmac_key => String[1] }]]]`
+
+A hash that provides External Account Binding (EAB) credentials for one or
+more custom CAs that require them during account registration (RFC 8555).
+The hash is keyed by CA name (matching a key in `$ca_config`), and each
+value must be a hash with `kid` and `hmac_key`. Example:
+`{ private_ca123 => { kid => 'abc123', hmac_key => 'base64hmac' } }`.
+Note: acme.sh only accepts EAB credentials on the command line, so the
+`hmac_key` will be visible in the account registration Exec resource
+(and thus in Puppet reports). EAB credentials are often single-use, so
+this is primarily useful for CAs with a single account per CA.
+
+Default value: `undef`
+
 ##### `ca_whitelist`
 
 Data type: `Array`

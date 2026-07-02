@@ -353,6 +353,26 @@ Note that the CA URL must be configured and the CA name must be whitelisted on t
     }
 ~~~
 
+Some private CAs (e.g. HashiCorp Vault / OpenBao PKI, ZeroSSL) require
+[External Account Binding (EAB)](https://datatracker.ietf.org/doc/html/rfc8555#section-7.3.4)
+during account registration. Provide the `kid` and `hmac_key` obtained from the
+CA via the `ca_eab` parameter, keyed by the CA name:
+
+~~~puppet
+    Class { 'acme':
+      default_ca   => 'letsencrypt',
+      ca_config    => { private_ca123 => 'https://ca.example.com/v1/pki/acme/directory' },
+      ca_eab       => { private_ca123 => { kid => 'abc123', hmac_key => 'base64encodedhmac' } },
+      ca_whitelist => [ 'private_ca123', 'letsencrypt' ],
+      ...
+    }
+~~~
+
+Note that acme.sh only accepts EAB credentials on the command line, so the
+`hmac_key` will appear in the account registration Exec resource (and therefore
+in Puppet reports). EAB credentials are frequently single-use, so this works
+best for CAs configured with a single account per CA.
+
 ### Testing and Debugging
 
 For testing purposes you should use a test CA, such as `letsencrypt_test`. Otherwise

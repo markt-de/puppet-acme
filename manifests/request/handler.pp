@@ -47,6 +47,18 @@ class acme::request::handler {
         $ca_url = $acme_ca
       }
 
+      # Extract External Account Binding (EAB) credentials for CAs that
+      # require them during registration (RFC 8555). Only applied to the
+      # "--registeraccount" call below, as EAB is used when binding the
+      # account to a pre-authorized identity on the CA.
+      if ($acme::ca_eab != undef) and ($acme_ca in $acme::ca_eab) {
+        $eab_kid = $acme::ca_eab[$acme_ca]['kid']
+        $eab_hmac_key = $acme::ca_eab[$acme_ca]['hmac_key']
+        $eab_args = ["--eab-kid \'${eab_kid}\'", "--eab-hmac-key \'${eab_hmac_key}\'"]
+      } else {
+        $eab_args = []
+      }
+
       # Handle switching CAs with different account keys.
       $account_key_file = "${account_dir}/private_${acme_ca_compat}.key"
       $account_conf_file = "${account_dir}/account_${acme_ca_compat}.conf"
@@ -116,6 +128,7 @@ class acme::request::handler {
           "--home \'${acme::acme_dir}\'",
           "--accountconf ${account_conf_file}",
           "--server ${ca_url}",
+        ] + $eab_args + [
           '>/dev/null',
           '&&',
           "touch \'${account_registered_file}\'",
