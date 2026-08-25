@@ -51,9 +51,9 @@ class acme::request::handler {
       # require them during registration (RFC 8555). Only applied to the
       # "--registeraccount" call below, as EAB is used when binding the
       # account to a pre-authorized identity on the CA.
-      if ($acme::ca_eab != undef) and ($acme_ca in $acme::ca_eab) {
-        $eab_kid = $acme::ca_eab[$acme_ca]['kid']
-        $eab_hmac_key = $acme::ca_eab[$acme_ca]['hmac_key']
+      if ($acme::ca_eab_unwrapped != undef) and ($acme_ca in $acme::ca_eab_unwrapped) {
+        $eab_kid = $acme::ca_eab_unwrapped[$acme_ca]['kid']
+        $eab_hmac_key = $acme::ca_eab_unwrapped[$acme_ca]['hmac_key']
         $eab_args = ["--eab-kid \'${eab_kid}\'", "--eab-hmac-key \'${eab_hmac_key}\'"]
       } else {
         $eab_args = []
@@ -134,13 +134,14 @@ class acme::request::handler {
           "touch \'${account_registered_file}\'",
       ], ' ')
 
-      # Run acme.sh to register the account.
+      # Run acme.sh to register the account. With EAB the command carries the
+      # credentials, so mark it Sensitive (redacted in catalog, logs, reports).
       exec { "register-account-${acme_ca}-${account_email}":
         user    => $acme::user,
         cwd     => $acme::base_dir,
         group   => $acme::group,
         path    => $acme::path,
-        command => $le_register_command,
+        command => $eab_args.empty ? { true => $le_register_command, default => Sensitive($le_register_command) },
         creates => $account_registered_file,
         require => [
           User[$acme::user],
@@ -153,7 +154,7 @@ class acme::request::handler {
 
   # Store config for profiles in filesystem, if we support them.
   # (Otherwise the user needs to manually create the required files.)
-  $acme::profiles.each |$profile_name, $profile_config| {
+  $acme::profiles_unwrapped.each |$profile_name, $profile_config| {
     # Simple validation of profile config
     if ($profile_config != undef) and (type($profile_config) =~ Type[Hash]) {
       $challengetype = $profile_config['challengetype']
@@ -168,6 +169,37 @@ class acme::request::handler {
       "missing either \"challengetype\" or \"hook\"")
     }
 
+    # Per-profile directory for hook config and credentials.
+    $hook_dir = "${acme::cfg_dir}/profile_${profile_name}"
+    $hook_conf_file = "${hook_dir}/hook.cnf"
+    $env_file = "${hook_dir}/env.sh"
+
+    file { $hook_dir:
+      ensure => directory,
+      owner  => $acme::user,
+      group  => $acme::group,
+      mode   => '0700',
+    }
+
+    # Profile "env" (hook credentials, e.g. DNS API tokens) is written to a
+    # file that the issue/renew execs source, instead of Exec 'environment',
+    # so the values are not stored in the catalog (PuppetDB) or reports.
+    if ($profile_config['env'] =~ Hash) and !$profile_config['env'].empty {
+      $env_lines = $profile_config['env'].map |$key, $value| {
+        $raw = $value ? { Sensitive => $value.unwrap, default => String($value) }
+        $quoted = regsubst($raw, "'", "'\\\\''", 'G')
+        "export ${key}='${quoted}'"
+      }
+      file { $env_file:
+        owner     => $acme::user,
+        group     => $acme::group,
+        mode      => '0600',
+        show_diff => false,
+        content   => Sensitive(join($env_lines + [''], "\n")),
+        require   => File[$hook_dir],
+      }
+    }
+
     # DNS-01: nsupdate hook
     if ($challengetype == 'dns-01') and ($hook == 'nsupdate') {
       $nsupdate_id = $profile_config['options']['nsupdate_id']
@@ -177,16 +209,6 @@ class acme::request::handler {
       # Make sure all required values are available.
       if ($nsupdate_id and $nsupdate_key and $nsupdate_type) {
         # Create config file for hook script.
-        $hook_dir = "${acme::cfg_dir}/profile_${profile_name}"
-        $hook_conf_file = "${hook_dir}/hook.cnf"
-
-        file { $hook_dir:
-          ensure => directory,
-          owner  => $acme::user,
-          group  => $acme::group,
-          mode   => '0600',
-        }
-
         file { $hook_conf_file:
           owner     => $acme::user,
           group     => $acme::group,

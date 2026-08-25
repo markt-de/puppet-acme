@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+* `$ca_eab` and `$profiles` may be wrapped in `Sensitive` to keep credentials out of the catalog/PuppetDB
+* Profile `env` is written to a root-only `env.sh` sourced by acme.sh instead of being passed via Exec `environment`
+* The account registration Exec command is marked Sensitive when EAB credentials are used
+* Per-profile directories are created with mode 0700 (was 0600)
+
 ## [6.4.0] - 2025-05-19
 
 ### Added

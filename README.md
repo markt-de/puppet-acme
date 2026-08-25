@@ -117,7 +117,10 @@ communicate with Amazon Route53.
 
 Note that the `hook` parameter must exactly match the name of the hook that is used by [acmesh-official/acme.sh](https://github.com/acmesh-official/acme.sh).
 Some DNS hooks require environment variables that contain usernames or API tokens,
-simply add them to the `env` parameter.
+simply add them to the `env` parameter. Wrap the whole `profiles` hash in
+`Sensitive(...)` so that these credentials are not stored in the catalog (and
+thus PuppetDB): the `env` is written to a root-only file on `$acme_host` which
+acme.sh sources, instead of being passed via the Exec `environment` attribute.
 
 All CSRs are collected and signed on your Puppet Server via PuppetDB, and the resulting
 certificates and CA chain files are shipped back to the originating host via PuppetDB.
@@ -362,16 +365,16 @@ CA via the `ca_eab` parameter, keyed by the CA name:
     Class { 'acme':
       default_ca   => 'letsencrypt',
       ca_config    => { private_ca123 => 'https://ca.example.com/v1/pki/acme/directory' },
-      ca_eab       => { private_ca123 => { kid => 'abc123', hmac_key => 'base64encodedhmac' } },
+      ca_eab       => Sensitive({ private_ca123 => { kid => 'abc123', hmac_key => 'base64encodedhmac' } }),
       ca_whitelist => [ 'private_ca123', 'letsencrypt' ],
       ...
     }
 ~~~
 
-Note that acme.sh only accepts EAB credentials on the command line, so the
-`hmac_key` will appear in the account registration Exec resource (and therefore
-in Puppet reports). EAB credentials are frequently single-use, so this works
-best for CAs configured with a single account per CA.
+acme.sh only accepts EAB credentials on the command line. Wrapping `ca_eab` in
+`Sensitive(...)` keeps them out of the catalog stored in PuppetDB, and the
+account registration Exec command is marked Sensitive as well, so it is
+redacted in logs and reports.
 
 ### Testing and Debugging
 

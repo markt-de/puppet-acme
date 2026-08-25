@@ -91,7 +91,7 @@ define acme::request (
   $account_email = $use_account
 
   # Check if the profile is actually defined.
-  $profiles = $acme::profiles
+  $profiles = $acme::profiles_unwrapped
   if $profiles[$use_profile] {
     $profile = $profiles[$use_profile]
   } else {
@@ -158,12 +158,20 @@ define acme::request (
     }
   }
 
-  # Merge those pre-defined hook options with user-defined hook options.
-  # NOTE: We intentionally use Hashes so that *values* can be overriden.
+  # User-defined hook options (profile "env") live in a root-only file written
+  # by acme::request::handler; the acme.sh commands source it so the values
+  # never pass through Exec 'environment' (catalog/PuppetDB/reports).
+  if ($profile['env'] =~ Hash) and !$profile['env'].empty {
+    $env_file = "${cfg_dir}/profile_${use_profile}/env.sh"
+    $env_prefix = "set -a && . \'${env_file}\' && set +a &&"
+    $env_require = [File[$env_file]]
+  } else {
+    $env_prefix = ''
+    $env_require = []
+  }
+
   if defined('$_hook_params_pre') and ($_hook_params_pre =~ Hash) {
-    $_hook_params = deep_merge($_hook_params_pre, $profile['env'])
-  } elsif ($profile and $profile['env'] =~ Hash) {
-    $_hook_params = $profile['env']
+    $_hook_params = $_hook_params_pre
   } else {
     $_hook_params = {}
   }
@@ -293,6 +301,7 @@ define acme::request (
 
   # acme.sh command to sign a new csr.
   $le_command_signcsr = join([
+      $env_prefix,
       $acmecmd,
       '--signcsr',
       "--domain \'${domain}\'",
@@ -316,6 +325,7 @@ define acme::request (
 
   # acme.sh command to renew an existing certificate.
   $le_command_renew = join([
+      $env_prefix,
       $acmecmd,
       '--issue',
       "--domain \'${domain}\'",
@@ -357,7 +367,7 @@ define acme::request (
       File[$crt_dir_domain],
       File[$account_conf_file],
       Vcsrepo[$acme_install_dir],
-    ],
+    ] + $env_require,
     notify      => [
       File[$le_crt_file],
       File[$result_crt_file],
@@ -385,7 +395,7 @@ define acme::request (
       File[$crt_dir_domain],
       File[$account_conf_file],
       Vcsrepo[$acme_install_dir],
-    ],
+    ] + $env_require,
     notify      => [
       File[$le_crt_file],
       File[$result_crt_file],
