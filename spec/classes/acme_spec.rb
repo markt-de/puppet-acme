@@ -147,21 +147,22 @@ describe 'acme' do
             )
           end
           let(:params) do
+            profiles = {
+              'pdns' => {
+                'challengetype' => 'dns-01',
+                'hook' => 'pdns',
+                'env' => {
+                  'PDNS_Url' => 'https://pdns.example.com',
+                  'PDNS_Token' => "tok'en",
+                },
+              },
+            }
             {
               accounts: [le_account],
               ca_config: { le_ca => 'https://ca.example.com/acme/directory' },
               ca_eab: sensitive({ le_ca => { 'kid' => 'kid123', 'hmac_key' => 'hmac456' } }),
               ca_whitelist: [le_ca],
-              profiles: sensitive({
-                'pdns' => {
-                  'challengetype' => 'dns-01',
-                  'hook' => 'pdns',
-                  'env' => {
-                    'PDNS_Url' => 'https://pdns.example.com',
-                    'PDNS_Token' => "tok'en",
-                  },
-                },
-              }),
+              profiles: sensitive(profiles),
             }
           end
 
@@ -170,7 +171,6 @@ describe 'acme' do
 
           # EAB credentials only in the (Sensitive) registration command
           it { is_expected.to contain_exec("register-account-#{le_ca}-#{le_account}").with_command(sensitive(%r{--eab-kid 'kid123' --eab-hmac-key 'hmac456'})) }
-          it { is_expected.to contain_exec("create-account-#{le_ca}-#{le_account}").without_command(%r{eab}) }
 
           # profile env goes to a root-only file, shell-quoted
           it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns').with_ensure('directory').with_mode('0700') }

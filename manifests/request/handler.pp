@@ -186,7 +186,7 @@ class acme::request::handler {
     # so the values are not stored in the catalog (PuppetDB) or reports.
     if ($profile_config['env'] =~ Hash) and !$profile_config['env'].empty {
       $env_lines = $profile_config['env'].map |$key, $value| {
-        $raw = $value ? { Sensitive => $value.unwrap, default => String($value) }
+        $raw = if $value =~ Sensitive { $value.unwrap } else { String($value) }
         $quoted = regsubst($raw, "'", "'\\\\''", 'G')
         "export ${key}='${quoted}'"
       }

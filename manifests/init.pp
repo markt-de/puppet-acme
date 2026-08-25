@@ -216,8 +216,8 @@ class acme (
 
   # Both may be wrapped in Sensitive so they are redacted in the catalog
   # (PuppetDB). Unwrap once here; the rest of the module reads these.
-  $ca_eab_unwrapped = $ca_eab ? { Sensitive => $ca_eab.unwrap, default => $ca_eab }
-  $profiles_unwrapped = $profiles ? { Sensitive => $profiles.unwrap, default => $profiles }
+  $ca_eab_unwrapped = if $ca_eab =~ Sensitive { $ca_eab.unwrap } else { $ca_eab }
+  $profiles_unwrapped = if $profiles =~ Sensitive { $profiles.unwrap } else { $profiles }
 
   # Is this the host to sign CSRs?
   if ($facts['networking']['fqdn'] == $acme_host) {
