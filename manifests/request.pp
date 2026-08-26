@@ -165,9 +165,13 @@ define acme::request (
     $env_file = "${cfg_dir}/profile_${use_profile}/env.sh"
     $env_prefix = "set -a && . \'${env_file}\' && set +a &&"
     $env_require = [File[$env_file]]
+    # The command now starts with a shell builtin; the default provider
+    # insists on an executable first word, so run it via /bin/sh.
+    $env_provider = 'shell'
   } else {
     $env_prefix = ''
     $env_require = []
+    $env_provider = undef
   }
 
   if defined('$_hook_params_pre') and ($_hook_params_pre =~ Hash) {
@@ -356,6 +360,7 @@ define acme::request (
     unless      => $le_check_command,
     path        => $path,
     environment => $hook_params,
+    provider    => $env_provider,
     command     => $le_command_signcsr,
     timeout     => $acme::exec_timeout,
     # Run this exec only if no old cert can be found.
@@ -383,6 +388,7 @@ define acme::request (
     unless      => $le_check_command,
     path        => $path,
     environment => $hook_params,
+    provider    => $env_provider,
     command     => $le_command_renew,
     timeout     => $acme::exec_timeout,
     returns     => [0,2],

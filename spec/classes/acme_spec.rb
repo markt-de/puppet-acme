@@ -165,6 +165,18 @@ describe 'acme' do
               profiles: sensitive(profiles),
             }
           end
+          # acme::request is normally collected as an exported resource; declare one directly.
+          let(:post_condition) do
+            <<-MANIFEST
+            acme::request { 'test.example.com':
+              csr         => 'dummy-csr',
+              altnames    => [],
+              use_account => '#{le_account}',
+              use_profile => 'pdns',
+              ca          => '#{le_ca}',
+            }
+            MANIFEST
+          end
 
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_class('acme::request::handler') }
@@ -176,6 +188,10 @@ describe 'acme' do
           it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns').with_ensure('directory').with_mode('0700') }
           it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns/env.sh').with_mode('0600').with_show_diff(false).with_content(sensitive(%r{^export PDNS_Url='https://pdns.example.com'$})) }
           it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns/env.sh').with_content(sensitive(%r{^export PDNS_Token='tok'\\''en'$})) }
+
+          # 'set -a' is a shell builtin: the exec must run through the shell provider
+          it { is_expected.to contain_exec('issue-certificate-test.example.com').with_provider('shell').with_command(%r{^set -a && \. '/etc/acme.sh/configs/profile_pdns/env\.sh' && set \+a && }) }
+          it { is_expected.to contain_exec('renew-certificate-test.example.com').with_provider('shell') }
         end
 
         context 'on Puppet Server with custom ca_whitelist' do
