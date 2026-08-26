@@ -131,6 +131,69 @@ describe 'acme' do
           it { is_expected.to contain_package('git').with_ensure('installed') }
         end
 
+        context 'on Puppet Server with Sensitive ca_eab and profiles' do
+          test_host = 'puppetserver.example.com'
+          le_account = 'certmaster@example.com'
+          le_ca = 'private_ca'
+
+          let(:facts) do
+            super().deep_merge!(
+              networking: {
+                'fqdn' => test_host,
+              },
+              openssl_version: '1.0.2k-fips',
+              # workaround for disfunctional $server_facts in rspec-puppet
+              fqdn: test_host,
+            )
+          end
+          let(:params) do
+            profiles = {
+              'pdns' => {
+                'challengetype' => 'dns-01',
+                'hook' => 'pdns',
+                'env' => {
+                  'PDNS_Url' => 'https://pdns.example.com',
+                  'PDNS_Token' => "tok'en",
+                },
+              },
+            }
+            {
+              accounts: [le_account],
+              ca_config: { le_ca => 'https://ca.example.com/acme/directory' },
+              ca_eab: sensitive({ le_ca => { 'kid' => 'kid123', 'hmac_key' => 'hmac456' } }),
+              ca_whitelist: [le_ca],
+              profiles: sensitive(profiles),
+            }
+          end
+          # acme::request is normally collected as an exported resource; declare one directly.
+          let(:post_condition) do
+            <<-MANIFEST
+            acme::request { 'test.example.com':
+              csr         => 'dummy-csr',
+              altnames    => [],
+              use_account => '#{le_account}',
+              use_profile => 'pdns',
+              ca          => '#{le_ca}',
+            }
+            MANIFEST
+          end
+
+          it { is_expected.to compile.with_all_deps }
+          it { is_expected.to contain_class('acme::request::handler') }
+
+          # EAB credentials only in the (Sensitive) registration command
+          it { is_expected.to contain_exec("register-account-#{le_ca}-#{le_account}").with_command(sensitive(%r{--eab-kid 'kid123' --eab-hmac-key 'hmac456'})) }
+
+          # profile env goes to a root-only file, shell-quoted
+          it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns').with_ensure('directory').with_mode('0700') }
+          it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns/env.sh').with_mode('0600').with_show_diff(false).with_content(sensitive(%r{^export PDNS_Url='https://pdns.example.com'$})) }
+          it { is_expected.to contain_file('/etc/acme.sh/configs/profile_pdns/env.sh').with_content(sensitive(%r{^export PDNS_Token='tok'\\''en'$})) }
+
+          # 'set -a' is a shell builtin: the exec must run through the shell provider
+          it { is_expected.to contain_exec('issue-certificate-test.example.com').with_provider('shell').with_command(%r{^set -a && \. '/etc/acme.sh/configs/profile_pdns/env\.sh' && set \+a && }) }
+          it { is_expected.to contain_exec('renew-certificate-test.example.com').with_provider('shell') }
+        end
+
         context 'on Puppet Server with custom ca_whitelist' do
           test_host = 'puppetserver.example.com'
           le_account = 'certmaster@example.com'

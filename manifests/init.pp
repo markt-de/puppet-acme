@@ -43,6 +43,16 @@
 #   A hash that contains the name and URL of one of more custom CAs.
 #   Note that the name must not conflict with the default CAs.
 #
+# @param ca_eab
+#   A hash that provides External Account Binding (EAB) credentials for one or
+#   more custom CAs that require them during account registration (RFC 8555).
+#   The hash is keyed by CA name (matching a key in `$ca_config`), and each
+#   value must be a hash with `kid` and `hmac_key`. Example:
+#   `{ private_ca123 => { kid => 'abc123', hmac_key => 'base64hmac' } }`.
+#   Wrap the whole hash in `Sensitive(...)` to keep the credentials out of the
+#   catalog stored in PuppetDB; the account registration Exec command is then
+#   marked Sensitive as well (redacted in logs and reports).
+#
 # @param ca_whitelist
 #   Specifies the CAs that may be used on `$acme_host`. The module will register
 #   any account specified in `$accounts` with all specified CAs. This ensures that
@@ -126,7 +136,11 @@
 #   A hash of profiles that contain information how acme.sh should sign
 #   certificates. A profile defines not only the challenge type, but also all
 #   required parameters and credentials used by acme.sh to sign the certificate.
-#   Should only be defined on $acme_host.
+#   Should only be defined on $acme_host. Wrap the whole hash in `Sensitive(...)`
+#   when it contains credentials (e.g. a DNS API token in `env`): the profile
+#   `env` is written to a root-only file on $acme_host that acme.sh sources,
+#   instead of being passed via Exec `environment` (which would be stored in
+#   the catalog/PuppetDB and reports).
 #
 # @param proxy
 #   Proxy server to use to connect to the ACME CA, for example `proxy.example.com:3128`
@@ -192,19 +206,25 @@ class acme (
   String $user,
   # optional parameters
   Optional[Hash[Pattern[/^[a-z0-9_-]+$/], Stdlib::HTTPSUrl]] $ca_config,
+  Optional[Variant[Sensitive[Hash], Hash[Pattern[/^[a-z0-9_-]+$/], Struct[{ kid => String[1], hmac_key => String[1] }]]]] $ca_eab = undef,
   Optional[String] $default_account = undef,
   Optional[String] $default_profile = undef,
   Optional[String] $proxy = undef,
-  Optional[Hash] $profiles = undef
+  Optional[Variant[Sensitive[Hash], Hash]] $profiles = undef
 ) {
   require acme::setup::common
+
+  # Both may be wrapped in Sensitive so they are redacted in the catalog
+  # (PuppetDB). Unwrap once here; the rest of the module reads these.
+  $ca_eab_unwrapped = if $ca_eab =~ Sensitive { $ca_eab.unwrap } else { $ca_eab }
+  $profiles_unwrapped = if $profiles =~ Sensitive { $profiles.unwrap } else { $profiles }
 
   # Is this the host to sign CSRs?
   if ($facts['networking']['fqdn'] == $acme_host) {
     class { 'acme::setup::puppetmaster': }
 
     # Validate configuration of $acme_host.
-    if !($profiles) {
+    if !($profiles_unwrapped) {
       # Cannot continue if no profile has been defined.
       notify { "Module ${module_name}: \$profiles must be defined on \"${acme_host}\"!":
         loglevel => err,

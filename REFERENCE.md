@@ -124,6 +124,21 @@ Data type: `Optional[Hash[Pattern[/^[a-z0-9_-]+$/], Stdlib::HTTPSUrl]]`
 A hash that contains the name and URL of one of more custom CAs.
 Note that the name must not conflict with the default CAs.
 
+##### `ca_eab`
+
+Data type: `Optional[Variant[Sensitive[Hash], Hash[Pattern[/^[a-z0-9_-]+$/], Struct[{ kid => String[1], hmac_key => String[1] }]]]]`
+
+A hash that provides External Account Binding (EAB) credentials for one or
+more custom CAs that require them during account registration (RFC 8555).
+The hash is keyed by CA name (matching a key in `$ca_config`), and each
+value must be a hash with `kid` and `hmac_key`. Example:
+`{ private_ca123 => { kid => 'abc123', hmac_key => 'base64hmac' } }`.
+Wrap the whole hash in `Sensitive(...)` to keep the credentials out of the
+catalog stored in PuppetDB; the account registration Exec command is then
+marked Sensitive as well (redacted in logs and reports).
+
+Default value: `undef`
+
 ##### `ca_whitelist`
 
 Data type: `Array`
@@ -275,12 +290,16 @@ Specifies a optional command to run after a certificate has been changed.
 
 ##### `profiles`
 
-Data type: `Optional[Hash]`
+Data type: `Optional[Variant[Sensitive[Hash], Hash]]`
 
 A hash of profiles that contain information how acme.sh should sign
 certificates. A profile defines not only the challenge type, but also all
 required parameters and credentials used by acme.sh to sign the certificate.
-Should only be defined on $acme_host.
+Should only be defined on $acme_host. Wrap the whole hash in `Sensitive(...)`
+when it contains credentials (e.g. a DNS API token in `env`): the profile
+`env` is written to a root-only file on $acme_host that acme.sh sources,
+instead of being passed via Exec `environment` (which would be stored in
+the catalog/PuppetDB and reports).
 
 Default value: ``undef``
 
